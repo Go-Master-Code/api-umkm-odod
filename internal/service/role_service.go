@@ -36,7 +36,7 @@ func NewRoleService(repo repository.RoleRepository) RoleService {
 func (s *roleService) GetRoles(ctx context.Context, name string) ([]dto.RoleResponse, error) {
 	roles, err := s.repo.GetRoles(ctx, name)
 	if err != nil {
-		return []dto.RoleResponse{}, err
+		return nil, err
 	}
 
 	// convert model to dto

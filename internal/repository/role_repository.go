@@ -41,7 +41,7 @@ func (r *roleRepository) GetRoles(ctx context.Context, name string) ([]model.Rol
 	err := query.Find(&roles).Error
 
 	if err != nil {
-		return []model.Role{}, err
+		return nil, err
 	}
 
 	return roles, nil

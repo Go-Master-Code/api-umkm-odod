@@ -71,6 +71,11 @@ func main() {
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
 
+	// dependency injection catalog category
+	catalogCategoryRepo := repository.NewCatalogCategoryRepository(database.DB)
+	catalogCategoryService := service.NewCatalogCategoryService(catalogCategoryRepo)
+	catalogCategoryHandler := handler.NewCatalogCategoryHandler(catalogCategoryService)
+
 	// router group public tidak perlu pakai middleware AuthRequired
 	public := r.Group("/api")
 	// endpoint login
@@ -87,6 +92,8 @@ func main() {
 		routes.RegisterUserRoutes(authorized, userHandler)
 		// list handler tenant
 		routes.RegisterTenantRoutes(authorized, tenantHandler)
+		// list handler catalog category
+		routes.RegisterCatalogCategoryRoutes(authorized, catalogCategoryHandler)
 	}
 
 	// run server
