@@ -1,0 +1,13 @@
+DELETE FROM sale_items;
+DELETE FROM sales;
+DELETE FROM stock_movements;
+DELETE FROM price_histories;
+DELETE FROM item_variant_attribute_values;
+DELETE FROM item_variants;
+DELETE FROM item_attribute_values;
+DELETE FROM item_attributes;
+DELETE FROM catalog_items;
+DELETE FROM catalog_categories;
+DELETE FROM users;
+DELETE FROM roles;
+DELETE FROM tenants;
