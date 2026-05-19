@@ -52,6 +52,8 @@ func main() {
 	r.POST("/api/users", userHandler.CreateUser)
 	r.PUT("/api/users/:id", userHandler.UpdateUser)
 	r.DELETE("/api/users/:id", userHandler.DeleteUser)
+	// endpoint login
+	r.POST("/api/login", userHandler.Login)
 
 	// run server
 	r.Run("localhost:8080")

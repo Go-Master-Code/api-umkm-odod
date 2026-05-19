@@ -35,3 +35,9 @@ type UpdateUserRequest struct {
 	Phone    *string `json:"phone" binding:"omitempty,min=8,max=30"`
 	IsActive *bool   `json:"is_active" binding:"omitempty"`
 }
+
+// login request
+type LoginRequest struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}

@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"errors"
 	"umkm-odod/helper"
 	"umkm-odod/internal/dto"
 	"umkm-odod/internal/model"
 	"umkm-odod/internal/repository"
+	"umkm-odod/internal/utils/crypto"
 
 	"github.com/google/uuid"
 )
@@ -17,6 +19,7 @@ type UserService interface {
 	CreateUser(ctx context.Context, req dto.CreateUserRequest) (dto.UserResponse, error)
 	UpdateUser(ctx context.Context, id string, req dto.UpdateUserRequest) (dto.UserResponse, error)
 	DeleteUser(ctx context.Context, id string) (dto.UserResponse, error)
+	Login(ctx context.Context, username, password string) (dto.UserResponse, error)
 }
 
 // struct implementasi
@@ -138,4 +141,23 @@ func (s *userService) DeleteUser(ctx context.Context, id string) (dto.UserRespon
 	// convert model to dto
 	userDTO := helper.ConvertToDTOUserSingle(user)
 	return userDTO, nil
+}
+
+func (s *userService) Login(ctx context.Context, username, password string) (dto.UserResponse, error) {
+	// get data user dulu
+	user, err := s.repo.GetUserByUsername(ctx, username)
+	if err != nil {
+		return dto.UserResponse{}, errors.New("username not found")
+	}
+
+	// bandingkan password yang diinput dengan password di db
+	valid := crypto.CheckPassword(password, user.Password)
+	if !valid {
+		return dto.UserResponse{}, errors.New("wrong password")
+	}
+
+	// jika password valid, return data
+	userDTO := helper.ConvertToDTOUserSingle(user)
+	return userDTO, nil
+
 }

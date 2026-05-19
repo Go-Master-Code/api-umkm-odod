@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"umkm-odod/auth"
 	"umkm-odod/helper"
 	"umkm-odod/internal/constants"
 	"umkm-odod/internal/dto"
@@ -112,4 +113,31 @@ func (h *UserHandler) DeleteUser(c *gin.Context) {
 	}
 
 	helper.SuccessResponse(c, constants.SuccessDeleteData, userDTO)
+}
+
+func (h *UserHandler) Login(c *gin.Context) {
+	// parsing request body
+	var req dto.LoginRequest
+
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		helper.ErrorParsingRequestBody(c, err)
+		return
+	}
+
+	user, err := h.service.Login(c.Request.Context(), req.Username, req.Password)
+	if err != nil { // gagal login
+		helper.ErrorResponse(c, constants.ErrorLoginInvalid, err)
+		return
+	}
+
+	// jika username dan password benar, generate token jwt
+	token, err := auth.GenerateToken(user.ID, user.Username, user.RoleID, user.RoleName, user.TenantID)
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorGenerateToken, err)
+		return
+	}
+
+	// login berhasil => kirim data user sekaligus token
+	helper.SuccessLogin(c, user, token)
 }
