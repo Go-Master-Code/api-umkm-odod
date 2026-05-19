@@ -16,7 +16,7 @@ type AllErrors struct {
 func ErrorResponse(c *gin.Context, message string, err error) {
 	c.JSON(http.StatusInternalServerError, AllErrors{
 		Code:    http.StatusInternalServerError,
-		Message: "failed to get data from db",
+		Message: message,
 		Error:   err.Error(),
 	})
 }

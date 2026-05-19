@@ -85,13 +85,18 @@ func (h *RoleHandler) UpdateRole(c *gin.Context) {
 		return
 	}
 
-	// get role by id lagi untuk load relasi (preload tenant)
-	roleDTO, err = h.service.GetRoleByID(c.Request.Context(), id)
+	helper.SuccessResponse(c, constants.SuccessUpdateData, roleDTO)
+}
 
+func (h *RoleHandler) DeleteRole(c *gin.Context) {
+	// get param id
+	id := c.Param("id")
+
+	roleDTO, err := h.service.DeleteRole(c.Request.Context(), id)
 	if err != nil {
-		helper.ErrorResponse(c, constants.ErrorGetData, err)
+		helper.ErrorResponse(c, constants.ErrorDeleteData, err)
 		return
 	}
 
-	helper.SuccessResponse(c, constants.SuccessUpdateData, roleDTO)
+	helper.SuccessResponse(c, constants.SuccessDeleteData, roleDTO)
 }

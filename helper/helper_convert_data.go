@@ -123,7 +123,7 @@ func ConvertToDTORolePlural(role []model.Role) []dto.RoleResponse {
 	return roleDTO
 }
 
-func ConvertToDTOUserSingle(user model.User) dto.UserResponse {
+func ConvertToDTOUserSingle(user *model.User) dto.UserResponse {
 	var userDTO dto.UserResponse
 	userDTO.ID = user.ID
 	userDTO.TenantID = user.TenantID
@@ -148,6 +148,7 @@ func ConvertToDTOUserPlural(user []model.User) []dto.UserResponse {
 			RoleID:      u.RoleID,
 			RoleName:    u.Role.Name,
 			Username:    u.Username,
+			FullName:    u.FullName,
 			Phone:       u.Phone,
 			IsActive:    u.IsActive,
 			LastLoginAt: u.LastLoginAt,

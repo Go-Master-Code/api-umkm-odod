@@ -39,6 +39,19 @@ func main() {
 	r.GET("/api/roles/:id", roleHandler.GetRoleByID)
 	r.POST("/api/roles/", roleHandler.CreateRole)
 	r.PUT("/api/roles/:id", roleHandler.UpdateRole)
+	r.DELETE("/api/roles/:id", roleHandler.DeleteRole)
+
+	// dependency injection user
+	userRepo := repository.NewUserRepository(database.DB)
+	userService := service.NewUserService(userRepo)
+	userHandler := handler.NewUserHandler(userService)
+
+	// endpoint user
+	r.GET("/api/users", userHandler.GetUsers)
+	r.GET("/api/users/:id", userHandler.GetUserByID)
+	r.POST("/api/users", userHandler.CreateUser)
+	r.PUT("/api/users/:id", userHandler.UpdateUser)
+	r.DELETE("/api/users/:id", userHandler.DeleteUser)
 
 	// run server
 	r.Run("localhost:8080")

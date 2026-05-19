@@ -66,5 +66,5 @@ func (r *roleRepository) UpdateRole(ctx context.Context, id string, updateMap ma
 }
 
 func (r *roleRepository) DeleteRole(ctx context.Context, id string) error {
-	return r.db.WithContext(ctx).Where("id = ?", id).Delete(model.Role{}).Error
+	return r.db.WithContext(ctx).Where("id = ?", id).Delete(&model.Role{}).Error
 }

@@ -92,11 +92,11 @@ func (h *TenantHandler) DeleteTenant(c *gin.Context) {
 	// ambil id dari param
 	id := c.Param("id")
 
-	response, err := h.service.DeleteTenant(c.Request.Context(), id)
+	tenantDTO, err := h.service.DeleteTenant(c.Request.Context(), id)
 	if err != nil {
 		helper.ErrorResponse(c, constants.ErrorDeleteData, err)
 		return
 	}
 
-	helper.SuccessResponse(c, constants.SuccessDeleteData, response)
+	helper.SuccessResponse(c, constants.SuccessDeleteData, tenantDTO)
 }
