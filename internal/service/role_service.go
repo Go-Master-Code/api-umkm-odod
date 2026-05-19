@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"umkm-odod/helper"
+	"umkm-odod/internal/constants"
 	"umkm-odod/internal/dto"
 	"umkm-odod/internal/model"
 	"umkm-odod/internal/repository"
@@ -55,11 +56,11 @@ func (s *roleService) GetRoleByID(ctx context.Context, id string) (dto.RoleRespo
 }
 
 func (s *roleService) CreateRole(ctx context.Context, req dto.CreateRoleRequest) (dto.RoleResponse, error) {
-	// ambil tenantID dari context
-	// tenantID := ctx.Value("tenant_id").(string)
+	// ambil tenantID dari context -> cek file middleware/auth_required.go
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
 
 	// payload sementara
-	tenantID := "f27e441f-5385-4b8d-b2e2-88b8615a4634"
+	// tenantID := "f27e441f-5385-4b8d-b2e2-88b8615a4634"
 
 	// convert dto to model
 	role := model.Role{
