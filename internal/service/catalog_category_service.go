@@ -17,6 +17,7 @@ type CatalogCategoryService interface {
 	GetCatalogCategoryByID(ctx context.Context, id string) (dto.CatalogCategoryResponse, error)
 	CreateCatalogCategory(ctx context.Context, req dto.CreateCatalogCategoryRequest) (dto.CatalogCategoryResponse, error)
 	UpdateCatalogCategory(ctx context.Context, id string, req dto.UpdateCatalogCategoryRequest) (dto.CatalogCategoryResponse, error)
+	DeleteCatalogCategory(ctx context.Context, id string) (dto.CatalogCategoryResponse, error)
 }
 
 // struct implementasi
@@ -94,6 +95,23 @@ func (s *catalogCategoryService) UpdateCatalogCategory(ctx context.Context, id s
 
 	// get data by id untuk melihat perubahan
 	cc, err := s.repo.GetCatalogCategoryByID(ctx, id)
+	if err != nil {
+		return dto.CatalogCategoryResponse{}, err
+	}
+
+	// convert model to dto
+	ccDTO := helper.ConvertToDTOCatalogCategorySingle(cc)
+	return ccDTO, nil
+}
+
+func (s catalogCategoryService) DeleteCatalogCategory(ctx context.Context, id string) (dto.CatalogCategoryResponse, error) {
+	// get data by id dulu untuk response
+	cc, err := s.repo.GetCatalogCategoryByID(ctx, id)
+	if err != nil {
+		return dto.CatalogCategoryResponse{}, err
+	}
+
+	err = s.repo.DeleteCatalogCategory(ctx, id)
 	if err != nil {
 		return dto.CatalogCategoryResponse{}, err
 	}

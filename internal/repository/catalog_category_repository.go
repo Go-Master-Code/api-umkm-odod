@@ -13,6 +13,7 @@ type CatalogCategoryRepository interface {
 	GetCatalogCategoryByID(ctx context.Context, id string) (*model.CatalogCategory, error)
 	CreateCatalogCategory(ctx context.Context, cc *model.CatalogCategory) error
 	UpdateCatalogCategory(ctx context.Context, id string, updateMap map[string]any) error
+	DeleteCatalogCategory(ctx context.Context, id string) error
 }
 
 // struct implementasi
@@ -62,4 +63,8 @@ func (r *catalogCategoryRepository) CreateCatalogCategory(ctx context.Context, c
 
 func (r *catalogCategoryRepository) UpdateCatalogCategory(ctx context.Context, id string, updateMap map[string]any) error {
 	return r.db.WithContext(ctx).Model(model.CatalogCategory{}).Where("id = ?", id).Updates(updateMap).Error
+}
+
+func (r *catalogCategoryRepository) DeleteCatalogCategory(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).Where("id = ?", id).Delete(&model.CatalogCategory{}).Error
 }

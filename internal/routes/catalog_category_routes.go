@@ -14,5 +14,5 @@ func RegisterCatalogCategoryRoutes(rg *gin.RouterGroup, h *handler.CatalogCatego
 	rg.GET("/catalog_categories/:id", h.GetCatalogCategoryByID)
 	rg.POST("/catalog_categories/", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.CreateCatalogCategory)
 	rg.PUT("/catalog_categories/:id", h.UpdateCatalogCategory)
-	// rg.DELETE("//roles/:id", h.DeleteRole)
+	rg.DELETE("/catalog_categories/:id", h.DeleteCatalogCategory)
 }

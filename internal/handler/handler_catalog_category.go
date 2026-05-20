@@ -86,3 +86,16 @@ func (h *CatalogCategoryHandler) UpdateCatalogCategory(c *gin.Context) {
 
 	helper.SuccessResponse(c, constants.SuccessUpdateData, ccDTO)
 }
+
+func (h *CatalogCategoryHandler) DeleteCatalogCategory(c *gin.Context) {
+	// get param id
+	id := c.Param("id")
+
+	ccDTO, err := h.service.DeleteCatalogCategory(c.Request.Context(), id)
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorDeleteData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessDeleteData, ccDTO)
+}
