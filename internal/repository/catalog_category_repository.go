@@ -10,6 +10,9 @@ import (
 // interface
 type CatalogCategoryRepository interface {
 	GetCatalogCategories(ctx context.Context, name string) ([]model.CatalogCategory, error)
+	GetCatalogCategoryByID(ctx context.Context, id string) (*model.CatalogCategory, error)
+	CreateCatalogCategory(ctx context.Context, cc *model.CatalogCategory) error
+	UpdateCatalogCategory(ctx context.Context, id string, updateMap map[string]any) error
 }
 
 // struct implementasi
@@ -41,4 +44,22 @@ func (r *catalogCategoryRepository) GetCatalogCategories(ctx context.Context, na
 	}
 
 	return cc, nil
+}
+
+func (r *catalogCategoryRepository) GetCatalogCategoryByID(ctx context.Context, id string) (*model.CatalogCategory, error) {
+	var cc model.CatalogCategory
+	err := r.db.WithContext(ctx).Preload("Tenant").First(&cc, "id = ?", id).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &cc, nil
+}
+
+func (r *catalogCategoryRepository) CreateCatalogCategory(ctx context.Context, cc *model.CatalogCategory) error {
+	return r.db.WithContext(ctx).Create(cc).Error
+}
+
+func (r *catalogCategoryRepository) UpdateCatalogCategory(ctx context.Context, id string, updateMap map[string]any) error {
+	return r.db.WithContext(ctx).Model(model.CatalogCategory{}).Where("id = ?", id).Updates(updateMap).Error
 }

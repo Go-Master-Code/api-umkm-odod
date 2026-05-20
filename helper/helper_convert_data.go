@@ -29,7 +29,7 @@ func ConvertToDTOTenantPlural(tenant []model.Tenant) []dto.TenantResponse {
 }
 
 // catalog categories
-func ConvertToDTOCatalogCategorySingle(catalogCategory model.CatalogCategory) dto.CatalogCategoryResponse {
+func ConvertToDTOCatalogCategorySingle(catalogCategory *model.CatalogCategory) dto.CatalogCategoryResponse {
 	var ccDTO dto.CatalogCategoryResponse
 	ccDTO.ID = catalogCategory.ID
 	ccDTO.Name = catalogCategory.Name

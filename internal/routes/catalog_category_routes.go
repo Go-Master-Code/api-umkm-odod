@@ -1,7 +1,9 @@
 package routes
 
 import (
+	"umkm-odod/internal/constants"
 	"umkm-odod/internal/handler"
+	"umkm-odod/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,8 +11,8 @@ import (
 func RegisterCatalogCategoryRoutes(rg *gin.RouterGroup, h *handler.CatalogCategoryHandler) {
 	// endpoint roles
 	rg.GET("/catalog_categories", h.GetCatalogCategories)
-	// rg.GET("/roles/:id", h.GetRoleByID)
-	// rg.POST("/roles/", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.CreateRole)
-	// rg.PUT("/roles/:id", h.UpdateRole)
+	rg.GET("/catalog_categories/:id", h.GetCatalogCategoryByID)
+	rg.POST("/catalog_categories/", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.CreateCatalogCategory)
+	rg.PUT("/catalog_categories/:id", h.UpdateCatalogCategory)
 	// rg.DELETE("//roles/:id", h.DeleteRole)
 }
