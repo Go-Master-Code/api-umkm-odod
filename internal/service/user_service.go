@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"umkm-odod/helper"
+	"umkm-odod/internal/constants"
 	"umkm-odod/internal/dto"
 	"umkm-odod/internal/model"
 	"umkm-odod/internal/repository"
@@ -58,8 +59,8 @@ func (s *userService) GetUserByID(ctx context.Context, id string) (dto.UserRespo
 }
 
 func (s *userService) CreateUser(ctx context.Context, req dto.CreateUserRequest) (dto.UserResponse, error) {
-	// payload sementara
-	tenantID := "f27e441f-5385-4b8d-b2e2-88b8615a4634"
+	// ambil tenantID dari context -> cek file middleware/auth_required.go
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
 
 	// convert request to model
 	user := model.User{

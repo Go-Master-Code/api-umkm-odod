@@ -75,7 +75,7 @@ func ConvertToDTOItemAttributePlural(itemAttribute []model.ItemAttribute) []dto.
 }
 
 // catalog categories
-func ConvertToDTOCatalogItemSingle(catalogItem model.CatalogItem) dto.CatalogItemResponse {
+func ConvertToDTOCatalogItemSingle(catalogItem *model.CatalogItem) dto.CatalogItemResponse {
 	var catalogItemDTO dto.CatalogItemResponse
 	catalogItemDTO.ID = catalogItem.ID
 	catalogItemDTO.TenantID = catalogItem.TenantID
@@ -159,6 +159,40 @@ func ConvertToDTOUserPlural(user []model.User) []dto.UserResponse {
 		})
 	}
 	return userDTO
+}
+
+func ConvertToDTOItemVariantPlural(item []model.ItemVariant) []dto.ItemVariantResponse {
+	var ivDTO []dto.ItemVariantResponse
+	for _, iv := range item {
+		ivDTO = append(ivDTO, dto.ItemVariantResponse{
+			ID:          iv.ID,
+			TenantID:    iv.TenantID,
+			TenantName:  iv.Tenant.Name,
+			ItemID:      iv.ItemID,    // catalog item id
+			ItemName:    iv.Item.Name, // catalog item name
+			SKU:         iv.SKU,
+			Barcode:     iv.Barcode,
+			VariantName: iv.VariantName,
+			CostPrice:   iv.CostPrice,
+			IsActive:    iv.IsActive,
+		})
+	}
+	return ivDTO
+}
+
+func ConvertToDTOItemVariantSingle(item *model.ItemVariant) dto.ItemVariantResponse {
+	var ivDTO dto.ItemVariantResponse
+	ivDTO.ID = item.ID
+	ivDTO.TenantID = item.ID
+	ivDTO.TenantName = item.Tenant.Name
+	ivDTO.ItemID = item.ItemID
+	ivDTO.ItemName = item.Item.Name
+	ivDTO.SKU = item.SKU
+	ivDTO.Barcode = item.Barcode
+	ivDTO.VariantName = item.VariantName
+	ivDTO.CostPrice = item.CostPrice
+	ivDTO.IsActive = item.IsActive
+	return ivDTO
 }
 
 func ConvertToDTOItemVariantAttributeValueSingle(item model.ItemVariantAttributeValue) dto.ItemVariantAttributeValueResponse {

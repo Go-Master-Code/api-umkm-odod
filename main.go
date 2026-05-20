@@ -81,6 +81,11 @@ func main() {
 	catalogItemService := service.NewCatalogItemService(catalogItemRepo)
 	catalogItemHandler := handler.NewCatalogItemHandler(catalogItemService)
 
+	// dependency injection item variant
+	itemVariantRepo := repository.NewItemVariantRepository(database.DB)
+	itemVariantService := service.NewItemVariantService(itemVariantRepo)
+	itemVariantHandler := handler.NewItemVariantHandler(itemVariantService)
+
 	// router group public tidak perlu pakai middleware AuthRequired
 	public := r.Group("/api")
 	// endpoint login
@@ -102,6 +107,8 @@ func main() {
 		routes.RegisterCatalogCategoryRoutes(authorized, catalogCategoryHandler)
 		// list handler catalog item
 		routes.RegisterCatalogItemRoutes(authorized, catalogItemHandler)
+		// list handler item variant
+		routes.RegisterItemVariantRoutes(authorized, itemVariantHandler)
 	}
 
 	// run server
