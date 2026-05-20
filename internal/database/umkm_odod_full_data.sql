@@ -32,10 +32,11 @@ CREATE TABLE IF NOT EXISTS `catalog_categories` (
   CONSTRAINT `fk_categories_tenant` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.catalog_categories: ~2 rows (approximately)
+-- Dumping data for table umkm_odod.catalog_categories: ~3 rows (approximately)
 INSERT INTO `catalog_categories` (`id`, `tenant_id`, `name`, `created_at`, `updated_at`, `deleted_at`) VALUES
-	('44444444-4444-4444-4444-444444444441', '11111111-1111-1111-1111-111111111111', 'Keripik Singkong', '2026-05-18 09:21:24', '2026-05-18 09:21:24', NULL),
-	('44444444-4444-4444-4444-444444444442', '11111111-1111-1111-1111-111111111111', 'Keripik Pisang', '2026-05-18 09:21:24', '2026-05-18 09:21:24', NULL);
+	('08e850d4-6590-4cef-91bd-df349c271019', '11111111-1111-1111-1111-111111111111', 'Kue Basah', '2026-05-20 07:54:18', '2026-05-20 07:54:18', NULL),
+	('44444444-4444-4444-4444-444444444441', '11111111-1111-1111-1111-111111111111', 'Snack', '2026-05-18 09:21:24', '2026-05-20 07:22:22', NULL),
+	('44444444-4444-4444-4444-444444444442', '11111111-1111-1111-1111-111111111111', 'Minuman', '2026-05-18 09:21:24', '2026-05-20 06:50:33', NULL);
 
 -- Dumping structure for table umkm_odod.catalog_items
 CREATE TABLE IF NOT EXISTS `catalog_items` (
@@ -55,10 +56,12 @@ CREATE TABLE IF NOT EXISTS `catalog_items` (
   CONSTRAINT `fk_items_tenant` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.catalog_items: ~2 rows (approximately)
+-- Dumping data for table umkm_odod.catalog_items: ~4 rows (approximately)
 INSERT INTO `catalog_items` (`id`, `tenant_id`, `category_id`, `name`, `description`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
-	('55555555-5555-5555-5555-555555555551', '11111111-1111-1111-1111-111111111111', '44444444-4444-4444-4444-444444444441', 'Keripik Singkong', 'Keripik singkong premium', 1, '2026-05-18 09:21:44', '2026-05-18 09:21:44', NULL),
-	('55555555-5555-5555-5555-555555555552', '11111111-1111-1111-1111-111111111111', '44444444-4444-4444-4444-444444444442', 'Keripik Pisang', 'Keripik pisang renyah', 1, '2026-05-18 09:21:44', '2026-05-18 09:21:44', NULL);
+	('55555555-5555-5555-5555-555555555551', '11111111-1111-1111-1111-111111111111', '44444444-4444-4444-4444-444444444441', 'Keripik Singkong', 'Keripik singkong premium', 1, '2026-05-18 09:21:44', '2026-05-20 07:34:53', NULL),
+	('55555555-5555-5555-5555-555555555552', '11111111-1111-1111-1111-111111111111', '44444444-4444-4444-4444-444444444441', 'Keripik Pisang', 'Keripik pisang renyah', 1, '2026-05-18 09:21:44', '2026-05-20 07:34:23', NULL),
+	('592fcb7b-4451-46e9-ba1d-3039a70ee61d', 'f27e441f-5385-4b8d-b2e2-88b8615a4634', '44444444-4444-4444-4444-444444444442', 'Fruit tea', 'Rasa Black Currant', 0, '2026-05-20 07:37:28', '2026-05-20 07:49:08', NULL),
+	('c1124d3b-2894-420a-8878-556f96af06db', '11111111-1111-1111-1111-111111111111', '08e850d4-6590-4cef-91bd-df349c271019', 'Nagasari', 'Nagasari pisang ambon', 1, '2026-05-20 07:55:51', '2026-05-20 07:55:51', NULL);
 
 -- Dumping structure for table umkm_odod.item_attributes
 CREATE TABLE IF NOT EXISTS `item_attributes` (
@@ -94,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `item_attribute_values` (
   CONSTRAINT `fk_attribute_values_tenant` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.item_attribute_values: ~3 rows (approximately)
+-- Dumping data for table umkm_odod.item_attribute_values: ~4 rows (approximately)
 INSERT INTO `item_attribute_values` (`id`, `tenant_id`, `attribute_id`, `value`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	('77777777-7777-7777-7777-777777777771', '11111111-1111-1111-1111-111111111111', '66666666-6666-6666-6666-666666666661', 'Pedas Daun Jeruk', '2026-05-18 09:22:08', '2026-05-18 09:22:08', NULL),
 	('77777777-7777-7777-7777-777777777772', '11111111-1111-1111-1111-111111111111', '66666666-6666-6666-6666-666666666661', 'Asin Bawang', '2026-05-18 09:22:08', '2026-05-18 09:22:08', NULL),
@@ -121,10 +124,11 @@ CREATE TABLE IF NOT EXISTS `item_variants` (
   CONSTRAINT `fk_variants_tenant` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.item_variants: ~2 rows (approximately)
+-- Dumping data for table umkm_odod.item_variants: ~3 rows (approximately)
 INSERT INTO `item_variants` (`id`, `tenant_id`, `item_id`, `sku`, `barcode`, `variant_name`, `cost_price`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
-	('88888888-8888-8888-8888-888888888881', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-PDJ-250', '899100000001', 'Pedas Daun Jeruk 250gr', 12000.00, 1, '2026-05-18 09:22:19', '2026-05-18 09:22:19', NULL),
-	('88888888-8888-8888-8888-888888888882', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-AB-500', '899100000002', 'Asin Bawang 500gr', 18000.00, 1, '2026-05-18 09:22:19', '2026-05-18 09:22:19', NULL);
+	('76a3c5f8-4340-42a4-8aa0-db591a791c58', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-PB-500', '899100000003', 'Pedas Balado', 13000.00, 1, '2026-05-20 10:45:44', '2026-05-20 10:45:44', NULL),
+	('88888888-8888-8888-8888-888888888881', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-PDJ-250', '899100000001', 'Pedas Daun Jeruk 250gr', 13000.00, 1, '2026-05-18 09:22:19', '2026-05-20 10:44:32', NULL),
+	('88888888-8888-8888-8888-888888888882', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-AB-500', '899100000002', 'Asin Bawang 500gr', 12000.00, 1, '2026-05-18 09:22:19', '2026-05-20 10:44:36', NULL);
 
 -- Dumping structure for table umkm_odod.item_variant_attribute_values
 CREATE TABLE IF NOT EXISTS `item_variant_attribute_values` (
@@ -283,7 +287,7 @@ CREATE TABLE IF NOT EXISTS `tenants` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.tenants: ~0 rows (approximately)
+-- Dumping data for table umkm_odod.tenants: ~4 rows (approximately)
 INSERT INTO `tenants` (`id`, `name`, `phone`, `address`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	('11111111-1111-1111-1111-111111111111', 'Keripik Mang Odod', '081234567890', 'Jalan Kademangan No. 25, Pojok, Kelurahan Setiamanah, Kota Cimahi', '2026-05-18 09:20:02', '2026-05-18 09:28:00', NULL),
 	('11111111-1111-1111-1111-111111111112', 'Bakso Petruk', '082233445566', 'Jl. Sudirman No. 12, Bandung', '2026-05-18 09:57:40', '2026-05-18 14:51:21', NULL),
@@ -314,7 +318,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table umkm_odod.users: ~2 rows (approximately)
 INSERT INTO `users` (`id`, `tenant_id`, `role_id`, `full_name`, `username`, `password`, `phone`, `is_active`, `last_login_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	('2416854f-55e6-423c-a2ec-8154c9431cd6', 'f27e441f-5385-4b8d-b2e2-88b8615a4634', 'dc064501-5798-4c91-8308-0198561ceae3', 'Budi Karmana', 'budi.admin', '$2a$10$NgbIGU78TzIZ.n2An5RIJe557VhXcHLzlQy1vOl1lVIUx4h4CVKnm', '087718273837', 1, NULL, '2026-05-20 06:35:42', '2026-05-20 06:35:42', NULL),
-	('9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', 'f27e441f-5385-4b8d-b2e2-88b8615a4634', '22222222-2222-2222-2222-222222222221', 'Heru Wibowo', 'heru.owner', '$2a$10$wuBaDA4Tqk4Tv7pSscEPwed2mB.KovlUW5Mf6xf979MWu3Zm0kTBm', '081345712017', 1, NULL, '2026-05-20 06:47:35', '2026-05-20 06:47:35', NULL);
+	('9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '11111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222221', 'Heru Wibowo', 'heru.owner', '$2a$10$wuBaDA4Tqk4Tv7pSscEPwed2mB.KovlUW5Mf6xf979MWu3Zm0kTBm', '081345712017', 1, NULL, '2026-05-20 06:47:35', '2026-05-20 07:53:10', NULL);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

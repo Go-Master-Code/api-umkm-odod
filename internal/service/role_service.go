@@ -76,6 +76,9 @@ func (s *roleService) CreateRole(ctx context.Context, req dto.CreateRoleRequest)
 
 	// get role by id (preload tenant) agar nama tenant muncul
 	newRole, err := s.repo.GetRoleByID(ctx, role.ID)
+	if err != nil {
+		return dto.RoleResponse{}, err
+	}
 
 	// convert model to dto
 	roleDTO := helper.ConvertToDTORoleSingle(newRole)

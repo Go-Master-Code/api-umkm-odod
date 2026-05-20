@@ -10,6 +10,8 @@ import (
 // interface
 type ItemVariantRepository interface {
 	GetItemVariants(ctx context.Context, name string) ([]model.ItemVariant, error)
+	GetItemVariantByID(ctx context.Context, id string) (*model.ItemVariant, error)
+	CreateItemVariant(ctx context.Context, iv *model.ItemVariant) error
 }
 
 // struct implementasi
@@ -43,4 +45,18 @@ func (r *itemVariantRepository) GetItemVariants(ctx context.Context, name string
 	}
 
 	return iv, nil
+}
+
+func (r *itemVariantRepository) GetItemVariantByID(ctx context.Context, id string) (*model.ItemVariant, error) {
+	var iv model.ItemVariant
+	err := r.db.WithContext(ctx).Preload("Tenant").Preload("Item").First(&iv, "id = ?", id).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &iv, nil
+}
+
+func (r *itemVariantRepository) CreateItemVariant(ctx context.Context, iv *model.ItemVariant) error {
+	return r.db.WithContext(ctx).Create(iv).Error
 }

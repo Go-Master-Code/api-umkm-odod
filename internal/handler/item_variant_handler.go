@@ -3,6 +3,7 @@ package handler
 import (
 	"umkm-odod/helper"
 	"umkm-odod/internal/constants"
+	"umkm-odod/internal/dto"
 	"umkm-odod/internal/service"
 
 	"github.com/gin-gonic/gin"
@@ -32,4 +33,36 @@ func (h *ItemVariantHandler) GetItemVariants(c *gin.Context) {
 	}
 
 	helper.SuccessResponse(c, constants.SuccessGetData, ivDTO)
+}
+
+func (h *ItemVariantHandler) GetItemVariantByID(c *gin.Context) {
+	// tangkap param id
+	id := c.Param("id")
+
+	ivDTO, err := h.service.GetItemVariantByID(c.Request.Context(), id)
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorGetData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessGetData, ivDTO)
+}
+
+func (h *ItemVariantHandler) CreateItemVariant(c *gin.Context) {
+	var req dto.CreateItemVariantRequest
+
+	// parsing json body
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		helper.ErrorParsingRequestBody(c, err)
+		return
+	}
+
+	ivDTO, err := h.service.CreateItemVariant(c.Request.Context(), req)
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorCreateData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessCreateData, ivDTO)
 }

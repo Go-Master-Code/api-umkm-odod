@@ -90,7 +90,6 @@ func main() {
 	public := r.Group("/api")
 	// endpoint login
 	public.POST("/login", userHandler.Login)
-	public.POST("/users", userHandler.CreateUser)
 
 	// authorization yang akan dipasang pada tiap endpoint yang dilindungi (harus punya token)
 	authorized := r.Group("/api")

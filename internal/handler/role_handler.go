@@ -49,8 +49,9 @@ func (h *RoleHandler) GetRoleByID(c *gin.Context) {
 }
 
 func (h *RoleHandler) CreateRole(c *gin.Context) {
-	// parsing json request body
 	var req dto.CreateRoleRequest
+
+	// parsing json request body
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		helper.ErrorParsingRequestBody(c, err)
