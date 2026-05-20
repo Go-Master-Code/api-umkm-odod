@@ -79,7 +79,9 @@ func ConvertToDTOCatalogItemSingle(catalogItem model.CatalogItem) dto.CatalogIte
 	var catalogItemDTO dto.CatalogItemResponse
 	catalogItemDTO.ID = catalogItem.ID
 	catalogItemDTO.TenantID = catalogItem.TenantID
+	catalogItemDTO.TenantName = catalogItem.Tenant.Name
 	catalogItemDTO.CategoryID = catalogItem.CategoryID
+	catalogItemDTO.CategoryName = catalogItem.CatalogCategory.Name
 	catalogItemDTO.Name = catalogItem.Name
 	catalogItemDTO.Description = catalogItem.Description
 	catalogItemDTO.IsActive = catalogItem.IsActive
@@ -90,12 +92,14 @@ func ConvertToDTOCatalogItemPlural(catalogItem []model.CatalogItem) []dto.Catalo
 	var catalogItemDTO []dto.CatalogItemResponse
 	for _, c := range catalogItem {
 		catalogItemDTO = append(catalogItemDTO, dto.CatalogItemResponse{
-			ID:          c.ID,
-			TenantID:    c.TenantID,
-			CategoryID:  c.CategoryID,
-			Name:        c.Name,
-			Description: c.Description,
-			IsActive:    c.IsActive,
+			ID:           c.ID,
+			TenantID:     c.TenantID,
+			TenantName:   c.Tenant.Name,
+			CategoryID:   c.CategoryID,
+			CategoryName: c.CatalogCategory.Name,
+			Name:         c.Name,
+			Description:  c.Description,
+			IsActive:     c.IsActive,
 		})
 	}
 	return catalogItemDTO

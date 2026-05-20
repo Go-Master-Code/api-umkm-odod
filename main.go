@@ -76,10 +76,16 @@ func main() {
 	catalogCategoryService := service.NewCatalogCategoryService(catalogCategoryRepo)
 	catalogCategoryHandler := handler.NewCatalogCategoryHandler(catalogCategoryService)
 
+	// dependency injection catalog item
+	catalogItemRepo := repository.NewCatalogItemRepository(database.DB)
+	catalogItemService := service.NewCatalogItemService(catalogItemRepo)
+	catalogItemHandler := handler.NewCatalogItemHandler(catalogItemService)
+
 	// router group public tidak perlu pakai middleware AuthRequired
 	public := r.Group("/api")
 	// endpoint login
 	public.POST("/login", userHandler.Login)
+	public.POST("/users", userHandler.CreateUser)
 
 	// authorization yang akan dipasang pada tiap endpoint yang dilindungi (harus punya token)
 	authorized := r.Group("/api")
@@ -94,6 +100,8 @@ func main() {
 		routes.RegisterTenantRoutes(authorized, tenantHandler)
 		// list handler catalog category
 		routes.RegisterCatalogCategoryRoutes(authorized, catalogCategoryHandler)
+		// list handler catalog item
+		routes.RegisterCatalogItemRoutes(authorized, catalogItemHandler)
 	}
 
 	// run server
