@@ -7,5 +7,5 @@ import (
 )
 
 func RegisterItemVariantRoutes(rg *gin.RouterGroup, h *handler.ItemVariantHandler) {
-	rg.GET("/item_variant", h.GetItemVariants)
+	rg.GET("/item_variants", h.GetItemVariants)
 }

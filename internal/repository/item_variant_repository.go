@@ -28,11 +28,11 @@ func NewItemVariantRepository(db *gorm.DB) ItemVariantRepository {
 func (r *itemVariantRepository) GetItemVariants(ctx context.Context, name string) ([]model.ItemVariant, error) {
 	var iv []model.ItemVariant
 	// query default
-	query := r.db.WithContext(ctx).Preload("Tenant").Preload("CatalogItem")
+	query := r.db.WithContext(ctx).Preload("Tenant").Preload("Item") // Preload Item sesuaikan dengan model item_variants.go
 
 	if name != "" {
 		// jika name nya tidak kosong, tambahkan query
-		query = query.Where("name LIKE ?", "%"+name+"%")
+		query = query.Where("variant_name LIKE ?", "%"+name+"%")
 	}
 
 	// find data by name

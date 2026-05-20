@@ -11,7 +11,7 @@ type ItemVariant struct {
 	TenantID    string         `json:"tenant_id" gorm:"type:char(36);not null;index"`
 	Tenant      Tenant         `json:"-" gorm:"foreignKey:TenantID"`
 	ItemID      string         `json:"item_id" gorm:"type:char(36);not null;index"`
-	Item        CatalogItem    `json:"-" gorm:"foreignKey:ItemID"`
+	Item        CatalogItem    `json:"-" gorm:"foreignKey:ItemID"` // nama var Item yang di preload di repo ItemVariant
 	SKU         string         `json:"sku" gorm:"type:varchar(100);not null"`
 	Barcode     string         `json:"barcode" gorm:"type:varchar(100);index"` // pakai index karena akan sering scanner barcode / pencarian kasir
 	VariantName string         `json:"variant_name" gorm:"type:varchar(150);not null"`
