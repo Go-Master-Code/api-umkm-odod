@@ -16,10 +16,12 @@
 
 
 -- Dumping database structure for umkm_odod
+DROP DATABASE IF EXISTS `umkm_odod`;
 CREATE DATABASE IF NOT EXISTS `umkm_odod` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `umkm_odod`;
 
 -- Dumping structure for table umkm_odod.catalog_categories
+DROP TABLE IF EXISTS `catalog_categories`;
 CREATE TABLE IF NOT EXISTS `catalog_categories` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -39,6 +41,7 @@ INSERT INTO `catalog_categories` (`id`, `tenant_id`, `name`, `created_at`, `upda
 	('44444444-4444-4444-4444-444444444442', '11111111-1111-1111-1111-111111111111', 'Minuman', '2026-05-18 09:21:24', '2026-05-20 06:50:33', NULL);
 
 -- Dumping structure for table umkm_odod.catalog_items
+DROP TABLE IF EXISTS `catalog_items`;
 CREATE TABLE IF NOT EXISTS `catalog_items` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -64,6 +67,7 @@ INSERT INTO `catalog_items` (`id`, `tenant_id`, `category_id`, `name`, `descript
 	('c1124d3b-2894-420a-8878-556f96af06db', '11111111-1111-1111-1111-111111111111', '08e850d4-6590-4cef-91bd-df349c271019', 'Nagasari', 'Nagasari pisang ambon', 1, '2026-05-20 07:55:51', '2026-05-20 07:55:51', NULL);
 
 -- Dumping structure for table umkm_odod.item_attributes
+DROP TABLE IF EXISTS `item_attributes`;
 CREATE TABLE IF NOT EXISTS `item_attributes` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -82,6 +86,7 @@ INSERT INTO `item_attributes` (`id`, `tenant_id`, `name`, `created_at`, `updated
 	('66666666-6666-6666-6666-666666666662', '11111111-1111-1111-1111-111111111111', 'Berat', '2026-05-18 09:21:58', '2026-05-18 09:21:58', NULL);
 
 -- Dumping structure for table umkm_odod.item_attribute_values
+DROP TABLE IF EXISTS `item_attribute_values`;
 CREATE TABLE IF NOT EXISTS `item_attribute_values` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -105,6 +110,7 @@ INSERT INTO `item_attribute_values` (`id`, `tenant_id`, `attribute_id`, `value`,
 	('77777777-7777-7777-7777-777777777774', '11111111-1111-1111-1111-111111111111', '66666666-6666-6666-6666-666666666662', '500 Gram', '2026-05-18 09:22:08', '2026-05-18 09:22:08', NULL);
 
 -- Dumping structure for table umkm_odod.item_variants
+DROP TABLE IF EXISTS `item_variants`;
 CREATE TABLE IF NOT EXISTS `item_variants` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -126,11 +132,12 @@ CREATE TABLE IF NOT EXISTS `item_variants` (
 
 -- Dumping data for table umkm_odod.item_variants: ~3 rows (approximately)
 INSERT INTO `item_variants` (`id`, `tenant_id`, `item_id`, `sku`, `barcode`, `variant_name`, `cost_price`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
-	('76a3c5f8-4340-42a4-8aa0-db591a791c58', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-PB-500', '899100000003', 'Pedas Balado', 13000.00, 1, '2026-05-20 10:45:44', '2026-05-20 10:45:44', NULL),
-	('88888888-8888-8888-8888-888888888881', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-PDJ-250', '899100000001', 'Pedas Daun Jeruk 250gr', 13000.00, 1, '2026-05-18 09:22:19', '2026-05-20 10:44:32', NULL),
-	('88888888-8888-8888-8888-888888888882', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-AB-500', '899100000002', 'Asin Bawang 500gr', 12000.00, 1, '2026-05-18 09:22:19', '2026-05-20 10:44:36', NULL);
+	('76a3c5f8-4340-42a4-8aa0-db591a791c58', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-PB-500', '899100000003', 'Pedas Balado', 13000.00, 1, '2026-05-20 10:45:44', '2026-05-21 07:03:28', NULL),
+	('88888888-8888-8888-8888-888888888881', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-PDJ-250', '899100000001', 'Pedas Daun Jeruk 250gr', 13000.00, 1, '2026-05-18 09:22:19', '2026-05-21 07:03:27', NULL),
+	('88888888-8888-8888-8888-888888888882', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-AB-500', '899100000002', 'Asin Bawang 500gr', 12000.00, 1, '2026-05-18 09:22:19', '2026-05-21 07:03:25', NULL);
 
 -- Dumping structure for table umkm_odod.item_variant_attribute_values
+DROP TABLE IF EXISTS `item_variant_attribute_values`;
 CREATE TABLE IF NOT EXISTS `item_variant_attribute_values` (
   `variant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `attribute_value_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -151,6 +158,7 @@ INSERT INTO `item_variant_attribute_values` (`variant_id`, `attribute_value_id`,
 	('88888888-8888-8888-8888-888888888882', '77777777-7777-7777-7777-777777777774', '11111111-1111-1111-1111-111111111111');
 
 -- Dumping structure for table umkm_odod.price_histories
+DROP TABLE IF EXISTS `price_histories`;
 CREATE TABLE IF NOT EXISTS `price_histories` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -175,6 +183,7 @@ INSERT INTO `price_histories` (`id`, `tenant_id`, `item_variant_id`, `price_type
 	('99999999-9999-9999-9999-999999999992', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888882', 'SELLING', 25000.00, '2026-05-20 06:36:20', '2416854f-55e6-423c-a2ec-8154c9431cd6', '2026-05-18 09:23:03');
 
 -- Dumping structure for table umkm_odod.roles
+DROP TABLE IF EXISTS `roles`;
 CREATE TABLE IF NOT EXISTS `roles` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -195,6 +204,7 @@ INSERT INTO `roles` (`id`, `tenant_id`, `name`, `created_at`, `updated_at`, `del
 	('dc064501-5798-4c91-8308-0198561ceae3', 'f27e441f-5385-4b8d-b2e2-88b8615a4634', 'ADMIN', '2026-05-19 01:56:21', '2026-05-19 02:17:01', NULL);
 
 -- Dumping structure for table umkm_odod.sales
+DROP TABLE IF EXISTS `sales`;
 CREATE TABLE IF NOT EXISTS `sales` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -222,6 +232,7 @@ INSERT INTO `sales` (`id`, `tenant_id`, `invoice_number`, `customer_name`, `cash
 	('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'INV-20260518-0001', 'Andi', '2416854f-55e6-423c-a2ec-8154c9431cd6', 43000.00, 3000.00, 0.00, 40000.00, 'QRIS', 'PAID', 'Pembelian sore hari', '2026-05-18 09:23:17', '2026-05-20 06:37:42');
 
 -- Dumping structure for table umkm_odod.sale_items
+DROP TABLE IF EXISTS `sale_items`;
 CREATE TABLE IF NOT EXISTS `sale_items` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -250,6 +261,7 @@ INSERT INTO `sale_items` (`id`, `tenant_id`, `sale_id`, `item_variant_id`, `item
 	('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbb2', '11111111-1111-1111-1111-111111111111', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '88888888-8888-8888-8888-888888888882', 'Keripik Singkong', 'Asin Bawang 500gr', 'KS-AB-500', 1.00, 25000.00, 3000.00, 22000.00, '2026-05-18 09:24:03');
 
 -- Dumping structure for table umkm_odod.stock_movements
+DROP TABLE IF EXISTS `stock_movements`;
 CREATE TABLE IF NOT EXISTS `stock_movements` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -270,12 +282,18 @@ CREATE TABLE IF NOT EXISTS `stock_movements` (
   CONSTRAINT `fk_stock_variant` FOREIGN KEY (`item_variant_id`) REFERENCES `item_variants` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.stock_movements: ~2 rows (approximately)
+-- Dumping data for table umkm_odod.stock_movements: ~7 rows (approximately)
 INSERT INTO `stock_movements` (`id`, `tenant_id`, `item_variant_id`, `movement_type`, `qty`, `reference_type`, `reference_id`, `notes`, `created_by`, `created_at`) VALUES
+	('1012475d-2a7f-4fd5-88dc-8e399e3ee3c6', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -10.00, '', '', 'Bapak Udin', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-21 09:23:40'),
+	('54e130e8-f38a-4612-86d5-c4a1df869fbe', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'PURCHASE', 15.00, '', '', 'Repack kedua', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-21 09:15:48'),
+	('a47a1f1a-246b-408c-8402-b206118ce58d', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -3.00, '', '', 'Haji Sapari', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-21 09:25:59'),
+	('ac65475f-ad0f-4294-8781-b0928654459d', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'PURCHASE', 13.00, '', '', 'Hasil repack', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-21 09:14:27'),
 	('cccccccc-cccc-cccc-cccc-ccccccccccc1', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'OPENING', 100.00, 'SYSTEM', NULL, 'Stok awal', '2416854f-55e6-423c-a2ec-8154c9431cd6', '2026-05-18 09:24:30'),
-	('cccccccc-cccc-cccc-cccc-ccccccccccc2', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -1.00, 'SALE', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Penjualan invoice INV-20260518-0001', '2416854f-55e6-423c-a2ec-8154c9431cd6', '2026-05-18 09:24:30');
+	('cccccccc-cccc-cccc-cccc-ccccccccccc2', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -1.00, 'SALE', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Penjualan invoice INV-20260518-0001', '2416854f-55e6-423c-a2ec-8154c9431cd6', '2026-05-18 09:24:30'),
+	('e0b28d2a-51f7-4d05-a243-11cea30dd8c2', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'PURCHASE', 99.00, '', '', 'Stock awal', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-21 09:02:13');
 
 -- Dumping structure for table umkm_odod.tenants
+DROP TABLE IF EXISTS `tenants`;
 CREATE TABLE IF NOT EXISTS `tenants` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -295,6 +313,7 @@ INSERT INTO `tenants` (`id`, `name`, `phone`, `address`, `created_at`, `updated_
 	('f27e441f-5385-4b8d-b2e2-88b8615a4634', 'Bakso Solo', '123456788', 'Jl. Singgasana Pradana No.111', '2026-05-18 10:29:53', '2026-05-18 15:09:49', NULL);
 
 -- Dumping structure for table umkm_odod.users
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
