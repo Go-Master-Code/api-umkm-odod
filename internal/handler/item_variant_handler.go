@@ -66,3 +66,25 @@ func (h *ItemVariantHandler) CreateItemVariant(c *gin.Context) {
 
 	helper.SuccessResponse(c, constants.SuccessCreateData, ivDTO)
 }
+
+func (h *ItemVariantHandler) UpdateItemVariant(c *gin.Context) {
+	var req dto.UpdateItemVariantRequest
+
+	// parsing json body
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		helper.ErrorParsingRequestBody(c, err)
+		return
+	}
+
+	// ambil param id
+	id := c.Param("id")
+
+	ivDTO, err := h.service.UpdateItemVariant(c.Request.Context(), id, req)
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorUpdateData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessUpdateData, ivDTO)
+}

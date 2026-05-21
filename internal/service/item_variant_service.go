@@ -16,6 +16,7 @@ type ItemVariantService interface {
 	GetItemVariants(ctx context.Context, name string) ([]dto.ItemVariantResponse, error)
 	GetItemVariantByID(ctx context.Context, id string) (dto.ItemVariantResponse, error)
 	CreateItemVariant(ctx context.Context, req dto.CreateItemVariantRequest) (dto.ItemVariantResponse, error)
+	UpdateItemVariant(ctx context.Context, id string, req dto.UpdateItemVariantRequest) (dto.ItemVariantResponse, error)
 }
 
 // struct implementasi
@@ -82,5 +83,42 @@ func (s *itemVariantService) CreateItemVariant(ctx context.Context, req dto.Crea
 
 	// convert model to dto
 	ivDTO := helper.ConvertToDTOItemVariantSingle(newIV)
+	return ivDTO, nil
+}
+
+func (s *itemVariantService) UpdateItemVariant(ctx context.Context, id string, req dto.UpdateItemVariantRequest) (dto.ItemVariantResponse, error) {
+	// mapping req ke map
+	var updateMap = map[string]any{}
+
+	if req.ItemID != nil {
+		updateMap["item_id"] = req.ItemID
+	}
+	if req.SKU != nil {
+		updateMap["sku"] = req.SKU
+	}
+	if req.Barcode != nil {
+		updateMap["barcode"] = req.Barcode
+	}
+	if req.VariantName != nil {
+		updateMap["variant_name"] = req.VariantName
+	}
+	if req.CostPrice != nil {
+		updateMap["cost_price"] = req.CostPrice
+	}
+	if req.IsActive != nil {
+		updateMap["is_active"] = req.IsActive
+	}
+
+	err := s.repo.UpdateItemVariant(ctx, id, updateMap)
+
+	// get data by id
+	iv, err := s.repo.GetItemVariantByID(ctx, id)
+	if err != nil {
+		return dto.ItemVariantResponse{}, err
+	}
+
+	// convert model to dto
+	ivDTO := helper.ConvertToDTOItemVariantSingle(iv)
+
 	return ivDTO, nil
 }

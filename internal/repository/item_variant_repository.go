@@ -12,6 +12,7 @@ type ItemVariantRepository interface {
 	GetItemVariants(ctx context.Context, name string) ([]model.ItemVariant, error)
 	GetItemVariantByID(ctx context.Context, id string) (*model.ItemVariant, error)
 	CreateItemVariant(ctx context.Context, iv *model.ItemVariant) error
+	UpdateItemVariant(ctx context.Context, id string, updateMap map[string]any) error
 }
 
 // struct implementasi
@@ -59,4 +60,8 @@ func (r *itemVariantRepository) GetItemVariantByID(ctx context.Context, id strin
 
 func (r *itemVariantRepository) CreateItemVariant(ctx context.Context, iv *model.ItemVariant) error {
 	return r.db.WithContext(ctx).Create(iv).Error
+}
+
+func (r *itemVariantRepository) UpdateItemVariant(ctx context.Context, id string, updateMap map[string]any) error {
+	return r.db.WithContext(ctx).Model(model.ItemVariant{}).Where("id = ?", id).Updates(updateMap).Error
 }
