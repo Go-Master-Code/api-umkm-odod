@@ -17,6 +17,7 @@ type ItemVariantService interface {
 	GetItemVariantByID(ctx context.Context, id string) (dto.ItemVariantResponse, error)
 	CreateItemVariant(ctx context.Context, req dto.CreateItemVariantRequest) (dto.ItemVariantResponse, error)
 	UpdateItemVariant(ctx context.Context, id string, req dto.UpdateItemVariantRequest) (dto.ItemVariantResponse, error)
+	DeleteItemVariant(ctx context.Context, id string) (dto.ItemVariantResponse, error)
 }
 
 // struct implementasi
@@ -120,5 +121,23 @@ func (s *itemVariantService) UpdateItemVariant(ctx context.Context, id string, r
 	// convert model to dto
 	ivDTO := helper.ConvertToDTOItemVariantSingle(iv)
 
+	return ivDTO, nil
+}
+
+func (s *itemVariantService) DeleteItemVariant(ctx context.Context, id string) (dto.ItemVariantResponse, error) {
+	// get id dulu untuk response api
+	iv, err := s.repo.GetItemVariantByID(ctx, id)
+	if err != nil {
+		return dto.ItemVariantResponse{}, err
+	}
+
+	// delete data
+	err = s.repo.DeleteItemVariant(ctx, id)
+	if err != nil {
+		return dto.ItemVariantResponse{}, err
+	}
+
+	// convert model to dto
+	ivDTO := helper.ConvertToDTOItemVariantSingle(iv)
 	return ivDTO, nil
 }

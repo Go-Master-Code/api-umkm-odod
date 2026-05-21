@@ -262,3 +262,29 @@ func ConvertToDTOSalePlural(sales []model.Sale) []dto.SaleResponse {
 	}
 	return salesDTO
 }
+
+func ConvertToDTOCurrentStock(itemVariantID string, stock float64) dto.CurrentStockResponse {
+	currentStock := dto.CurrentStockResponse{
+		ItemVariantID: itemVariantID,
+		CurrentStock:  stock,
+	}
+	return currentStock
+}
+
+func ConvertToDTOStockMovementSingle(sm *model.StockMovement) dto.StockMovementResponse {
+	stockMovementDTO := dto.StockMovementResponse{
+		ID:              sm.ID,
+		TenantID:        sm.TenantID,
+		TenantName:      sm.Tenant.Name,
+		ItemVariantID:   sm.ItemVariantID,
+		ItemVariantName: sm.ItemVariant.VariantName,
+		MovementType:    sm.MovementType,
+		Qty:             sm.Qty,
+		ReferenceType:   sm.ReferenceType,
+		ReferenceID:     sm.ReferenceID,
+		Notes:           sm.Notes,
+		CreatedBy:       sm.CreatedBy,
+		CreatedByName:   sm.CreatedByUser.FullName,
+	}
+	return stockMovementDTO
+}

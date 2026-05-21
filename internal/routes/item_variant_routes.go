@@ -13,4 +13,5 @@ func RegisterItemVariantRoutes(rg *gin.RouterGroup, h *handler.ItemVariantHandle
 	rg.GET("/item_variants/:id", h.GetItemVariantByID)
 	rg.POST("/item_variants", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.CreateItemVariant)
 	rg.PUT("/item_variants/:id", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.UpdateItemVariant)
+	rg.DELETE("/item_variants/:id", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.DeleteItemVariant)
 }

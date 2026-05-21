@@ -86,6 +86,11 @@ func main() {
 	itemVariantService := service.NewItemVariantService(itemVariantRepo)
 	itemVariantHandler := handler.NewItemVariantHandler(itemVariantService)
 
+	// dependency injection stock movement
+	stockMovementRepo := repository.NewStockMovementRepository(database.DB)
+	stockMovementService := service.NewStockMovementService(stockMovementRepo)
+	stockMovementHandler := handler.NewStockMovementHandler(stockMovementService)
+
 	// router group public tidak perlu pakai middleware AuthRequired
 	public := r.Group("/api")
 	// endpoint login
@@ -108,6 +113,8 @@ func main() {
 		routes.RegisterCatalogItemRoutes(authorized, catalogItemHandler)
 		// list handler item variant
 		routes.RegisterItemVariantRoutes(authorized, itemVariantHandler)
+		// list handler stock movement
+		routes.RegisterStockMovementRoutes(authorized, stockMovementHandler)
 	}
 
 	// run server

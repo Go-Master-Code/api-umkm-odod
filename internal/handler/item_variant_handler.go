@@ -88,3 +88,16 @@ func (h *ItemVariantHandler) UpdateItemVariant(c *gin.Context) {
 
 	helper.SuccessResponse(c, constants.SuccessUpdateData, ivDTO)
 }
+
+func (h *ItemVariantHandler) DeleteItemVariant(c *gin.Context) {
+	// ambil param id
+	id := c.Param("id")
+
+	ivDTO, err := h.service.DeleteItemVariant(c.Request.Context(), id)
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorDeleteData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessDeleteData, ivDTO)
+}
