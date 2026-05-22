@@ -33,7 +33,7 @@ type CreateSaleRequest struct {
 	PaymentMethod  string                        `json:"payment_method" binding:"required,oneof=CASH QRIS TRANSFER DEBIT CREDIT"`   // tipe enum
 	PaymentStatus  string                        `json:"payment_status" binding:"required,oneof=PAID UNPAID PARTIAL VOID REFUNDED"` // berguna untuk filter mana yang PAID UNPAID PARTIAL VOID REFUNDED
 	Notes          string                        `json:"notes" binding:"omitempty,max=500"`
-	Items          []CreateSaleItemDetailRequest `json:"items" binding:"required,min=1,dive"`
+	Items          []CreateSaleItemDetailRequest `json:"items" binding:"required,min=1,dive"` // tabel detil sales berisi item yang dijual
 }
 
 // update
