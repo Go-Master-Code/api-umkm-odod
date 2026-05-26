@@ -165,33 +165,36 @@ func ConvertToDTOItemVariantPlural(item []model.ItemVariant) []dto.ItemVariantRe
 	var ivDTO []dto.ItemVariantResponse
 	for _, iv := range item {
 		ivDTO = append(ivDTO, dto.ItemVariantResponse{
-			ID:          iv.ID,
-			TenantID:    iv.TenantID,
-			TenantName:  iv.Tenant.Name,
-			ItemID:      iv.ItemID,    // catalog item id
-			ItemName:    iv.Item.Name, // catalog item name
-			SKU:         iv.SKU,
-			Barcode:     iv.Barcode,
-			VariantName: iv.VariantName,
-			CostPrice:   iv.CostPrice,
-			IsActive:    iv.IsActive,
+			ID:           iv.ID,
+			TenantID:     iv.TenantID,
+			TenantName:   iv.Tenant.Name,
+			ItemID:       iv.ItemID,    // catalog item id
+			ItemName:     iv.Item.Name, // catalog item name
+			SKU:          iv.SKU,
+			Barcode:      iv.Barcode,
+			VariantName:  iv.VariantName,
+			CostPrice:    iv.CostPrice,
+			SellingPrice: iv.SellingPrice,
+			IsActive:     iv.IsActive,
 		})
 	}
 	return ivDTO
 }
 
 func ConvertToDTOItemVariantSingle(item *model.ItemVariant) dto.ItemVariantResponse {
-	var ivDTO dto.ItemVariantResponse
-	ivDTO.ID = item.ID
-	ivDTO.TenantID = item.ID
-	ivDTO.TenantName = item.Tenant.Name
-	ivDTO.ItemID = item.ItemID
-	ivDTO.ItemName = item.Item.Name
-	ivDTO.SKU = item.SKU
-	ivDTO.Barcode = item.Barcode
-	ivDTO.VariantName = item.VariantName
-	ivDTO.CostPrice = item.CostPrice
-	ivDTO.IsActive = item.IsActive
+	ivDTO := dto.ItemVariantResponse{
+		ID:           item.ItemID,
+		TenantID:     item.TenantID,
+		TenantName:   item.Tenant.Name,
+		ItemID:       item.ItemID,
+		ItemName:     item.Item.Name,
+		SKU:          item.SKU,
+		Barcode:      item.Barcode,
+		VariantName:  item.VariantName,
+		CostPrice:    item.CostPrice,
+		SellingPrice: item.SellingPrice,
+		IsActive:     item.IsActive,
+	}
 	return ivDTO
 }
 
@@ -221,22 +224,50 @@ func ConvertToDTOItemVariantAttributeValuePlural(items []model.ItemVariantAttrib
 	return itemsDTO
 }
 
-func ConvertToDTOSaleSingle(sale model.Sale) dto.SaleResponse {
-	var saleDTO dto.SaleResponse
-	saleDTO.ID = sale.ID
-	saleDTO.TenantID = sale.TenantID
-	saleDTO.TenantName = sale.Tenant.Name
-	saleDTO.InvoiceNumber = sale.InvoiceNumber
-	saleDTO.CustomerName = sale.CustomerName
-	saleDTO.CashierID = sale.CashierID
-	saleDTO.CashierName = sale.Cashier.FullName
-	saleDTO.Subtotal = sale.Subtotal
-	saleDTO.DiscountAmount = sale.DiscountAmount
-	saleDTO.TaxAmount = sale.DiscountAmount
-	saleDTO.GrandTotal = sale.GrandTotal
-	saleDTO.PaymentMethod = sale.PaymentMethod
-	saleDTO.PaymentStatus = sale.PaymentStatus
-	saleDTO.Notes = sale.Notes
+func ConvertToDTOSaleSingle(sale *model.Sale) dto.SaleResponse {
+	// add sale items dulu untuk disisipkan pada master sale
+	var saleItemDTO []dto.SaleItemResponse
+
+	for _, item := range sale.SaleItems {
+		saleItemDTO = append(saleItemDTO, dto.SaleItemResponse{
+			ID:                  item.ID,
+			TenantID:            item.TenantID,
+			TenantName:          item.Tenant.Name,
+			SaleID:              item.SaleID,
+			InvoiceNumber:       item.Sale.InvoiceNumber,
+			ItemVariantID:       item.ItemVariantID,
+			ItemVariantName:     item.ItemVariant.VariantName,
+			ItemNameSnapshot:    item.ItemNameSnapshot,
+			VariantNameSnapshot: item.VariantNameSnapshot,
+			SKUSnapshot:         item.SKUSnapshot,
+			Qty:                 item.Qty,
+			UnitPrice:           item.UnitPrice,
+			DiscountAmount:      item.DiscountAmount,
+			Subtotal:            item.Subtotal,
+			CreatedAt:           item.CreatedAt,
+		})
+	}
+
+	// masukkan juga saleItemDTO di atas ke dalam field Items
+	saleDTO := dto.SaleResponse{
+		ID:             sale.ID,
+		TenantID:       sale.TenantID,
+		TenantName:     sale.Tenant.Name,
+		InvoiceNumber:  sale.InvoiceNumber,
+		CustomerName:   sale.CustomerName,
+		CashierID:      sale.CashierID,
+		CashierName:    sale.Cashier.FullName,
+		Subtotal:       sale.Subtotal,
+		DiscountAmount: sale.DiscountAmount,
+		TaxAmount:      sale.TaxAmount,
+		GrandTotal:     sale.GrandTotal,
+		PaymentMethod:  sale.PaymentMethod,
+		PaymentStatus:  sale.PaymentStatus,
+		Notes:          sale.Notes,
+		CreatedAt:      sale.CreatedAt,
+		Items:          saleItemDTO,
+	}
+
 	return saleDTO
 }
 

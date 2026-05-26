@@ -9,10 +9,10 @@ import (
 
 // interface
 type StockMovementRepository interface {
-	CreateMovement(ctx context.Context, movement *model.StockMovement) error
+	CreateMovement(ctx context.Context, tx *gorm.DB, movement *model.StockMovement) error
 	GetMovementByID(ctx context.Context, id string) (*model.StockMovement, error)
 	GetMovementsByVariant(ctx context.Context, itemVariantID string) ([]model.StockMovement, error)
-	GetCurrentStock(ctx context.Context, itemVariantID string) (float64, error)
+	GetCurrentStock(ctx context.Context, tx *gorm.DB, itemVariantID string) (float64, error)
 }
 
 // struct implementasi
@@ -28,7 +28,7 @@ func NewStockMovementRepository(db *gorm.DB) StockMovementRepository {
 }
 
 // struct method
-func (r *stockMovementRepository) CreateMovement(ctx context.Context, movement *model.StockMovement) error {
+func (r *stockMovementRepository) CreateMovement(ctx context.Context, tx *gorm.DB, movement *model.StockMovement) error {
 	return r.db.WithContext(ctx).Create(movement).Error
 }
 
@@ -59,7 +59,7 @@ func (r *stockMovementRepository) GetMovementsByVariant(ctx context.Context, ite
 	return movements, nil
 }
 
-func (r *stockMovementRepository) GetCurrentStock(ctx context.Context, itemVariantID string) (float64, error) {
+func (r *stockMovementRepository) GetCurrentStock(ctx context.Context, tx *gorm.DB, itemVariantID string) (float64, error) {
 	var totalStock float64
 
 	err := r.db.

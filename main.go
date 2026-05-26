@@ -88,8 +88,18 @@ func main() {
 
 	// dependency injection stock movement
 	stockMovementRepo := repository.NewStockMovementRepository(database.DB)
-	stockMovementService := service.NewStockMovementService(stockMovementRepo)
+	stockMovementService := service.NewStockMovementService(database.DB, stockMovementRepo)
 	stockMovementHandler := handler.NewStockMovementHandler(stockMovementService)
+
+	// dependency injection sale item
+	saleItemRepo := repository.NewSaleItemRepository(database.DB)
+	// tidak ada service dan handler untuk sale item repo karena ini bukan standalone business process
+	// dia merupakan bagian dari sale transaction
+
+	// dependency injection sale
+	saleRepo := repository.NewSaleRepository(database.DB)
+	saleService := service.NewSaleService(database.DB, saleRepo, saleItemRepo, itemVariantRepo, stockMovementRepo)
+	saleHandler := handler.NewSaleHandler(saleService)
 
 	// router group public tidak perlu pakai middleware AuthRequired
 	public := r.Group("/api")
@@ -115,6 +125,8 @@ func main() {
 		routes.RegisterItemVariantRoutes(authorized, itemVariantHandler)
 		// list handler stock movement
 		routes.RegisterStockMovementRoutes(authorized, stockMovementHandler)
+		// list handler sales
+		routes.RegisterSaleRoutes(authorized, saleHandler)
 	}
 
 	// run server

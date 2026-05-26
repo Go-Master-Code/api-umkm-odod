@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"time"
+	"umkm-odod/helper"
 	"umkm-odod/internal/constants"
 	"umkm-odod/internal/dto"
 	"umkm-odod/internal/model"
@@ -42,16 +43,16 @@ type SaleService interface {
 
 // struct implementasi
 type saleService struct {
-	db                gorm.DB // ada db di service karena: transaction begin/commit/rollback dilakukan di layer service
+	db                *gorm.DB // ada db di service karena: transaction begin/commit/rollback dilakukan di layer service
 	saleRepo          repository.SaleRepository
 	saleItemRepo      repository.SaleItemRepository
 	itemVariantRepo   repository.ItemVariantRepository
 	stockMovementRepo repository.StockMovementRepository
 }
 
-// constructor
+// constructor -> ada db karena untuk transaction
 func NewSaleService(
-	db gorm.DB,
+	db *gorm.DB,
 	saleRepo repository.SaleRepository,
 	saleItemRepo repository.SaleItemRepository,
 	itemVariantRepo repository.ItemVariantRepository,
@@ -101,7 +102,7 @@ func (s *saleService) CreateSale(ctx context.Context, req dto.CreateSaleRequest)
 	)
 
 	// ========================================
-	// CREATE SALE HEADER
+	// CREATE SALE HEADER -> master sale
 	// ========================================
 	sale := model.Sale{
 		ID:             uuid.NewString(),
@@ -143,6 +144,7 @@ func (s *saleService) CreateSale(ctx context.Context, req dto.CreateSaleRequest)
 
 		currentStock, err := s.stockMovementRepo.GetCurrentStock(
 			ctx,
+			tx,
 			variant.ID,
 		)
 
@@ -162,7 +164,7 @@ func (s *saleService) CreateSale(ctx context.Context, req dto.CreateSaleRequest)
 		// HITUNG SUBTOTAL
 		// ========================================
 
-		subtotal := item.Qty * variant.SellingPrice
+		subtotal := (item.Qty * variant.SellingPrice) - item.DiscountAmount
 
 		// ========================================
 		// CREATE SALE ITEM
@@ -174,8 +176,8 @@ func (s *saleService) CreateSale(ctx context.Context, req dto.CreateSaleRequest)
 			TenantID:            tenantID,
 			SaleID:              sale.ID,
 			ItemVariantID:       variant.ID,
-			ItemNameSnapshot:    variant.CatalogItem.Name,
-			VariantNameSnapshot: variant.Name,
+			ItemNameSnapshot:    variant.Item.Name,
+			VariantNameSnapshot: variant.VariantName,
 			SKUSnapshot:         variant.SKU,
 			Qty:                 item.Qty,
 			UnitPrice:           variant.SellingPrice,
@@ -221,18 +223,54 @@ func (s *saleService) CreateSale(ctx context.Context, req dto.CreateSaleRequest)
 		// ========================================
 
 		grandTotal += subtotal
+
+		// increment sale.subtotal
+		sale.Subtotal += subtotal
 	}
 
 	// ========================================
 	// HITUNG FINAL GRAND TOTAL
 	// ========================================
 
-	sale.GrandTotal = grandTotal - sale.DiscountAmount
+	// Hitung tax, misalnya 10% dari grand total
+	sale.TaxAmount = grandTotal / 10
+
+	// update grand total setelah diskon ditambah pajak
+	sale.GrandTotal = sale.Subtotal - sale.DiscountAmount + sale.TaxAmount
 
 	// ========================================
-	// UPDATE GRAND TOTAL KE DATABASE
+	// UPDATE SUBTOTAL dan GRAND TOTAL KE DATABASE
 	// ========================================
 
+	// subtotal = total agregat dari masing-masing row item (harga * qty) tiap row
+	err = tx.
+		WithContext(ctx).
+		Model(&sale).
+		Update(
+			"subtotal",
+			sale.Subtotal,
+		).Error
+
+	if err != nil {
+		tx.Rollback()
+		return dto.SaleResponse{}, err
+	}
+
+	// update tax misal 10% dari grand total
+	err = tx.
+		WithContext(ctx).
+		Model(&sale).
+		Update(
+			"tax_amount",
+			sale.TaxAmount,
+		).Error
+
+	if err != nil {
+		tx.Rollback()
+		return dto.SaleResponse{}, err
+	}
+
+	// grand total = subtotal - disc (jika ada) + tax
 	err = tx.
 		WithContext(ctx).
 		Model(&sale).
@@ -256,23 +294,13 @@ func (s *saleService) CreateSale(ctx context.Context, req dto.CreateSaleRequest)
 		return dto.SaleResponse{}, err
 	}
 
+	// get data sale by id untuk preload semua relasi
+	newSale, err := s.saleRepo.GetSaleByID(ctx, sale.ID)
+
 	// ========================================
 	// RESPONSE DTO
 	// ========================================
+	saleDTO := helper.ConvertToDTOSaleSingle(newSale)
 
-	response := dto.SaleResponse{
-		ID:             sale.ID,
-		TenantID:       sale.TenantID,
-		InvoiceNumber:  sale.InvoiceNumber,
-		CustomerName:   sale.CustomerName,
-		CashierID:      sale.CashierID,
-		DiscountAmount: sale.DiscountAmount,
-		GrandTotal:     sale.GrandTotal,
-		PaymentMethod:  sale.PaymentMethod,
-		PaymentStatus:  sale.PaymentStatus,
-		Notes:          sale.Notes,
-	}
-
-	return response, nil
-
+	return saleDTO, nil
 }

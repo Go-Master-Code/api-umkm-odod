@@ -47,7 +47,15 @@ func (r *saleRepository) CreateSale(ctx context.Context, tx *gorm.DB, sale *mode
 
 func (r *saleRepository) GetSaleByID(ctx context.Context, id string) (*model.Sale, error) {
 	var sale model.Sale
-	err := r.db.WithContext(ctx).Preload("Tenant").Preload("Cashier").First(&sale, "id = ?", id).Error
+	err := r.db.
+		WithContext(ctx).
+		Preload("Tenant").
+		Preload("Cashier").
+		Preload("SaleItems").
+		Preload("SaleItems.Tenant").      // preload nested relation dari sale item
+		Preload("SaleItems.Sale").        // preload nested relation dari sale item
+		Preload("SaleItems.ItemVariant"). // preload nested relation dari sale item
+		First(&sale, "id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}

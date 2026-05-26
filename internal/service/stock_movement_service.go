@@ -11,6 +11,7 @@ import (
 	"umkm-odod/internal/repository"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // interface
@@ -22,18 +23,36 @@ type StockMovementService interface {
 
 // struct implementasi
 type stockMovementService struct {
+	db   *gorm.DB // pakai db karena akan dipakai untuk transaction (1 runtutan dengan sale)
 	repo repository.StockMovementRepository
 }
 
 // constructor
-func NewStockMovementService(repo repository.StockMovementRepository) StockMovementService {
+func NewStockMovementService(db *gorm.DB, repo repository.StockMovementRepository) StockMovementService {
 	return &stockMovementService{
+		db:   db,
 		repo: repo,
 	}
 }
 
 // struct method
 func (s *stockMovementService) AddStock(ctx context.Context, req dto.AddStockRequest) (dto.StockMovementResponse, error) {
+	// begin transaction
+	tx := s.db.Begin()
+
+	if tx.Error != nil {
+		tx.Rollback()
+		return dto.StockMovementResponse{}, tx.Error
+	}
+
+	// safety rollback jika panic
+	defer func() {
+		r := recover()
+		if r != nil {
+			tx.Rollback()
+		}
+	}()
+
 	// ambil tenantID dari context -> cek file middleware/auth_required.go
 	tenantID := ctx.Value(constants.ContextTenantID).(string)
 	// ambil userID dari context
@@ -51,6 +70,11 @@ func (s *stockMovementService) AddStock(ctx context.Context, req dto.AddStockReq
 
 		semua bisa reuse payload yang sama.
 	*/
+
+	// ========================================
+	// CREATE PAYLOAD
+	// ========================================
+
 	payload := payloads.CreateStockMovementPayload{
 		TenantID:      tenantID,
 		ItemVariantID: req.ItemVariantID,
@@ -75,7 +99,19 @@ func (s *stockMovementService) AddStock(ctx context.Context, req dto.AddStockReq
 		CreatedBy:     payload.CreatedBy,
 	}
 
-	err := s.repo.CreateMovement(ctx, &movement)
+	err := s.repo.CreateMovement(ctx, tx, &movement)
+	if err != nil {
+		tx.Rollback() // jika gagal create data, rollback
+		return dto.StockMovementResponse{}, err
+	}
+
+	// commit transaction, rollback jika gagal
+	// ========================================
+	// COMMIT TRANSACTION
+	// ========================================
+
+	err = tx.Commit().Error
+
 	if err != nil {
 		return dto.StockMovementResponse{}, err
 	}
@@ -92,7 +128,23 @@ func (s *stockMovementService) AddStock(ctx context.Context, req dto.AddStockReq
 }
 
 func (s *stockMovementService) ReduceStock(ctx context.Context, req dto.ReduceStockRequest) (dto.StockMovementResponse, error) {
-	currentStock, err := s.repo.GetCurrentStock(ctx, req.ItemVariantID)
+	// begin transaction
+	tx := s.db.Begin()
+
+	if tx.Error != nil {
+		tx.Rollback()
+		return dto.StockMovementResponse{}, tx.Error
+	}
+
+	// safety rollback jika panic
+	defer func() {
+		r := recover()
+		if r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	currentStock, err := s.repo.GetCurrentStock(ctx, tx, req.ItemVariantID)
 	if err != nil {
 		return dto.StockMovementResponse{}, err
 	}
@@ -131,7 +183,22 @@ func (s *stockMovementService) ReduceStock(ctx context.Context, req dto.ReduceSt
 	}
 
 	// eksekusi repo
-	err = s.repo.CreateMovement(ctx, &movement)
+	err = s.repo.CreateMovement(ctx, tx, &movement)
+
+	if err != nil {
+		tx.Rollback()
+		return dto.StockMovementResponse{}, err
+	}
+
+	// ========================================
+	// COMMIT TRANSACTION
+	// ========================================
+
+	err = tx.Commit().Error
+
+	if err != nil {
+		return dto.StockMovementResponse{}, err
+	}
 
 	// get by id untuk preload data tenant dan item variant
 	newMovement, err := s.repo.GetMovementByID(ctx, movement.ID)
@@ -145,8 +212,23 @@ func (s *stockMovementService) ReduceStock(ctx context.Context, req dto.ReduceSt
 }
 
 func (s *stockMovementService) GetCurrentStock(ctx context.Context, itemVariantID string) (dto.CurrentStockResponse, error) {
-	// code
-	stock, err := s.repo.GetCurrentStock(ctx, itemVariantID)
+	// begin transaction
+	tx := s.db.Begin()
+
+	if tx.Error != nil {
+		tx.Rollback()
+		return dto.CurrentStockResponse{}, tx.Error
+	}
+
+	// safety rollback jika panic
+	defer func() {
+		r := recover()
+		if r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	stock, err := s.repo.GetCurrentStock(ctx, tx, itemVariantID)
 	if err != nil {
 		return dto.CurrentStockResponse{}, err
 	}
