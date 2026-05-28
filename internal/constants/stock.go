@@ -1,9 +1,11 @@
 package constants
 
-const (
+const ( // untuk stock movement
 	MovementSale       = "SALE"
 	MovementPurchase   = "PURCHASE"
 	MovementAdjustment = "ADJUSTMENT"
+	AdjustmentAdd      = "ADD"
+	AdjustmentReduce   = "REDUCE"
 	MovementOpening    = "OPENING"
 	MovementWaste      = "WASTE"
 )

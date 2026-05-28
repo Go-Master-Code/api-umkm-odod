@@ -34,7 +34,7 @@ func (r *stockMovementRepository) CreateMovement(ctx context.Context, tx *gorm.D
 
 func (r *stockMovementRepository) GetMovementByID(ctx context.Context, tenantID string, id string) (*model.StockMovement, error) {
 	var sm model.StockMovement
-	err := r.db.WithContext(ctx).Preload("Tenant").Preload("ItemVariant").Preload("CreatedByUser").First(&sm, "id = ? AND tenant_id = ?", id).Error
+	err := r.db.WithContext(ctx).Preload("Tenant").Preload("ItemVariant").Preload("CreatedByUser").Where("tenant_id = ?", tenantID).First(&sm, "id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}

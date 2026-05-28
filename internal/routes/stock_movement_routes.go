@@ -12,4 +12,6 @@ func RegisterStockMovementRoutes(rg *gin.RouterGroup, h *handler.StockMovementHa
 	rg.POST("stock/add", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.AddStock)
 	rg.POST("stock/reduce", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.ReduceStock)
 	rg.GET("stock/current/:itemVariantID", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin, constants.RoleCashier), h.GetCurrentStock)
+	// bagian stock adjustment
+	rg.POST("stock-adjustments", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.CreateAdjustment)
 }

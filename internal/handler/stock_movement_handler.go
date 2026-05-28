@@ -72,3 +72,25 @@ func (h *StockMovementHandler) GetCurrentStock(c *gin.Context) {
 
 	helper.SuccessResponse(c, constants.SuccessGetData, currentStockDTO)
 }
+
+// adjustment section
+func (h *StockMovementHandler) CreateAdjustment(c *gin.Context) {
+	// binding request body
+	var req dto.CreateStockAdjustmentRequest
+
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		helper.ErrorParsingRequestBody(c, err)
+		return
+	}
+
+	// call service
+	smDTO, err := h.service.CreateAdjustment(c.Request.Context(), req)
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorCreateData, err)
+		return
+	}
+
+	// success response
+	helper.SuccessResponse(c, constants.SuccessCreateData, smDTO)
+}

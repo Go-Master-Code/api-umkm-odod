@@ -88,7 +88,7 @@ func main() {
 
 	// dependency injection stock movement
 	stockMovementRepo := repository.NewStockMovementRepository(database.DB)
-	stockMovementService := service.NewStockMovementService(database.DB, stockMovementRepo)
+	stockMovementService := service.NewStockMovementService(database.DB, stockMovementRepo, itemVariantRepo)
 	stockMovementHandler := handler.NewStockMovementHandler(stockMovementService)
 
 	// dependency injection sale item
