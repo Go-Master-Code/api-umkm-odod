@@ -60,11 +60,11 @@ type CreateSaleItemDetailRequest struct {
 
 // response sale item
 type SaleItemResponse struct {
-	ID                  string    `json:"id"`
-	TenantID            string    `json:"tenant_id"`
-	TenantName          string    `json:"tenant_name"`
-	SaleID              string    `json:"sale_id"`
-	InvoiceNumber       string    `json:"invoice_number"`
+	ID         string `json:"id"`
+	TenantID   string `json:"tenant_id"`
+	TenantName string `json:"tenant_name"`
+	SaleID     string `json:"sale_id"`
+	// InvoiceNumber       string    `json:"invoice_number"` ga usah pake karena sudah muncul di master sale
 	ItemVariantID       string    `json:"item_variant_id"`
 	ItemVariantName     string    `json:"item_variant_name"`
 	ItemNameSnapshot    string    `json:"item_name_snapshot"`
@@ -75,4 +75,12 @@ type SaleItemResponse struct {
 	DiscountAmount      float64   `json:"discount_amount"`
 	Subtotal            float64   `json:"subtotal"`
 	CreatedAt           time.Time `json:"created_at"`
+}
+
+// query params get all sales
+type GetAllSalesQuery struct {
+	Page          int    `form:"page"`           // nomor halaman
+	Limit         int    `form:"limit"`          // jumlah data per halaman
+	Search        string `form:"search"`         // untuk search INV atau customer
+	PaymentStatus string `form:"payment_status"` // filter payment status
 }

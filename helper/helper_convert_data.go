@@ -230,11 +230,11 @@ func ConvertToDTOSaleSingle(sale *model.Sale) dto.SaleResponse {
 
 	for _, item := range sale.SaleItems {
 		saleItemDTO = append(saleItemDTO, dto.SaleItemResponse{
-			ID:                  item.ID,
-			TenantID:            item.TenantID,
-			TenantName:          item.Tenant.Name,
-			SaleID:              item.SaleID,
-			InvoiceNumber:       item.Sale.InvoiceNumber,
+			ID:         item.ID,
+			TenantID:   item.TenantID,
+			TenantName: item.Tenant.Name,
+			SaleID:     item.SaleID,
+			// InvoiceNumber:       item.Sale.InvoiceNumber, ga usah pake karena sudah muncul di master sale
 			ItemVariantID:       item.ItemVariantID,
 			ItemVariantName:     item.ItemVariant.VariantName,
 			ItemNameSnapshot:    item.ItemNameSnapshot,
@@ -274,22 +274,7 @@ func ConvertToDTOSaleSingle(sale *model.Sale) dto.SaleResponse {
 func ConvertToDTOSalePlural(sales []model.Sale) []dto.SaleResponse {
 	var salesDTO []dto.SaleResponse
 	for _, s := range sales {
-		salesDTO = append(salesDTO, dto.SaleResponse{
-			ID:             s.ID,
-			TenantID:       s.TenantID,
-			TenantName:     s.Tenant.Name,
-			InvoiceNumber:  s.InvoiceNumber,
-			CustomerName:   s.CustomerName,
-			CashierID:      s.CashierID,
-			CashierName:    s.Cashier.FullName,
-			Subtotal:       s.Subtotal,
-			DiscountAmount: s.DiscountAmount,
-			TaxAmount:      s.TaxAmount,
-			GrandTotal:     s.GrandTotal,
-			PaymentMethod:  s.PaymentMethod,
-			PaymentStatus:  s.PaymentStatus,
-			Notes:          s.Notes,
-		})
+		salesDTO = append(salesDTO, ConvertToDTOSaleSingle(&s)) // method yang lebih cepat untuk for range loop plural
 	}
 	return salesDTO
 }

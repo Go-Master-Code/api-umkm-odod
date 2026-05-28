@@ -24,11 +24,21 @@ func NewUserHandler(service service.UserService) *UserHandler {
 }
 
 // struct method
-func (h *UserHandler) GetUsers(c *gin.Context) {
+func (h *UserHandler) GetAllUsers(c *gin.Context) {
+	users, err := h.service.GetAllUsers(c.Request.Context())
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorGetData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessGetData, users)
+}
+
+func (h *UserHandler) GetUsersByTenant(c *gin.Context) {
 	// ambil query username jika ada
 	username := c.Query("username")
 
-	users, err := h.service.GetUsers(c.Request.Context(), username)
+	users, err := h.service.GetUsersByTenant(c.Request.Context(), username)
 	if err != nil {
 		helper.ErrorResponse(c, constants.ErrorGetData, err)
 		return

@@ -38,6 +38,7 @@ import (
 
 // interface
 type SaleService interface {
+	GetAllSales(ctx context.Context, query dto.GetAllSalesQuery) ([]dto.SaleResponse, int64, error)
 	CreateSale(ctx context.Context, req dto.CreateSaleRequest) (dto.SaleResponse, error)
 }
 
@@ -68,6 +69,24 @@ func NewSaleService(
 }
 
 // stuct method
+func (s *saleService) GetAllSales(ctx context.Context, query dto.GetAllSalesQuery) ([]dto.SaleResponse, int64, error) {
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	// get data from repository
+	sales, total, err := s.saleRepo.GetAllSales(ctx, tenantID, query)
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// convert model to dto
+	salesDTO := helper.ConvertToDTOSalePlural(sales)
+
+	// jika semua sukses
+	return salesDTO, total, nil
+}
+
 func (s *saleService) CreateSale(ctx context.Context, req dto.CreateSaleRequest) (dto.SaleResponse, error) {
 	// ========================================
 	// BEGIN DATABASE TRANSACTION
@@ -132,7 +151,7 @@ func (s *saleService) CreateSale(ctx context.Context, req dto.CreateSaleRequest)
 		// AMBIL ITEM VARIANT DARI DATABASE
 		// harga harus trusted dari DB
 		// ========================================
-		variant, err := s.itemVariantRepo.GetItemVariantByID(ctx, item.ItemVariantID)
+		variant, err := s.itemVariantRepo.GetItemVariantByID(ctx, tenantID, item.ItemVariantID)
 		if err != nil {
 			tx.Rollback()
 			return dto.SaleResponse{}, err
@@ -144,6 +163,7 @@ func (s *saleService) CreateSale(ctx context.Context, req dto.CreateSaleRequest)
 
 		currentStock, err := s.stockMovementRepo.GetCurrentStock(
 			ctx,
+			tenantID,
 			tx,
 			variant.ID,
 		)
@@ -239,45 +259,18 @@ func (s *saleService) CreateSale(ctx context.Context, req dto.CreateSaleRequest)
 	sale.GrandTotal = sale.Subtotal - sale.DiscountAmount + sale.TaxAmount
 
 	// ========================================
-	// UPDATE SUBTOTAL dan GRAND TOTAL KE DATABASE
+	// UPDATE SUBTOTAL, TAX AMOUNT dan GRAND TOTAL KE DATABASE pakai method Updates via var map
 	// ========================================
 
 	// subtotal = total agregat dari masing-masing row item (harga * qty) tiap row
 	err = tx.
 		WithContext(ctx).
 		Model(&sale).
-		Update(
-			"subtotal",
-			sale.Subtotal,
-		).Error
-
-	if err != nil {
-		tx.Rollback()
-		return dto.SaleResponse{}, err
-	}
-
-	// update tax misal 10% dari grand total
-	err = tx.
-		WithContext(ctx).
-		Model(&sale).
-		Update(
-			"tax_amount",
-			sale.TaxAmount,
-		).Error
-
-	if err != nil {
-		tx.Rollback()
-		return dto.SaleResponse{}, err
-	}
-
-	// grand total = subtotal - disc (jika ada) + tax
-	err = tx.
-		WithContext(ctx).
-		Model(&sale).
-		Update(
-			"grand_total",
-			sale.GrandTotal,
-		).Error
+		Updates(map[string]any{
+			"subtotal":    sale.Subtotal,
+			"tax_amount":  sale.TaxAmount,
+			"grand_total": sale.GrandTotal,
+		}).Error
 
 	if err != nil {
 		tx.Rollback()
@@ -295,7 +288,7 @@ func (s *saleService) CreateSale(ctx context.Context, req dto.CreateSaleRequest)
 	}
 
 	// get data sale by id untuk preload semua relasi
-	newSale, err := s.saleRepo.GetSaleByID(ctx, sale.ID)
+	newSale, err := s.saleRepo.GetSaleByID(ctx, tenantID, sale.ID)
 
 	// ========================================
 	// RESPONSE DTO

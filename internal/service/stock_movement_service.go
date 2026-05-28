@@ -117,7 +117,7 @@ func (s *stockMovementService) AddStock(ctx context.Context, req dto.AddStockReq
 	}
 
 	// get by id untuk preload data tenant dan item variant
-	newMovement, err := s.repo.GetMovementByID(ctx, movement.ID)
+	newMovement, err := s.repo.GetMovementByID(ctx, tenantID, movement.ID)
 	if err != nil {
 		return dto.StockMovementResponse{}, err
 	}
@@ -144,7 +144,10 @@ func (s *stockMovementService) ReduceStock(ctx context.Context, req dto.ReduceSt
 		}
 	}()
 
-	currentStock, err := s.repo.GetCurrentStock(ctx, tx, req.ItemVariantID)
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	currentStock, err := s.repo.GetCurrentStock(ctx, tenantID, tx, req.ItemVariantID)
 	if err != nil {
 		return dto.StockMovementResponse{}, err
 	}
@@ -154,8 +157,6 @@ func (s *stockMovementService) ReduceStock(ctx context.Context, req dto.ReduceSt
 		return dto.StockMovementResponse{}, errors.New("insufficient stock")
 	}
 
-	// ambil tenantID dari context -> cek file middleware/auth_required.go
-	tenantID := ctx.Value(constants.ContextTenantID).(string)
 	// ambil userID dari context
 	userID := ctx.Value(constants.ContextUserID).(string)
 
@@ -201,7 +202,7 @@ func (s *stockMovementService) ReduceStock(ctx context.Context, req dto.ReduceSt
 	}
 
 	// get by id untuk preload data tenant dan item variant
-	newMovement, err := s.repo.GetMovementByID(ctx, movement.ID)
+	newMovement, err := s.repo.GetMovementByID(ctx, tenantID, movement.ID)
 	if err != nil {
 		return dto.StockMovementResponse{}, err
 	}
@@ -228,7 +229,10 @@ func (s *stockMovementService) GetCurrentStock(ctx context.Context, itemVariantI
 		}
 	}()
 
-	stock, err := s.repo.GetCurrentStock(ctx, tx, itemVariantID)
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	stock, err := s.repo.GetCurrentStock(ctx, tenantID, tx, itemVariantID)
 	if err != nil {
 		return dto.CurrentStockResponse{}, err
 	}

@@ -10,9 +10,9 @@ import (
 // interface
 type StockMovementRepository interface {
 	CreateMovement(ctx context.Context, tx *gorm.DB, movement *model.StockMovement) error
-	GetMovementByID(ctx context.Context, id string) (*model.StockMovement, error)
-	GetMovementsByVariant(ctx context.Context, itemVariantID string) ([]model.StockMovement, error)
-	GetCurrentStock(ctx context.Context, tx *gorm.DB, itemVariantID string) (float64, error)
+	GetMovementByID(ctx context.Context, tenantID string, id string) (*model.StockMovement, error)
+	GetMovementsByVariant(ctx context.Context, tenantID string, itemVariantID string) ([]model.StockMovement, error)
+	GetCurrentStock(ctx context.Context, tenantID string, tx *gorm.DB, itemVariantID string) (float64, error)
 }
 
 // struct implementasi
@@ -32,9 +32,9 @@ func (r *stockMovementRepository) CreateMovement(ctx context.Context, tx *gorm.D
 	return r.db.WithContext(ctx).Create(movement).Error
 }
 
-func (r *stockMovementRepository) GetMovementByID(ctx context.Context, id string) (*model.StockMovement, error) {
+func (r *stockMovementRepository) GetMovementByID(ctx context.Context, tenantID string, id string) (*model.StockMovement, error) {
 	var sm model.StockMovement
-	err := r.db.WithContext(ctx).Preload("Tenant").Preload("ItemVariant").Preload("CreatedByUser").First(&sm, "id = ?", id).Error
+	err := r.db.WithContext(ctx).Preload("Tenant").Preload("ItemVariant").Preload("CreatedByUser").First(&sm, "id = ? AND tenant_id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -42,13 +42,13 @@ func (r *stockMovementRepository) GetMovementByID(ctx context.Context, id string
 	return &sm, nil
 }
 
-func (r *stockMovementRepository) GetMovementsByVariant(ctx context.Context, itemVariantID string) ([]model.StockMovement, error) {
+func (r *stockMovementRepository) GetMovementsByVariant(ctx context.Context, tenantID string, itemVariantID string) ([]model.StockMovement, error) {
 	var movements []model.StockMovement
 	err := r.db.WithContext(ctx).
 		Preload("Tenant").
 		Preload("ItemVariant").
 		Preload("CreatedByUser").
-		Where("item_variant_id = ?", itemVariantID).
+		Where("item_variant_id = ? AND tenant_id = ?", itemVariantID, tenantID).
 		Order("created_at DESC").
 		Find(&movements).Error
 
@@ -59,13 +59,13 @@ func (r *stockMovementRepository) GetMovementsByVariant(ctx context.Context, ite
 	return movements, nil
 }
 
-func (r *stockMovementRepository) GetCurrentStock(ctx context.Context, tx *gorm.DB, itemVariantID string) (float64, error) {
+func (r *stockMovementRepository) GetCurrentStock(ctx context.Context, tenantID string, tx *gorm.DB, itemVariantID string) (float64, error) {
 	var totalStock float64
 
 	err := r.db.
 		WithContext(ctx).
 		Model(&model.StockMovement{}).
-		Where("item_variant_id = ?", itemVariantID).
+		Where("item_variant_id = ? AND tenant_id = ?", itemVariantID, tenantID).
 		Select("COALESCE(SUM(qty), 0)").
 		Scan(&totalStock).
 		Error

@@ -34,7 +34,10 @@ func NewRoleService(repo repository.RoleRepository) RoleService {
 
 // struct method
 func (s *roleService) GetRoles(ctx context.Context, name string) ([]dto.RoleResponse, error) {
-	roles, err := s.repo.GetRoles(ctx, name)
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	roles, err := s.repo.GetRoles(ctx, tenantID, name)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +48,10 @@ func (s *roleService) GetRoles(ctx context.Context, name string) ([]dto.RoleResp
 }
 
 func (s *roleService) GetRoleByID(ctx context.Context, id string) (dto.RoleResponse, error) {
-	role, err := s.repo.GetRoleByID(ctx, id)
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	role, err := s.repo.GetRoleByID(ctx, tenantID, id)
 	if err != nil {
 		return dto.RoleResponse{}, err
 	}
@@ -75,7 +81,7 @@ func (s *roleService) CreateRole(ctx context.Context, req dto.CreateRoleRequest)
 	}
 
 	// get role by id (preload tenant) agar nama tenant muncul
-	newRole, err := s.repo.GetRoleByID(ctx, role.ID)
+	newRole, err := s.repo.GetRoleByID(ctx, tenantID, role.ID)
 	if err != nil {
 		return dto.RoleResponse{}, err
 	}
@@ -86,6 +92,9 @@ func (s *roleService) CreateRole(ctx context.Context, req dto.CreateRoleRequest)
 }
 
 func (s *roleService) UpdateRole(ctx context.Context, id string, req dto.UpdateRoleRequest) (dto.RoleResponse, error) {
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
 	// mapping update data ke map
 	var updateMap = map[string]any{}
 
@@ -94,13 +103,13 @@ func (s *roleService) UpdateRole(ctx context.Context, id string, req dto.UpdateR
 	}
 
 	// update data
-	err := s.repo.UpdateRole(ctx, id, updateMap)
+	err := s.repo.UpdateRole(ctx, tenantID, id, updateMap)
 	if err != nil {
 		return dto.RoleResponse{}, err
 	}
 
 	// get data yang sudah diupdate untuk return value
-	updateRole, err := s.repo.GetRoleByID(ctx, id)
+	updateRole, err := s.repo.GetRoleByID(ctx, tenantID, id)
 
 	if err != nil {
 		return dto.RoleResponse{}, err
@@ -112,14 +121,17 @@ func (s *roleService) UpdateRole(ctx context.Context, id string, req dto.UpdateR
 }
 
 func (s *roleService) DeleteRole(ctx context.Context, id string) (dto.RoleResponse, error) {
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
 	// get data dulu sebelum di delete
-	role, err := s.repo.GetRoleByID(ctx, id)
+	role, err := s.repo.GetRoleByID(ctx, tenantID, id)
 	if err != nil {
 		return dto.RoleResponse{}, err
 	}
 
 	// delete data
-	err = s.repo.DeleteRole(ctx, id)
+	err = s.repo.DeleteRole(ctx, tenantID, id)
 	if err != nil {
 		return dto.RoleResponse{}, err
 	}

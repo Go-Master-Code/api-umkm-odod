@@ -34,7 +34,10 @@ func NewCatalogCategoryService(repo repository.CatalogCategoryRepository) Catalo
 
 // struct method
 func (s *catalogCategoryService) GetCatalogCategories(ctx context.Context, name string) ([]dto.CatalogCategoryResponse, error) {
-	cc, err := s.repo.GetCatalogCategories(ctx, name)
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	cc, err := s.repo.GetCatalogCategories(ctx, tenantID, name)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +48,10 @@ func (s *catalogCategoryService) GetCatalogCategories(ctx context.Context, name 
 }
 
 func (s *catalogCategoryService) GetCatalogCategoryByID(ctx context.Context, id string) (dto.CatalogCategoryResponse, error) {
-	cc, err := s.repo.GetCatalogCategoryByID(ctx, id)
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	cc, err := s.repo.GetCatalogCategoryByID(ctx, tenantID, id)
 	if err != nil {
 		return dto.CatalogCategoryResponse{}, err
 	}
@@ -73,7 +79,7 @@ func (s *catalogCategoryService) CreateCatalogCategory(ctx context.Context, req 
 	}
 
 	// get data by id untuk ditampilkan di response
-	newCC, err := s.repo.GetCatalogCategoryByID(ctx, cc.ID)
+	newCC, err := s.repo.GetCatalogCategoryByID(ctx, tenantID, cc.ID)
 
 	// convert model to dto
 	ccDTO := helper.ConvertToDTOCatalogCategorySingle(newCC)
@@ -81,6 +87,9 @@ func (s *catalogCategoryService) CreateCatalogCategory(ctx context.Context, req 
 }
 
 func (s *catalogCategoryService) UpdateCatalogCategory(ctx context.Context, id string, req dto.UpdateCatalogCategoryRequest) (dto.CatalogCategoryResponse, error) {
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
 	// mapping request ke map
 	var updateMap = map[string]any{}
 
@@ -88,13 +97,13 @@ func (s *catalogCategoryService) UpdateCatalogCategory(ctx context.Context, id s
 		updateMap["name"] = req.Name
 	}
 
-	err := s.repo.UpdateCatalogCategory(ctx, id, updateMap)
+	err := s.repo.UpdateCatalogCategory(ctx, tenantID, id, updateMap)
 	if err != nil {
 		return dto.CatalogCategoryResponse{}, err
 	}
 
 	// get data by id untuk melihat perubahan
-	cc, err := s.repo.GetCatalogCategoryByID(ctx, id)
+	cc, err := s.repo.GetCatalogCategoryByID(ctx, tenantID, id)
 	if err != nil {
 		return dto.CatalogCategoryResponse{}, err
 	}
@@ -105,13 +114,16 @@ func (s *catalogCategoryService) UpdateCatalogCategory(ctx context.Context, id s
 }
 
 func (s catalogCategoryService) DeleteCatalogCategory(ctx context.Context, id string) (dto.CatalogCategoryResponse, error) {
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
 	// get data by id dulu untuk response
-	cc, err := s.repo.GetCatalogCategoryByID(ctx, id)
+	cc, err := s.repo.GetCatalogCategoryByID(ctx, tenantID, id)
 	if err != nil {
 		return dto.CatalogCategoryResponse{}, err
 	}
 
-	err = s.repo.DeleteCatalogCategory(ctx, id)
+	err = s.repo.DeleteCatalogCategory(ctx, tenantID, id)
 	if err != nil {
 		return dto.CatalogCategoryResponse{}, err
 	}

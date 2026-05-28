@@ -9,11 +9,11 @@ import (
 
 // interface
 type CatalogCategoryRepository interface {
-	GetCatalogCategories(ctx context.Context, name string) ([]model.CatalogCategory, error)
-	GetCatalogCategoryByID(ctx context.Context, id string) (*model.CatalogCategory, error)
+	GetCatalogCategories(ctx context.Context, tenantID string, name string) ([]model.CatalogCategory, error)
+	GetCatalogCategoryByID(ctx context.Context, tenantID string, id string) (*model.CatalogCategory, error)
 	CreateCatalogCategory(ctx context.Context, cc *model.CatalogCategory) error
-	UpdateCatalogCategory(ctx context.Context, id string, updateMap map[string]any) error
-	DeleteCatalogCategory(ctx context.Context, id string) error
+	UpdateCatalogCategory(ctx context.Context, tenantID string, id string, updateMap map[string]any) error
+	DeleteCatalogCategory(ctx context.Context, tenantID string, id string) error
 }
 
 // struct implementasi
@@ -29,10 +29,10 @@ func NewCatalogCategoryRepository(db *gorm.DB) CatalogCategoryRepository {
 }
 
 // struct method
-func (r *catalogCategoryRepository) GetCatalogCategories(ctx context.Context, name string) ([]model.CatalogCategory, error) {
+func (r *catalogCategoryRepository) GetCatalogCategories(ctx context.Context, tenantID string, name string) ([]model.CatalogCategory, error) {
 	var cc []model.CatalogCategory
 	// query utama
-	query := r.db.WithContext(ctx).Preload("Tenant")
+	query := r.db.WithContext(ctx).Preload("Tenant").Where("tenant_id = ?", tenantID)
 
 	// jika name tidak kosong
 	if name != "" {
@@ -47,9 +47,9 @@ func (r *catalogCategoryRepository) GetCatalogCategories(ctx context.Context, na
 	return cc, nil
 }
 
-func (r *catalogCategoryRepository) GetCatalogCategoryByID(ctx context.Context, id string) (*model.CatalogCategory, error) {
+func (r *catalogCategoryRepository) GetCatalogCategoryByID(ctx context.Context, tenantID string, id string) (*model.CatalogCategory, error) {
 	var cc model.CatalogCategory
-	err := r.db.WithContext(ctx).Preload("Tenant").First(&cc, "id = ?", id).Error
+	err := r.db.WithContext(ctx).Preload("Tenant").Where("tenant_id = ?", tenantID).First(&cc, "id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -61,10 +61,10 @@ func (r *catalogCategoryRepository) CreateCatalogCategory(ctx context.Context, c
 	return r.db.WithContext(ctx).Create(cc).Error
 }
 
-func (r *catalogCategoryRepository) UpdateCatalogCategory(ctx context.Context, id string, updateMap map[string]any) error {
-	return r.db.WithContext(ctx).Model(model.CatalogCategory{}).Where("id = ?", id).Updates(updateMap).Error
+func (r *catalogCategoryRepository) UpdateCatalogCategory(ctx context.Context, tenantID string, id string, updateMap map[string]any) error {
+	return r.db.WithContext(ctx).Model(model.CatalogCategory{}).Where("id = ? AND tenant_id = ?", id, tenantID).Updates(updateMap).Error
 }
 
-func (r *catalogCategoryRepository) DeleteCatalogCategory(ctx context.Context, id string) error {
-	return r.db.WithContext(ctx).Where("id = ?", id).Delete(&model.CatalogCategory{}).Error
+func (r *catalogCategoryRepository) DeleteCatalogCategory(ctx context.Context, tenantID string, id string) error {
+	return r.db.WithContext(ctx).Where("id = ? and tenant_id = ?", id, tenantID).Delete(&model.CatalogCategory{}).Error
 }

@@ -15,7 +15,8 @@ import (
 
 // interface
 type UserService interface {
-	GetUsers(ctx context.Context, username string) ([]dto.UserResponse, error)
+	GetAllUsers(ctx context.Context) ([]dto.UserResponse, error) // untuk super admin melihat semua user dari setiap tenant
+	GetUsersByTenant(ctx context.Context, username string) ([]dto.UserResponse, error)
 	GetUserByID(ctx context.Context, id string) (dto.UserResponse, error)
 	CreateUser(ctx context.Context, req dto.CreateUserRequest) (dto.UserResponse, error)
 	UpdateUser(ctx context.Context, id string, req dto.UpdateUserRequest) (dto.UserResponse, error)
@@ -36,8 +37,21 @@ func NewUserService(repo repository.UserRepository) UserService {
 }
 
 // struct method
-func (s *userService) GetUsers(ctx context.Context, username string) ([]dto.UserResponse, error) {
-	users, err := s.repo.GetUsers(ctx, username)
+func (s *userService) GetAllUsers(ctx context.Context) ([]dto.UserResponse, error) {
+	users, err := s.repo.GetAllUsers(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	usersDTO := helper.ConvertToDTOUserPlural(users)
+	return usersDTO, nil
+}
+
+func (s *userService) GetUsersByTenant(ctx context.Context, username string) ([]dto.UserResponse, error) {
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	users, err := s.repo.GetUsersByTenant(ctx, tenantID, username)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +62,10 @@ func (s *userService) GetUsers(ctx context.Context, username string) ([]dto.User
 }
 
 func (s *userService) GetUserByID(ctx context.Context, id string) (dto.UserResponse, error) {
-	user, err := s.repo.GetUserByID(ctx, id)
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	user, err := s.repo.GetUserByID(ctx, tenantID, id)
 	if err != nil {
 		return dto.UserResponse{}, err
 	}
@@ -80,7 +97,7 @@ func (s *userService) CreateUser(ctx context.Context, req dto.CreateUserRequest)
 	}
 
 	// get user by id untuk melakukan preload relasi
-	newUser, err := s.repo.GetUserByID(ctx, user.ID)
+	newUser, err := s.repo.GetUserByID(ctx, tenantID, user.ID)
 	if err != nil {
 		return dto.UserResponse{}, err
 	}
@@ -110,14 +127,17 @@ func (s *userService) UpdateUser(ctx context.Context, id string, req dto.UpdateU
 		updateMap["username"] = req.Username
 	}
 
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
 	// update ke repo
-	err := s.repo.UpdateUser(ctx, id, updateMap)
+	err := s.repo.UpdateUser(ctx, tenantID, id, updateMap)
 	if err != nil {
 		return dto.UserResponse{}, err
 	}
 
 	// get data by id untuk preload data relasi
-	user, err := s.repo.GetUserByID(ctx, id)
+	user, err := s.repo.GetUserByID(ctx, tenantID, id)
 	if err != nil {
 		return dto.UserResponse{}, err
 	}
@@ -128,13 +148,16 @@ func (s *userService) UpdateUser(ctx context.Context, id string, req dto.UpdateU
 }
 
 func (s *userService) DeleteUser(ctx context.Context, id string) (dto.UserResponse, error) {
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
 	// get data by id untuk ditampilkan di response
-	user, err := s.repo.GetUserByID(ctx, id)
+	user, err := s.repo.GetUserByID(ctx, tenantID, id)
 	if err != nil {
 		return dto.UserResponse{}, err
 	}
 
-	err = s.repo.DeleteUser(ctx, id)
+	err = s.repo.DeleteUser(ctx, tenantID, id)
 	if err != nil {
 		return dto.UserResponse{}, err
 	}

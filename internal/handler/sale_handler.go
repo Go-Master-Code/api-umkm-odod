@@ -41,3 +41,34 @@ func (h *SaleHandler) CreateSale(c *gin.Context) {
 	// success response
 	helper.SuccessResponse(c, constants.SuccessCreateData, saleDTO)
 }
+
+func (h *SaleHandler) GetAllSales(c *gin.Context) {
+	// parsing request body
+	var query dto.GetAllSalesQuery
+	err := c.ShouldBindQuery(&query) // bind semua query dari URL
+	if err != nil {
+		helper.ErrorParsingRequestBody(c, err)
+		return
+	}
+
+	// ========================================
+	// DEFAULT PAGINATION -> validasi langsung dari query URL
+	// ========================================
+
+	if query.Page < 1 {
+		query.Page = 1
+	}
+
+	if query.Limit < 1 {
+		query.Limit = 10
+	}
+
+	salesResponseDTO, total, err := h.service.GetAllSales(c.Request.Context(), query)
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorGetData, err)
+		return
+	}
+
+	// jika sukses
+	helper.SuccessGetAllSalesPerTenant(c, salesResponseDTO, int(total), query.Page, query.Limit)
+}

@@ -36,6 +36,16 @@ func (h *TenantHandler) GetTenants(c *gin.Context) {
 	helper.SuccessResponse(c, constants.SuccessGetData, tenants)
 }
 
+func (h *TenantHandler) GetMyTenant(c *gin.Context) {
+	tenant, err := h.service.GetMyTenant(c.Request.Context())
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorGetData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessGetData, tenant)
+}
+
 func (h *TenantHandler) GetTenantByID(c *gin.Context) {
 	// ambil param
 	id := c.Param("id")

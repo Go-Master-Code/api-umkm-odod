@@ -9,11 +9,11 @@ import (
 
 // interface
 type ItemVariantRepository interface {
-	GetItemVariants(ctx context.Context, name string) ([]model.ItemVariant, error)
-	GetItemVariantByID(ctx context.Context, id string) (*model.ItemVariant, error)
+	GetItemVariants(ctx context.Context, tenantID string, name string) ([]model.ItemVariant, error)
+	GetItemVariantByID(ctx context.Context, tenantID string, id string) (*model.ItemVariant, error)
 	CreateItemVariant(ctx context.Context, iv *model.ItemVariant) error
-	UpdateItemVariant(ctx context.Context, id string, updateMap map[string]any) error
-	DeleteItemVariant(ctx context.Context, id string) error
+	UpdateItemVariant(ctx context.Context, tenantID string, id string, updateMap map[string]any) error
+	DeleteItemVariant(ctx context.Context, tenantID string, id string) error
 }
 
 // struct implementasi
@@ -29,10 +29,10 @@ func NewItemVariantRepository(db *gorm.DB) ItemVariantRepository {
 }
 
 // struct method
-func (r *itemVariantRepository) GetItemVariants(ctx context.Context, name string) ([]model.ItemVariant, error) {
+func (r *itemVariantRepository) GetItemVariants(ctx context.Context, tenantID string, name string) ([]model.ItemVariant, error) {
 	var iv []model.ItemVariant
 	// query default
-	query := r.db.WithContext(ctx).Preload("Tenant").Preload("Item") // Preload Item sesuaikan dengan model item_variants.go
+	query := r.db.WithContext(ctx).Preload("Tenant").Preload("Item").Where("tenant_id = ?", tenantID) // Preload Item sesuaikan dengan model item_variants.go
 
 	if name != "" {
 		// jika name nya tidak kosong, tambahkan query
@@ -49,9 +49,9 @@ func (r *itemVariantRepository) GetItemVariants(ctx context.Context, name string
 	return iv, nil
 }
 
-func (r *itemVariantRepository) GetItemVariantByID(ctx context.Context, id string) (*model.ItemVariant, error) {
+func (r *itemVariantRepository) GetItemVariantByID(ctx context.Context, tenantID string, id string) (*model.ItemVariant, error) {
 	var iv model.ItemVariant
-	err := r.db.WithContext(ctx).Preload("Tenant").Preload("Item").First(&iv, "id = ?", id).Error
+	err := r.db.WithContext(ctx).Preload("Tenant").Preload("Item").Where("tenant_id = ?", tenantID).First(&iv, "id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -63,10 +63,10 @@ func (r *itemVariantRepository) CreateItemVariant(ctx context.Context, iv *model
 	return r.db.WithContext(ctx).Create(iv).Error
 }
 
-func (r *itemVariantRepository) UpdateItemVariant(ctx context.Context, id string, updateMap map[string]any) error {
-	return r.db.WithContext(ctx).Model(model.ItemVariant{}).Where("id = ?", id).Updates(updateMap).Error
+func (r *itemVariantRepository) UpdateItemVariant(ctx context.Context, tenantID string, id string, updateMap map[string]any) error {
+	return r.db.WithContext(ctx).Model(model.ItemVariant{}).Where("id = ? AND tenant_id = ?", id, tenantID).Updates(updateMap).Error
 }
 
-func (r *itemVariantRepository) DeleteItemVariant(ctx context.Context, id string) error {
-	return r.db.WithContext(ctx).Where("id = ?", id).Delete(&model.ItemVariant{}).Error
+func (r *itemVariantRepository) DeleteItemVariant(ctx context.Context, tenantID string, id string) error {
+	return r.db.WithContext(ctx).Where("id = ? AND tenant_id = ?", id, tenantID).Delete(&model.ItemVariant{}).Error
 }

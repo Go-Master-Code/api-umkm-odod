@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"log"
 	"umkm-odod/helper"
+	"umkm-odod/internal/constants"
 	"umkm-odod/internal/dto"
 	"umkm-odod/internal/model"
 	"umkm-odod/internal/repository"
@@ -13,6 +15,7 @@ import (
 // interface
 type TenantService interface {
 	GetTenants(ctx context.Context, name string) ([]dto.TenantResponse, error)
+	GetMyTenant(ctx context.Context) (dto.TenantResponse, error) // untuk akses tenant milik pribadi
 	GetTenantByID(ctx context.Context, id string) (dto.TenantResponse, error)
 	CreateTenant(ctx context.Context, req dto.CreateTenantRequest) (dto.TenantResponse, error)
 	UpdateTenant(ctx context.Context, id string, req dto.UpdateTenantRequest) (dto.TenantResponse, error)
@@ -41,6 +44,20 @@ func (s *tenantService) GetTenants(ctx context.Context, name string) ([]dto.Tena
 	// convert model to dto
 	tenantsDTO := helper.ConvertToDTOTenantPlural(tenants)
 	return tenantsDTO, nil
+}
+
+func (s *tenantService) GetMyTenant(ctx context.Context) (dto.TenantResponse, error) {
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+	log.Println("Tenant ID: ", tenantID)
+
+	tenant, err := s.repo.GetTenantByID(ctx, tenantID)
+	if err != nil {
+		return dto.TenantResponse{}, err
+	}
+
+	tenantDTO := helper.ConvertToDTOTenantSingle(tenant)
+	return tenantDTO, nil
 }
 
 func (s *tenantService) GetTenantByID(ctx context.Context, id string) (dto.TenantResponse, error) {

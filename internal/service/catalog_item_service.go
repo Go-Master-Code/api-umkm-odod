@@ -34,7 +34,10 @@ func NewCatalogItemService(repo repository.CatalogItemRepository) CatalogItemSer
 
 // struct method
 func (s *catalogItemService) GetCatalogItems(ctx context.Context, name string) ([]dto.CatalogItemResponse, error) {
-	ci, err := s.repo.GetCatalogItems(ctx, name)
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	ci, err := s.repo.GetCatalogItems(ctx, tenantID, name)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +48,10 @@ func (s *catalogItemService) GetCatalogItems(ctx context.Context, name string) (
 }
 
 func (s *catalogItemService) GetCatalogItemByID(ctx context.Context, id string) (dto.CatalogItemResponse, error) {
-	ci, err := s.repo.GetCatalogItemByID(ctx, id)
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	ci, err := s.repo.GetCatalogItemByID(ctx, tenantID, id)
 	if err != nil {
 		return dto.CatalogItemResponse{}, err
 	}
@@ -76,7 +82,7 @@ func (s *catalogItemService) CreateCatalogItem(ctx context.Context, req dto.Crea
 	}
 
 	// get data by id untuk ditampilkan di response
-	newCC, err := s.repo.GetCatalogItemByID(ctx, ci.ID)
+	newCC, err := s.repo.GetCatalogItemByID(ctx, tenantID, ci.ID)
 
 	// convert model to dto
 	ciDTO := helper.ConvertToDTOCatalogItemSingle(newCC)
@@ -100,13 +106,16 @@ func (s *catalogItemService) UpdateCatalogItem(ctx context.Context, id string, r
 		updateMap["is_active"] = req.IsActive
 	}
 
-	err := s.repo.UpdateCatalogItem(ctx, id, updateMap)
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	err := s.repo.UpdateCatalogItem(ctx, tenantID, id, updateMap)
 	if err != nil {
 		return dto.CatalogItemResponse{}, err
 	}
 
 	// get data by id untuk melihat perubahan
-	ci, err := s.repo.GetCatalogItemByID(ctx, id)
+	ci, err := s.repo.GetCatalogItemByID(ctx, tenantID, id)
 	if err != nil {
 		return dto.CatalogItemResponse{}, err
 	}
@@ -117,13 +126,16 @@ func (s *catalogItemService) UpdateCatalogItem(ctx context.Context, id string, r
 }
 
 func (s catalogItemService) DeleteCatalogItem(ctx context.Context, id string) (dto.CatalogItemResponse, error) {
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
 	// get data by id dulu untuk response
-	ci, err := s.repo.GetCatalogItemByID(ctx, id)
+	ci, err := s.repo.GetCatalogItemByID(ctx, tenantID, id)
 	if err != nil {
 		return dto.CatalogItemResponse{}, err
 	}
 
-	err = s.repo.DeleteCatalogItem(ctx, id)
+	err = s.repo.DeleteCatalogItem(ctx, tenantID, id)
 	if err != nil {
 		return dto.CatalogItemResponse{}, err
 	}
