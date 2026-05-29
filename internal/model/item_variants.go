@@ -17,6 +17,7 @@ type ItemVariant struct {
 	VariantName  string         `json:"variant_name" gorm:"type:varchar(150);not null"`
 	CostPrice    float64        `json:"cost_price" gorm:"type:decimal(18,2);not null"`
 	SellingPrice float64        `json:"selling_price" gorm:"type:decimal(18,2);not null;default:0"`
+	MinimumStock float64        `json:"minimum_stock" gorm:"type:decimal(18,2);default:0"`
 	IsActive     bool           `json:"is_active" gorm:"default:true"` // bool lebih baik diberi default value
 	CreatedAt    time.Time      `gorm:"column:created_at;autoCreateTime"`
 	UpdatedAt    time.Time      `gorm:"column:updated_at;autoUpdateTime"`

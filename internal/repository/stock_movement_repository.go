@@ -49,7 +49,7 @@ func (r *stockMovementRepository) GetMovementsByVariant(ctx context.Context, ten
 		Preload("ItemVariant").
 		Preload("CreatedByUser").
 		Where("item_variant_id = ? AND tenant_id = ?", itemVariantID, tenantID).
-		Order("created_at DESC").
+		Order("created_at ASC").
 		Find(&movements).Error
 
 	if err != nil {

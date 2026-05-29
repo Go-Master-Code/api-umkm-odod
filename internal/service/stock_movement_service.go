@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"umkm-odod/helper"
 	"umkm-odod/internal/constants"
 	"umkm-odod/internal/dto"
@@ -20,6 +21,7 @@ type StockMovementService interface {
 	ReduceStock(ctx context.Context, req dto.ReduceStockRequest) (dto.StockMovementResponse, error)
 	GetCurrentStock(ctx context.Context, itemVariantID string) (dto.CurrentStockResponse, error)
 	CreateAdjustment(ctx context.Context, req dto.CreateStockAdjustmentRequest) (dto.StockMovementResponse, error)
+	GetStockCard(ctx context.Context, itemVariantID string) ([]dto.StockCardResponse, error)
 }
 
 // struct implementasi
@@ -309,7 +311,7 @@ func (s *stockMovementService) CreateAdjustment(ctx context.Context, req dto.Cre
 		Qty:           adjustmentQty,
 		ReferenceType: "ADJUSTMENT",
 		ReferenceID:   "",
-		Notes:         req.Notes,
+		Notes:         fmt.Sprintf("Reason: %s | Notes: %s", req.Reason, req.Notes),
 		CreatedBy:     userID,
 	}
 
@@ -338,4 +340,51 @@ func (s *stockMovementService) CreateAdjustment(ctx context.Context, req dto.Cre
 	// convert movement to dto
 	movementDTO := helper.ConvertToDTOStockMovementSingle(newMovement)
 	return movementDTO, nil
+}
+
+// kartu stock
+func (s *stockMovementService) GetStockCard(ctx context.Context, itemVariantID string) ([]dto.StockCardResponse, error) {
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	// get movements
+	movements, err := s.stockMovementRepo.GetMovementsByVariant(ctx, tenantID, itemVariantID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// build stock card
+	var stockCards []dto.StockCardResponse
+
+	var runningBalance float64
+
+	for _, m := range movements {
+		var qtyIn float64
+		var qtyOut float64
+
+		// in / out
+		if m.Qty > 0 {
+			qtyIn = m.Qty
+		} else {
+			qtyOut = m.Qty * -1
+		}
+
+		// running balance, saldo stok item per baris dikalkulasi terus
+		runningBalance += m.Qty
+
+		// append response
+		stockCards = append(stockCards, dto.StockCardResponse{
+			MovementDate:  m.CreatedAt,
+			MovementType:  m.MovementType,
+			QtyIn:         qtyIn,
+			QtyOut:        qtyOut,
+			Balance:       runningBalance,
+			ReferenceType: m.ReferenceType,
+			ReferenceID:   m.ReferenceID,
+			Notes:         m.Notes,
+			CreatedByName: m.CreatedByUser.FullName,
+		})
+	}
+	return stockCards, nil
 }

@@ -94,3 +94,18 @@ func (h *StockMovementHandler) CreateAdjustment(c *gin.Context) {
 	// success response
 	helper.SuccessResponse(c, constants.SuccessCreateData, smDTO)
 }
+
+// stock card
+func (h *StockMovementHandler) GetStockCard(c *gin.Context) {
+	// ambil item variant id dari param URL
+	itemVariantID := c.Param("itemVariantID")
+
+	stockCard, err := h.service.GetStockCard(c.Request.Context(), itemVariantID)
+
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorGetData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessGetData, stockCard)
+}
