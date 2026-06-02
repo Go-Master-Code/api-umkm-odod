@@ -304,3 +304,30 @@ func ConvertToDTOStockMovementSingle(sm *model.StockMovement) dto.StockMovementR
 	}
 	return stockMovementDTO
 }
+
+func ConvertToDTOSupplierPlural(suppliers []model.Supplier) []dto.SupplierResponse {
+	var suppliersDTO []dto.SupplierResponse
+	for _, supplier := range suppliers {
+		suppliersDTO = append(suppliersDTO, dto.SupplierResponse{
+			ID:       supplier.ID,
+			TenantID: supplier.TenantID,
+			Name:     supplier.Name,
+			Phone:    supplier.Phone,
+			Address:  supplier.Address,
+			IsActive: supplier.IsActive,
+		})
+	}
+	return suppliersDTO
+}
+
+func ConvertToDTOSupplierSingle(supplier *model.Supplier) dto.SupplierResponse {
+	supplierDTO := dto.SupplierResponse{
+		ID:       supplier.ID,
+		TenantID: supplier.TenantID,
+		Name:     supplier.Name,
+		Phone:    supplier.Phone,
+		Address:  supplier.Address,
+		IsActive: supplier.IsActive,
+	}
+	return supplierDTO
+}
