@@ -11,6 +11,7 @@ import (
 func RegisterItemVariantRoutes(rg *gin.RouterGroup, h *handler.ItemVariantHandler) {
 	rg.GET("/item_variants", h.GetItemVariants)
 	rg.GET("/item_variants/:id", h.GetItemVariantByID)
+	rg.GET("/item_variants/low-stock", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.GetLowStockItem)
 	rg.POST("/item_variants", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.CreateItemVariant)
 	rg.PUT("/item_variants/:id", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.UpdateItemVariant)
 	rg.DELETE("/item_variants/:id", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.DeleteItemVariant)

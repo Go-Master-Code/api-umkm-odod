@@ -101,3 +101,13 @@ func (h *ItemVariantHandler) DeleteItemVariant(c *gin.Context) {
 
 	helper.SuccessResponse(c, constants.SuccessDeleteData, ivDTO)
 }
+
+func (h *ItemVariantHandler) GetLowStockItem(c *gin.Context) {
+	lowStock, err := h.service.GetLowStockItem(c.Request.Context())
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorGetData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessGetData, lowStock)
+}

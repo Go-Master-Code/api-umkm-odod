@@ -15,6 +15,7 @@ import (
 type ItemVariantService interface {
 	GetItemVariants(ctx context.Context, name string) ([]dto.ItemVariantResponse, error)
 	GetItemVariantByID(ctx context.Context, id string) (dto.ItemVariantResponse, error)
+	GetLowStockItem(ctx context.Context) ([]dto.LowStockResponse, error)
 	CreateItemVariant(ctx context.Context, req dto.CreateItemVariantRequest) (dto.ItemVariantResponse, error)
 	UpdateItemVariant(ctx context.Context, id string, req dto.UpdateItemVariantRequest) (dto.ItemVariantResponse, error)
 	DeleteItemVariant(ctx context.Context, id string) (dto.ItemVariantResponse, error)
@@ -22,13 +23,15 @@ type ItemVariantService interface {
 
 // struct implementasi
 type itemVariantService struct {
-	repo repository.ItemVariantRepository
+	itemVariantRepo   repository.ItemVariantRepository
+	stockMovementRepo repository.StockMovementRepository
 }
 
 // constructor
-func NewItemVariantService(repo repository.ItemVariantRepository) ItemVariantService {
+func NewItemVariantService(itemVariantRepo repository.ItemVariantRepository, stockMovementRepo repository.StockMovementRepository) ItemVariantService {
 	return &itemVariantService{
-		repo: repo,
+		itemVariantRepo:   itemVariantRepo,
+		stockMovementRepo: stockMovementRepo,
 	}
 }
 
@@ -37,7 +40,7 @@ func (s *itemVariantService) GetItemVariants(ctx context.Context, name string) (
 	// get tenant ID from jwt
 	tenantID := ctx.Value(constants.ContextTenantID).(string)
 
-	iv, err := s.repo.GetItemVariants(ctx, tenantID, name)
+	iv, err := s.itemVariantRepo.GetItemVariants(ctx, tenantID, name)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +54,7 @@ func (s *itemVariantService) GetItemVariantByID(ctx context.Context, id string) 
 	// get tenant ID from jwt
 	tenantID := ctx.Value(constants.ContextTenantID).(string)
 
-	iv, err := s.repo.GetItemVariantByID(ctx, tenantID, id)
+	iv, err := s.itemVariantRepo.GetItemVariantByID(ctx, tenantID, id)
 	if err != nil {
 		return dto.ItemVariantResponse{}, err
 	}
@@ -59,6 +62,41 @@ func (s *itemVariantService) GetItemVariantByID(ctx context.Context, id string) 
 	// convert model to dto
 	ivDTO := helper.ConvertToDTOItemVariantSingle(iv)
 	return ivDTO, err
+}
+
+func (s *itemVariantService) GetLowStockItem(ctx context.Context) ([]dto.LowStockResponse, error) {
+	// get tenant ID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	variants, err := s.itemVariantRepo.GetAllItemVariants(ctx, tenantID)
+	if err != nil {
+		return nil, err
+	}
+
+	var lowStock []dto.LowStockResponse
+	for _, variant := range variants {
+		// ambil stok realtime
+		// kalau tx ada -> pakai transaction
+		// kalau tx nil -> pakai repository db biasa, dan query akan menggunakan r.db, tidak pakai mode transaction (tx)
+		currentStock, err := s.stockMovementRepo.GetCurrentStock(ctx, tenantID, nil, variant.ID)
+
+		if err != nil {
+			return nil, err
+		}
+
+		// cek low stock -> hanya record data ini yang akan muncul
+		if currentStock <= variant.MinimumStock {
+			lowStock = append(lowStock, dto.LowStockResponse{
+				ItemVariantID: variant.ID,
+				ItemName:      variant.Item.Name,
+				SKU:           variant.SKU,
+				VariantName:   variant.VariantName,
+				CurrentStock:  currentStock,
+				MinimumStock:  variant.MinimumStock,
+			})
+		}
+	}
+	return lowStock, nil
 }
 
 func (s *itemVariantService) CreateItemVariant(ctx context.Context, req dto.CreateItemVariantRequest) (dto.ItemVariantResponse, error) {
@@ -77,13 +115,13 @@ func (s *itemVariantService) CreateItemVariant(ctx context.Context, req dto.Crea
 		IsActive:    req.IsActive,
 	}
 
-	err := s.repo.CreateItemVariant(ctx, &iv)
+	err := s.itemVariantRepo.CreateItemVariant(ctx, &iv)
 	if err != nil {
 		return dto.ItemVariantResponse{}, err
 	}
 
 	// get data by id
-	newIV, err := s.repo.GetItemVariantByID(ctx, tenantID, iv.ID)
+	newIV, err := s.itemVariantRepo.GetItemVariantByID(ctx, tenantID, iv.ID)
 	if err != nil {
 		return dto.ItemVariantResponse{}, err
 	}
@@ -119,10 +157,10 @@ func (s *itemVariantService) UpdateItemVariant(ctx context.Context, id string, r
 		updateMap["is_active"] = req.IsActive
 	}
 
-	err := s.repo.UpdateItemVariant(ctx, tenantID, id, updateMap)
+	err := s.itemVariantRepo.UpdateItemVariant(ctx, tenantID, id, updateMap)
 
 	// get data by id
-	iv, err := s.repo.GetItemVariantByID(ctx, tenantID, id)
+	iv, err := s.itemVariantRepo.GetItemVariantByID(ctx, tenantID, id)
 	if err != nil {
 		return dto.ItemVariantResponse{}, err
 	}
@@ -138,13 +176,13 @@ func (s *itemVariantService) DeleteItemVariant(ctx context.Context, id string) (
 	tenantID := ctx.Value(constants.ContextTenantID).(string)
 
 	// get id dulu untuk response api
-	iv, err := s.repo.GetItemVariantByID(ctx, tenantID, id)
+	iv, err := s.itemVariantRepo.GetItemVariantByID(ctx, tenantID, id)
 	if err != nil {
 		return dto.ItemVariantResponse{}, err
 	}
 
 	// delete data
-	err = s.repo.DeleteItemVariant(ctx, tenantID, id)
+	err = s.itemVariantRepo.DeleteItemVariant(ctx, tenantID, id)
 	if err != nil {
 		return dto.ItemVariantResponse{}, err
 	}

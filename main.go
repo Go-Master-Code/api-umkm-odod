@@ -83,11 +83,12 @@ func main() {
 
 	// dependency injection item variant
 	itemVariantRepo := repository.NewItemVariantRepository(database.DB)
-	itemVariantService := service.NewItemVariantService(itemVariantRepo)
+	stockMovementRepo := repository.NewStockMovementRepository(database.DB)
+
+	itemVariantService := service.NewItemVariantService(itemVariantRepo, stockMovementRepo)
 	itemVariantHandler := handler.NewItemVariantHandler(itemVariantService)
 
 	// dependency injection stock movement
-	stockMovementRepo := repository.NewStockMovementRepository(database.DB)
 	stockMovementService := service.NewStockMovementService(database.DB, stockMovementRepo, itemVariantRepo)
 	stockMovementHandler := handler.NewStockMovementHandler(stockMovementService)
 

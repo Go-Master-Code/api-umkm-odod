@@ -9,6 +9,7 @@ import (
 
 // interface
 type ItemVariantRepository interface {
+	GetAllItemVariants(ctx context.Context, tenantID string) ([]model.ItemVariant, error)
 	GetItemVariants(ctx context.Context, tenantID string, name string) ([]model.ItemVariant, error)
 	GetItemVariantByID(ctx context.Context, tenantID string, id string) (*model.ItemVariant, error)
 	CreateItemVariant(ctx context.Context, iv *model.ItemVariant) error
@@ -29,6 +30,16 @@ func NewItemVariantRepository(db *gorm.DB) ItemVariantRepository {
 }
 
 // struct method
+func (r *itemVariantRepository) GetAllItemVariants(ctx context.Context, tenantID string) ([]model.ItemVariant, error) {
+	var variants []model.ItemVariant
+	err := r.db.WithContext(ctx).Preload("Item").Where("tenant_id = ?", tenantID).Find(&variants).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return variants, nil
+}
+
 func (r *itemVariantRepository) GetItemVariants(ctx context.Context, tenantID string, name string) ([]model.ItemVariant, error) {
 	var iv []model.ItemVariant
 	// query default

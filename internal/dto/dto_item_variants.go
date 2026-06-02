@@ -10,6 +10,7 @@ type ItemVariantResponse struct {
 	SKU          string  `json:"sku"`
 	Barcode      string  `json:"barcode"`
 	VariantName  string  `json:"variant_name"`
+	MinimumStock float64 `json:"minimum_stock"`
 	CostPrice    float64 `json:"cost_price"`
 	SellingPrice float64 `json:"selling_price"`
 	IsActive     bool    `json:"is_active"`
@@ -23,6 +24,7 @@ type CreateItemVariantRequest struct {
 	SKU          string  `json:"sku" binding:"required,min=3,max=100"`
 	Barcode      string  `json:"barcode" binding:"omitempty,max=100"` // tidak required
 	VariantName  string  `json:"variant_name" binding:"required,min=3,max=150"`
+	MinimumStock float64 `json:"minimum_stock" binding:"gte=0"`       // min 0
 	CostPrice    float64 `json:"cost_price" binding:"required,gte=0"` // gte = nilai min = 0
 	SellingPrice float64 `json:"selling_price" binding:"required,gte=0"`
 	IsActive     bool    `json:"is_active"`
@@ -34,6 +36,7 @@ type UpdateItemVariantRequest struct {
 	SKU          *string  `json:"sku" binding:"omitempty,min=3,max=100"`
 	Barcode      *string  `json:"barcode" binding:"omitempty,max=100"`
 	VariantName  *string  `json:"variant_name" binding:"omitempty,min=3,max=150"`
+	MinimumStock *float64 `json:"minimum_stock" binding:"omitempty,gte=0"`
 	CostPrice    *float64 `json:"cost_price" binding:"omitempty,gte=0"`
 	SellingPrice *float64 `json:"selling_price" binding:"omitempty,gte=0"`
 	IsActive     *bool    `json:"is_active"` // update request var bool tidak perlu omitempty
