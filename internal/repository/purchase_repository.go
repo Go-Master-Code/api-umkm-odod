@@ -25,7 +25,7 @@ import (
 // interface
 type PurchaseRepository interface {
 	GetAllPurchases(ctx context.Context, tenantID string, query dto.GetAllPurchasesQuery) ([]model.Purchase, int64, error)
-	CreatePurchase(ctx context.Context, tx *gorm.DB, sale *model.Purchase) error
+	CreatePurchase(ctx context.Context, tx *gorm.DB, purchase *model.Purchase) error
 	GetPurchaseByID(ctx context.Context, tenantID string, id string) (*model.Purchase, error) // perlu tenant isolation agar tenant A tidak bisa akses invoice tenant B
 }
 
@@ -43,7 +43,7 @@ func NewPurchaseRepository(db *gorm.DB) PurchaseRepository {
 
 // struct method.
 
-func (r *saleRepository) GetAllPurchases(ctx context.Context, tenantID string, query dto.GetAllPurchasesQuery) ([]model.Purchase, int64, error) {
+func (r *purchaseRepository) GetAllPurchases(ctx context.Context, tenantID string, query dto.GetAllPurchasesQuery) ([]model.Purchase, int64, error) {
 	var purchases []model.Purchase
 	var total int64
 
@@ -80,24 +80,24 @@ func (r *saleRepository) GetAllPurchases(ctx context.Context, tenantID string, q
 }
 
 // CreateSale pakai tx bukan r.db karena sale, sale item, dan stock movement harus dalam 1 transaction yang sama
-func (r *saleRepository) CreateSale(ctx context.Context, tx *gorm.DB, sale *model.Sale) error {
-	return tx.WithContext(ctx).Create(sale).Error
+func (r *purchaseRepository) CreatePurchase(ctx context.Context, tx *gorm.DB, purchase *model.Purchase) error {
+	return tx.WithContext(ctx).Create(purchase).Error
 }
 
-func (r *saleRepository) GetSaleByID(ctx context.Context, tenantID string, id string) (*model.Sale, error) {
-	var sale model.Sale
+func (r *purchaseRepository) GetPurchaseByID(ctx context.Context, tenantID string, id string) (*model.Purchase, error) {
+	var purchase model.Purchase
 	err := r.db.
 		WithContext(ctx).
 		Preload("Tenant").
 		Preload("Cashier").
-		Preload("SaleItems").
-		Preload("SaleItems.Tenant").      // preload nested relation dari sale item
-		Preload("SaleItems.Sale").        // preload nested relation dari sale item
-		Preload("SaleItems.ItemVariant"). // preload nested relation dari sale item
+		Preload("PurchaseItems").
+		Preload("PurchaseItems.Tenant").      // preload nested relation dari sale item
+		Preload("PurchaseItems.Sale").        // preload nested relation dari sale item
+		Preload("PurchaseItems.ItemVariant"). // preload nested relation dari sale item
 		Where("id = ? AND tenant_id = ?", id, tenantID).
-		First(&sale).Error
+		First(&purchase).Error
 	if err != nil {
 		return nil, err
 	}
-	return &sale, nil
+	return &purchase, nil
 }
