@@ -7,7 +7,7 @@ type PurchaseItem struct {
 	TenantID            string    `json:"tenant_id" gorm:"type:char(36);not null;index"`
 	Tenant              Tenant    `json:"-" gorm:"foreignKey:TenantID"`
 	PurchaseID          string    `json:"purchase_id" gorm:"type:char(36);not null;index"`
-	Purchase            Purchase  `json:"-" gorm:"foreignKey:PurchaseID"`
+	Purchase            Purchase  `json:"-" gorm:"foreignKey:PurchaseID"` // reverse relation to model purchase
 	ItemVariantID       string    `json:"item_variant_id" gorm:"type:char(36);not null;index"`
 	ItemNameSnapshot    string    `json:"item_name_snapshot" gorm:"type:varchar(200);not null"`
 	VariantNameSnapshot string    `json:"variant_name_snapshot" gorm:"type:varchar(150)"`
