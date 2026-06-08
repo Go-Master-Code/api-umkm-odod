@@ -9,17 +9,21 @@ import (
 )
 
 /*
-	Gambaran besar proses create purchase, purchase items, dan stock movement
-	tx := db.Begin()
-	purchaseRepo.CreatePurchase(tx)
-	purchaseItemRepo.CreatePurchaseItem(tx)
-	stockRepo.CreateMovement(tx)
-	tx.Commit()
-	Penjelasan:
-		-atomic
-		-konsisten
-		-aman rollback
-		-tidak corrupt
+	BEGIN TX
+	↓
+	create purchase
+	↓
+	create purchase items
+	↓
+	create stock movements (+)
+	↓
+	update subtotal
+	↓
+	update tax
+	↓
+	update grand total
+	↓
+	COMMIT
 */
 
 // interface
@@ -60,7 +64,9 @@ func (r *purchaseRepository) GetAllPurchases(ctx context.Context, tenantID strin
 	// search
 	if query.Search != "" {
 		search := "%" + query.Search + "%"
-		baseQuery = baseQuery.Where("invoice_number LIKE ? OR purchase_number LIKE ?", search, search) // query untuk cari data yang invoice atau purchase number nya like ...
+		baseQuery = baseQuery.
+			Joins("LEFT JOIN suppliers on suppliers.id = puchases.supplier_id").
+			Where("invoice_number LIKE ? OR purchase_number LIKE ? OR suppliers.name LIKE ?", search, search, search) // query untuk cari data yang invoice atau purchase number nya like ...
 	}
 
 	// count total row(s) found -> diperlukan untuk frontend
@@ -70,7 +76,7 @@ func (r *purchaseRepository) GetAllPurchases(ctx context.Context, tenantID strin
 	}
 
 	// get data
-	err = baseQuery.Preload("Tenant").Preload("User").Preload("Purchase").Preload("PurchaseItems.Tenant").Preload("PurchaseItems.ItemVariant").Order("created_at DESC").Limit(query.Limit).Offset(offset).Find(&purchases).Error
+	err = baseQuery.Preload("Tenant").Preload("Supplier").Preload("User").Preload("PurchaseItems").Preload("PurchaseItems.Tenant").Preload("PurchaseItems.ItemVariant").Order("created_at DESC").Limit(query.Limit).Offset(offset).Find(&purchases).Error
 	if err != nil {
 		return nil, 0, err
 	}
@@ -79,7 +85,7 @@ func (r *purchaseRepository) GetAllPurchases(ctx context.Context, tenantID strin
 	return purchases, total, nil
 }
 
-// CreateSale pakai tx bukan r.db karena sale, sale item, dan stock movement harus dalam 1 transaction yang sama
+// CreatePurchase pakai tx bukan r.db karena purchase, purchase item, dan stock movement harus dalam 1 transaction yang sama
 func (r *purchaseRepository) CreatePurchase(ctx context.Context, tx *gorm.DB, purchase *model.Purchase) error {
 	return tx.WithContext(ctx).Create(purchase).Error
 }
@@ -89,11 +95,11 @@ func (r *purchaseRepository) GetPurchaseByID(ctx context.Context, tenantID strin
 	err := r.db.
 		WithContext(ctx).
 		Preload("Tenant").
-		Preload("Cashier").
+		Preload("Supplier").
+		Preload("Creator").
 		Preload("PurchaseItems").
-		Preload("PurchaseItems.Tenant").      // preload nested relation dari sale item
-		Preload("PurchaseItems.Sale").        // preload nested relation dari sale item
-		Preload("PurchaseItems.ItemVariant"). // preload nested relation dari sale item
+		Preload("PurchaseItems.Tenant").      // preload nested relation dari purchase item
+		Preload("PurchaseItems.ItemVariant"). // preload nested relation dari purchase item
 		Where("id = ? AND tenant_id = ?", id, tenantID).
 		First(&purchase).Error
 	if err != nil {

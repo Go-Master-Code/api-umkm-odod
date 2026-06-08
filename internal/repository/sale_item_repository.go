@@ -25,6 +25,6 @@ func NewSaleItemRepository(db *gorm.DB) SaleItemRepository {
 }
 
 // struct method
-func (s *saleItemRepository) CreateSaleItem(ctx context.Context, tx *gorm.DB, saleItem *model.SaleItem) error {
+func (r *saleItemRepository) CreateSaleItem(ctx context.Context, tx *gorm.DB, saleItem *model.SaleItem) error {
 	return tx.WithContext(ctx).Create(saleItem).Error
 }
