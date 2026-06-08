@@ -279,6 +279,52 @@ func ConvertToDTOSalePlural(sales []model.Sale) []dto.SaleResponse {
 	return salesDTO
 }
 
+func ConvertToDTOPurchaseSingle(purchase *model.Purchase) dto.PurchaseResponse {
+	// add sale items dulu untuk disisipkan pada master purchase
+	var purchaseItemDTO []dto.PurchaseItemResponse
+
+	for _, item := range purchase.PurchaseItems {
+		purchaseItemDTO = append(purchaseItemDTO, dto.PurchaseItemResponse{
+			ID:                  item.ID,
+			TenantID:            item.TenantID,
+			TenantName:          item.Tenant.Name,
+			PurchaseID:          item.PurchaseID,
+			ItemVariantID:       item.ItemVariantID,
+			ItemVariantName:     item.ItemVariant.VariantName,
+			ItemNameSnapshot:    item.ItemNameSnapshot,
+			VariantNameSnapshot: item.VariantNameSnapshot,
+			SKUSnapshot:         item.SKUSnapshot,
+			Qty:                 item.Qty,
+			CostPrice:           item.CostPrice,
+			DiscountAmount:      item.DiscountAmount,
+			Subtotal:            item.Subtotal,
+			CreatedAt:           item.CreatedAt,
+		})
+	}
+
+	// masukkan juga purchaseItemDTO di atas ke dalam field Items
+	purchaseDTO := dto.PurchaseResponse{
+		ID:             purchase.ID,
+		TenantID:       purchase.TenantID,
+		TenantName:     purchase.Tenant.Name,
+		InvoiceNumber:  purchase.InvoiceNumber,
+		SupplierID:     purchase.SupplierID,
+		SupplierName:   purchase.Supplier.Name,
+		PurchaseNumber: purchase.PurchaseNumber,
+		Subtotal:       purchase.Subtotal,
+		DiscountAmount: purchase.DiscountAmount,
+		TaxAmount:      purchase.TaxAmount,
+		GrandTotal:     purchase.GrandTotal,
+		CreatedBy:      purchase.Creator.ID,
+		CreatedByName:  purchase.Creator.FullName,
+		Notes:          purchase.Notes,
+		CreatedAt:      purchase.CreatedAt,
+		Items:          purchaseItemDTO,
+	}
+
+	return purchaseDTO
+}
+
 func ConvertToDTOCurrentStock(itemVariantID string, stock float64) dto.CurrentStockResponse {
 	currentStock := dto.CurrentStockResponse{
 		ItemVariantID: itemVariantID,

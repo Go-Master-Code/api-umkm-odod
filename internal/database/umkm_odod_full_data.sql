@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
--- Host:                         127.0.0.1
--- Server version:               8.4.6 - MySQL Community Server - GPL
+-- Host:                         localhost
+-- Server version:               5.7.43-log - MySQL Community Server (GPL)
 -- Server OS:                    Win64
--- HeidiSQL Version:             12.11.0.7065
+-- HeidiSQL Version:             12.8.0.6908
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -16,14 +16,16 @@
 
 
 -- Dumping database structure for umkm_odod
-CREATE DATABASE IF NOT EXISTS `umkm_odod` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+DROP DATABASE IF EXISTS `umkm_odod`;
+CREATE DATABASE IF NOT EXISTS `umkm_odod` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
 USE `umkm_odod`;
 
 -- Dumping structure for table umkm_odod.catalog_categories
+DROP TABLE IF EXISTS `catalog_categories`;
 CREATE TABLE IF NOT EXISTS `catalog_categories` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -39,12 +41,13 @@ INSERT INTO `catalog_categories` (`id`, `tenant_id`, `name`, `created_at`, `upda
 	('44444444-4444-4444-4444-444444444442', '11111111-1111-1111-1111-111111111111', 'Minuman', '2026-05-18 09:21:24', '2026-05-20 06:50:33', NULL);
 
 -- Dumping structure for table umkm_odod.catalog_items
+DROP TABLE IF EXISTS `catalog_items`;
 CREATE TABLE IF NOT EXISTS `catalog_items` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `category_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `category_id` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -64,10 +67,11 @@ INSERT INTO `catalog_items` (`id`, `tenant_id`, `category_id`, `name`, `descript
 	('c1124d3b-2894-420a-8878-556f96af06db', '11111111-1111-1111-1111-111111111111', '08e850d4-6590-4cef-91bd-df349c271019', 'Nagasari', 'Nagasari pisang ambon', 1, '2026-05-20 07:55:51', '2026-05-20 07:55:51', NULL);
 
 -- Dumping structure for table umkm_odod.item_attributes
+DROP TABLE IF EXISTS `item_attributes`;
 CREATE TABLE IF NOT EXISTS `item_attributes` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -82,11 +86,12 @@ INSERT INTO `item_attributes` (`id`, `tenant_id`, `name`, `created_at`, `updated
 	('66666666-6666-6666-6666-666666666662', '11111111-1111-1111-1111-111111111111', 'Berat', '2026-05-18 09:21:58', '2026-05-18 09:21:58', NULL);
 
 -- Dumping structure for table umkm_odod.item_attribute_values
+DROP TABLE IF EXISTS `item_attribute_values`;
 CREATE TABLE IF NOT EXISTS `item_attribute_values` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `attribute_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attribute_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -105,14 +110,15 @@ INSERT INTO `item_attribute_values` (`id`, `tenant_id`, `attribute_id`, `value`,
 	('77777777-7777-7777-7777-777777777774', '11111111-1111-1111-1111-111111111111', '66666666-6666-6666-6666-666666666662', '500 Gram', '2026-05-18 09:22:08', '2026-05-18 09:22:08', NULL);
 
 -- Dumping structure for table umkm_odod.item_variants
+DROP TABLE IF EXISTS `item_variants`;
 CREATE TABLE IF NOT EXISTS `item_variants` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `sku` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `barcode` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `variant_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `minimum_stock` decimal(18,2) NOT NULL DEFAULT (0),
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sku` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `barcode` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `variant_name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `minimum_stock` decimal(18,2) NOT NULL DEFAULT '0.00',
   `cost_price` decimal(18,2) NOT NULL DEFAULT '0.00',
   `selling_price` decimal(18,2) NOT NULL DEFAULT '0.00',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
@@ -133,10 +139,11 @@ INSERT INTO `item_variants` (`id`, `tenant_id`, `item_id`, `sku`, `barcode`, `va
 	('88888888-8888-8888-8888-888888888882', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-AB-500', '899100000002', 'Asin Bawang 500gr', 5.00, 12000.00, 14000.00, 1, '2026-05-18 09:22:19', '2026-06-02 08:23:39', NULL);
 
 -- Dumping structure for table umkm_odod.item_variant_attribute_values
+DROP TABLE IF EXISTS `item_variant_attribute_values`;
 CREATE TABLE IF NOT EXISTS `item_variant_attribute_values` (
-  `variant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `attribute_value_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `variant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attribute_value_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`variant_id`,`attribute_value_id`),
   KEY `fk_variant_attribute_value` (`attribute_value_id`),
   KEY `FK_item_variant_attribute_values_tenants` (`tenant_id`),
@@ -153,14 +160,15 @@ INSERT INTO `item_variant_attribute_values` (`variant_id`, `attribute_value_id`,
 	('88888888-8888-8888-8888-888888888882', '77777777-7777-7777-7777-777777777774', '11111111-1111-1111-1111-111111111111');
 
 -- Dumping structure for table umkm_odod.price_histories
+DROP TABLE IF EXISTS `price_histories`;
 CREATE TABLE IF NOT EXISTS `price_histories` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_variant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `price_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_variant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price_type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` decimal(18,2) NOT NULL,
   `effective_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `created_by` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_prices_tenant` (`tenant_id`),
@@ -177,18 +185,19 @@ INSERT INTO `price_histories` (`id`, `tenant_id`, `item_variant_id`, `price_type
 	('99999999-9999-9999-9999-999999999992', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888882', 'SELLING', 25000.00, '2026-05-20 06:36:20', '2416854f-55e6-423c-a2ec-8154c9431cd6', '2026-05-18 09:23:03');
 
 -- Dumping structure for table umkm_odod.purchases
+DROP TABLE IF EXISTS `purchases`;
 CREATE TABLE IF NOT EXISTS `purchases` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `purchase_number` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `supplier_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `invoice_number` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `purchase_number` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `supplier_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `invoice_number` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `subtotal` decimal(18,2) NOT NULL DEFAULT '0.00',
   `discount_amount` decimal(18,2) NOT NULL DEFAULT '0.00',
   `tax_amount` decimal(18,2) NOT NULL DEFAULT '0.00',
   `grand_total` decimal(18,2) NOT NULL DEFAULT '0.00',
-  `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `created_by` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  `created_by` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
@@ -197,22 +206,26 @@ CREATE TABLE IF NOT EXISTS `purchases` (
   KEY `idx_purchase_supplier` (`supplier_id`) USING BTREE,
   KEY `idx_purchase_created_by` (`created_by`) USING BTREE,
   KEY `idx_purchase_created_at` (`created_at`) USING BTREE,
-  CONSTRAINT `fk_purchase_created_by` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `fk_purchase_supplier` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `fk_purchase_tenant` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `fk_purchase_created_by` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`),
+  CONSTRAINT `fk_purchase_supplier` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`),
+  CONSTRAINT `fk_purchase_tenant` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.purchases: ~0 rows (approximately)
+-- Dumping data for table umkm_odod.purchases: ~2 rows (approximately)
+INSERT INTO `purchases` (`id`, `tenant_id`, `purchase_number`, `supplier_id`, `invoice_number`, `subtotal`, `discount_amount`, `tax_amount`, `grand_total`, `notes`, `created_by`, `created_at`, `updated_at`) VALUES
+	('4f3f3907-2536-4587-9d32-a2ae4751a9aa', '11111111-1111-1111-1111-111111111111', 'PO-1780935589', '4efba307-0fbd-4501-bb8d-3f9212c14fb9', 'SUP-INV-001', 169000.00, 5000.00, 16900.00, 180900.00, 'Pembelian stok mingguan', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-08 16:19:49', '2026-06-08 16:19:49'),
+	('d1b0e60f-b894-4320-b2e0-fae446d06e36', '11111111-1111-1111-1111-111111111111', 'PO-1780934118', '4efba307-0fbd-4501-bb8d-3f9212c14fb9', 'SUP-INV-001', 169000.00, 0.00, 0.00, 169000.00, 'Pembelian stok mingguan', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-08 15:55:18', '2026-06-08 15:55:19');
 
 -- Dumping structure for table umkm_odod.purchase_items
+DROP TABLE IF EXISTS `purchase_items`;
 CREATE TABLE IF NOT EXISTS `purchase_items` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `purchase_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_variant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_name_snapshot` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `variant_name_snapshot` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `sku_snapshot` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `purchase_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_variant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_name_snapshot` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `variant_name_snapshot` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sku_snapshot` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `qty` decimal(18,2) NOT NULL,
   `cost_price` decimal(18,2) NOT NULL,
   `discount_amount` decimal(18,2) NOT NULL DEFAULT '0.00',
@@ -222,18 +235,24 @@ CREATE TABLE IF NOT EXISTS `purchase_items` (
   KEY `idx_purchase_item_tenant` (`tenant_id`) USING BTREE,
   KEY `idx_purchase_item_purchase` (`purchase_id`) USING BTREE,
   KEY `idx_purchase_item_variant` (`item_variant_id`) USING BTREE,
-  CONSTRAINT `fk_purchase_item_purchase` FOREIGN KEY (`purchase_id`) REFERENCES `purchases` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `fk_purchase_item_tenant` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `fk_purchase_item_variant` FOREIGN KEY (`item_variant_id`) REFERENCES `item_variants` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `fk_purchase_item_purchase` FOREIGN KEY (`purchase_id`) REFERENCES `purchases` (`id`),
+  CONSTRAINT `fk_purchase_item_tenant` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`),
+  CONSTRAINT `fk_purchase_item_variant` FOREIGN KEY (`item_variant_id`) REFERENCES `item_variants` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table umkm_odod.purchase_items: ~0 rows (approximately)
+INSERT INTO `purchase_items` (`id`, `tenant_id`, `purchase_id`, `item_variant_id`, `item_name_snapshot`, `variant_name_snapshot`, `sku_snapshot`, `qty`, `cost_price`, `discount_amount`, `subtotal`, `created_at`) VALUES
+	('06377b76-b7de-485d-ab3e-8e20de6cbd63', '11111111-1111-1111-1111-111111111111', 'd1b0e60f-b894-4320-b2e0-fae446d06e36', '88888888-8888-8888-8888-888888888882', 'Keripik Singkong', 'Asin Bawang 500gr', 'KS-AB-500', 5.00, 10000.00, 0.00, 50000.00, '2026-06-08 15:55:18'),
+	('802ad168-06c6-4fc8-8d95-c44aec8f1ac5', '11111111-1111-1111-1111-111111111111', '4f3f3907-2536-4587-9d32-a2ae4751a9aa', '88888888-8888-8888-8888-888888888881', 'Keripik Singkong', 'Pedas Daun Jeruk 250gr', 'KS-PDJ-250', 5.00, 10000.00, 0.00, 50000.00, '2026-06-08 16:19:49'),
+	('94624e7c-97ef-4e65-a1ed-356a6247bf01', '11111111-1111-1111-1111-111111111111', 'd1b0e60f-b894-4320-b2e0-fae446d06e36', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'Keripik Singkong', 'Pedas Balado', 'KS-PB-500', 10.00, 12000.00, 1000.00, 119000.00, '2026-06-08 15:55:18'),
+	('da05d590-c091-4e18-ad93-bed0fb341f2e', '11111111-1111-1111-1111-111111111111', '4f3f3907-2536-4587-9d32-a2ae4751a9aa', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'Keripik Singkong', 'Pedas Balado', 'KS-PB-500', 10.00, 12000.00, 1000.00, 119000.00, '2026-06-08 16:19:49');
 
 -- Dumping structure for table umkm_odod.roles
+DROP TABLE IF EXISTS `roles`;
 CREATE TABLE IF NOT EXISTS `roles` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -251,19 +270,20 @@ INSERT INTO `roles` (`id`, `tenant_id`, `name`, `created_at`, `updated_at`, `del
 	('dc064501-5798-4c91-8308-0198561ceae3', 'f27e441f-5385-4b8d-b2e2-88b8615a4634', 'ADMIN', '2026-05-19 01:56:21', '2026-05-19 02:17:01', NULL);
 
 -- Dumping structure for table umkm_odod.sales
+DROP TABLE IF EXISTS `sales`;
 CREATE TABLE IF NOT EXISTS `sales` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `invoice_number` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `customer_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cashier_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `invoice_number` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `customer_name` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `cashier_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `subtotal` decimal(18,2) NOT NULL DEFAULT '0.00',
   `discount_amount` decimal(18,2) NOT NULL DEFAULT '0.00',
   `tax_amount` decimal(18,2) NOT NULL DEFAULT '0.00',
   `grand_total` decimal(18,2) NOT NULL DEFAULT '0.00',
-  `payment_method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payment_status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `payment_method` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payment_status` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `notes` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -280,14 +300,15 @@ INSERT INTO `sales` (`id`, `tenant_id`, `invoice_number`, `customer_name`, `cash
 	('ecf9ac1a-6c21-4881-80d5-b741e62ad205', '11111111-1111-1111-1111-111111111111', 'INV-1779948742', 'Andi', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', 437000.00, 10000.00, 43700.00, 470700.00, 'TRANSFER', 'UNPAID', 'Pembelian grosir', '2026-05-28 06:12:22', '2026-05-28 06:51:41');
 
 -- Dumping structure for table umkm_odod.sale_items
+DROP TABLE IF EXISTS `sale_items`;
 CREATE TABLE IF NOT EXISTS `sale_items` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `sale_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_variant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_name_snapshot` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `variant_name_snapshot` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `sku_snapshot` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sale_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_variant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_name_snapshot` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `variant_name_snapshot` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sku_snapshot` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `qty` decimal(18,2) NOT NULL,
   `unit_price` decimal(18,2) NOT NULL,
   `discount_amount` decimal(18,2) NOT NULL DEFAULT '0.00',
@@ -312,16 +333,17 @@ INSERT INTO `sale_items` (`id`, `tenant_id`, `sale_id`, `item_variant_id`, `item
 	('beddda53-3faa-46b7-a4dc-6fb00befb751', '11111111-1111-1111-1111-111111111111', 'ecf9ac1a-6c21-4881-80d5-b741e62ad205', '88888888-8888-8888-8888-888888888881', 'Keripik Singkong', 'Pedas Daun Jeruk 250gr', 'KS-PDJ-250', 13.00, 15000.00, 0.00, 195000.00, '2026-05-28 06:12:22');
 
 -- Dumping structure for table umkm_odod.stock_movements
+DROP TABLE IF EXISTS `stock_movements`;
 CREATE TABLE IF NOT EXISTS `stock_movements` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_variant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `movement_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_variant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `movement_type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `qty` decimal(18,2) NOT NULL,
-  `reference_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `reference_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `created_by` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reference_type` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reference_id` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  `created_by` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_stock_tenant` (`tenant_id`),
@@ -332,11 +354,12 @@ CREATE TABLE IF NOT EXISTS `stock_movements` (
   CONSTRAINT `fk_stock_variant` FOREIGN KEY (`item_variant_id`) REFERENCES `item_variants` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.stock_movements: ~51 rows (approximately)
+-- Dumping data for table umkm_odod.stock_movements: ~53 rows (approximately)
 INSERT INTO `stock_movements` (`id`, `tenant_id`, `item_variant_id`, `movement_type`, `qty`, `reference_type`, `reference_id`, `notes`, `created_by`, `created_at`) VALUES
 	('1012475d-2a7f-4fd5-88dc-8e399e3ee3c6', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -10.00, '', '', 'Bapak Udin', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-21 09:23:40'),
 	('119de780-c9bb-48fc-bbad-3fd8ab8b2118', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -7.00, 'SALE', 'ecf9ac1a-6c21-4881-80d5-b741e62ad205', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-28 06:12:22'),
 	('1776a9be-4f3a-4a9e-9c89-ee71eaee709f', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -5.00, 'SALE', '0f79d701-b78f-452e-a0cc-62c7d2ac35e8', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:20:06'),
+	('1b85f780-2583-4589-bb9e-4401431b2866', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888882', 'PURCHASE', 5.00, 'PURCHASE', 'd1b0e60f-b894-4320-b2e0-fae446d06e36', 'purchase transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-08 15:55:18'),
 	('1e38c273-cb4b-47db-be33-9a1f53739337', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -5.00, 'SALE', 'bcec37b4-a8bb-44a2-a039-cbe8cb06a530', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-28 04:03:21'),
 	('1f880299-0e64-4c4b-a3e8-15be0ab2052a', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'REDUCE', -3.00, 'ADJUSTMENT', '', 'Reason: kencing tikus | Notes: plastik berbau', '64ee38a5-23c6-4a82-b1ad-d488ccc0d8e6', '2026-05-29 02:06:48'),
 	('204020ba-96b8-4394-8033-26d0cd6cd286', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -2.00, 'SALE', '2d61cc53-394b-4ab8-9354-dbd8f7212150', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:23:39'),
@@ -355,6 +378,7 @@ INSERT INTO `stock_movements` (`id`, `tenant_id`, `item_variant_id`, `movement_t
 	('58481476-b28d-469b-88bb-88328d67568e', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -2.00, 'SALE', 'c4585fcf-5364-479d-b6dd-5ab2d414fd10', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:12:06'),
 	('5c044814-78e5-4ce0-8589-72377b417899', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -2.00, 'SALE', '49e45d2b-7a13-4906-a292-b7d870bb1a8e', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:15:35'),
 	('5c2fb1ed-7339-473c-ba3f-4608a94d6ad1', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -13.00, 'SALE', 'b50b0a06-422e-446c-865c-643a43beab27', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 12:22:20'),
+	('5c914f24-eea6-42fa-9031-f5effceca772', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'PURCHASE', 10.00, 'PURCHASE', '9b417820-a587-4475-99fc-c0b28cbcdfe2', 'purchase transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-08 16:20:12'),
 	('5fa4dd52-b554-4eec-8ddd-1e08156b6425', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -13.00, 'SALE', 'ecf9ac1a-6c21-4881-80d5-b741e62ad205', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-28 06:12:22'),
 	('64cddab1-8093-41f9-9df3-790b76eb8a74', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -1.00, 'SALE', 'c4585fcf-5364-479d-b6dd-5ab2d414fd10', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:12:06'),
 	('6eace372-d348-422a-8335-a6c7bb44690d', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -2.00, 'SALE', 'db3c1825-a8b3-449a-a999-f7e5dc8c1e6e', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:05:13'),
@@ -363,6 +387,7 @@ INSERT INTO `stock_movements` (`id`, `tenant_id`, `item_variant_id`, `movement_t
 	('745b00da-60ad-48dd-8016-737c9af4a588', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -5.00, 'SALE', '2d61cc53-394b-4ab8-9354-dbd8f7212150', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:23:39'),
 	('7bb76694-03f8-4b12-b00c-ebf66213c8ff', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888882', 'SALE', -10.00, 'SALE', 'ecf9ac1a-6c21-4881-80d5-b741e62ad205', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-28 06:12:22'),
 	('81b5b7b6-a4b7-40b5-8762-b70c338e1d19', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -2.00, 'SALE', '974dd35c-53fe-4a40-ae94-2f8ca4229c48', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:21:27'),
+	('82a27008-3799-4e33-88e8-3e2eccecb123', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'PURCHASE', 5.00, 'PURCHASE', '4f3f3907-2536-4587-9d32-a2ae4751a9aa', 'purchase transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-08 16:19:49'),
 	('884ede0d-7385-4224-81a5-9e9ffc23fe17', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -5.00, 'SALE', 'b5c9ed63-63f0-46c1-95e3-c77fb096049d', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:26:25'),
 	('8df813f3-3e51-49c2-9396-c244c53ccc4c', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -2.00, 'SALE', '7564b59d-35cd-4b52-afe4-deddd48456c9', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:24:41'),
 	('9ed20b5d-9f8c-42e8-b36a-d853c75bfb68', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -11.00, 'SALE', '98dc6b96-260b-4b08-9bc3-6ef84025706d', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 12:59:47'),
@@ -379,6 +404,7 @@ INSERT INTO `stock_movements` (`id`, `tenant_id`, `item_variant_id`, `movement_t
 	('d0f869a8-ed0c-4c53-8798-f7a2098d3baa', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'REDUCE', -2.00, 'ADJUSTMENT', '', 'plastik terbuka', '64ee38a5-23c6-4a82-b1ad-d488ccc0d8e6', '2026-05-28 16:24:38'),
 	('d426f189-813d-4501-804d-456710fa3543', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -20.00, '', '', 'Ibu Linda', '64ee38a5-23c6-4a82-b1ad-d488ccc0d8e6', '2026-06-02 08:25:23'),
 	('d908d5e0-5ff5-486b-874b-47df2622b965', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888882', 'PURCHASE', 500.00, '', '', 'Stock Awal', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-28 06:08:47'),
+	('da10c4ec-dd3b-44c9-88e7-85eeaa343dc1', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'PURCHASE', 10.00, 'PURCHASE', '4f3f3907-2536-4587-9d32-a2ae4751a9aa', 'purchase transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-08 16:19:49'),
 	('e0b28d2a-51f7-4d05-a243-11cea30dd8c2', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'PURCHASE', 99.00, '', '', 'Stock awal', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-21 09:02:13'),
 	('e331dfb6-6a53-4eea-8869-3447d116b043', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'ADD', 10.00, 'ADJUSTMENT', '', 'barang masuk angin', '64ee38a5-23c6-4a82-b1ad-d488ccc0d8e6', '2026-05-28 16:23:07'),
 	('e7bc843e-7178-4148-8ea0-417db75819f2', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'REDUCE', -1.00, 'ADJUSTMENT', '', 'plastik terbuka', '64ee38a5-23c6-4a82-b1ad-d488ccc0d8e6', '2026-05-29 01:56:02'),
@@ -386,18 +412,20 @@ INSERT INTO `stock_movements` (`id`, `tenant_id`, `item_variant_id`, `movement_t
 	('f3c363d4-0425-44a0-a1ea-80475000f3b2', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -1.00, 'SALE', 'b4a64b8a-c2ac-4c57-8a67-14e65058a7e4', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:08:45'),
 	('f7802881-51b8-4cd5-8e80-86aa73110fd8', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -5.00, 'SALE', '49e45d2b-7a13-4906-a292-b7d870bb1a8e', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:15:35'),
 	('f8dea795-4049-415d-8e19-f0d0e8d7e45b', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -2.00, 'SALE', 'bcec37b4-a8bb-44a2-a039-cbe8cb06a530', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-28 04:03:21'),
-	('f90c5b7d-497f-4cd1-9385-4583a19b7aab', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -5.00, 'SALE', '7564b59d-35cd-4b52-afe4-deddd48456c9', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:24:41');
+	('f90c5b7d-497f-4cd1-9385-4583a19b7aab', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -5.00, 'SALE', '7564b59d-35cd-4b52-afe4-deddd48456c9', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:24:41'),
+	('fbdcb0c4-200e-45e0-aa79-0278b6caf7ac', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'PURCHASE', 10.00, 'PURCHASE', 'd1b0e60f-b894-4320-b2e0-fae446d06e36', 'purchase transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-08 15:55:18');
 
 -- Dumping structure for table umkm_odod.suppliers
+DROP TABLE IF EXISTS `suppliers`;
 CREATE TABLE IF NOT EXISTS `suppliers` (
   `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
-  `created_at` timestamp NULL DEFAULT (now()),
-  `updated_at` timestamp NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_supplier_name_per_tenant` (`tenant_id`,`name`),
@@ -414,11 +442,12 @@ INSERT INTO `suppliers` (`id`, `tenant_id`, `name`, `phone`, `address`, `is_acti
 	('98f6686a-48b9-478e-b709-e8177a483bb8', '11111111-1111-1111-1111-111111111111', 'Amir Machmud', '081547841302', 'Jl. Cibaduyut No. 121', 1, '2026-06-02 11:10:00', '2026-06-02 11:25:59', '2026-06-02 11:25:59');
 
 -- Dumping structure for table umkm_odod.tenants
+DROP TABLE IF EXISTS `tenants`;
 CREATE TABLE IF NOT EXISTS `tenants` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -433,14 +462,15 @@ INSERT INTO `tenants` (`id`, `name`, `phone`, `address`, `created_at`, `updated_
 	('f27e441f-5385-4b8d-b2e2-88b8615a4634', 'Bakso Solo', '123456788', 'Jl. Singgasana Pradana No.111', '2026-05-18 10:29:53', '2026-05-18 15:09:49', NULL);
 
 -- Dumping structure for table umkm_odod.users
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
-  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `role_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `full_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `username` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` char(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  `phone` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `full_name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `username` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` char(60) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `phone` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `last_login_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
