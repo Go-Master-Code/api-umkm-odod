@@ -40,6 +40,7 @@ import (
 type SaleService interface {
 	GetAllSales(ctx context.Context, query dto.GetAllSalesQuery) ([]dto.SaleResponse, int64, error)
 	CreateSale(ctx context.Context, req dto.CreateSaleRequest) (dto.SaleResponse, error)
+	GetSaleByID(ctx context.Context, id string) (dto.SaleResponse, error)
 }
 
 // struct implementasi
@@ -295,5 +296,19 @@ func (s *saleService) CreateSale(ctx context.Context, req dto.CreateSaleRequest)
 	// ========================================
 	saleDTO := helper.ConvertToDTOSaleSingle(newSale)
 
+	return saleDTO, nil
+}
+
+func (s *saleService) GetSaleByID(ctx context.Context, id string) (dto.SaleResponse, error) {
+	// ambil tenantID dari context
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+	// akses repo
+	sale, err := s.saleRepo.GetSaleByID(ctx, tenantID, id)
+	if err != nil {
+		return dto.SaleResponse{}, err
+	}
+
+	// convert model to dto
+	saleDTO := helper.ConvertToDTOSaleSingle(sale)
 	return saleDTO, nil
 }

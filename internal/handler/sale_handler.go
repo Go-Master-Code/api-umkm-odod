@@ -51,17 +51,8 @@ func (h *SaleHandler) GetAllSales(c *gin.Context) {
 		return
 	}
 
-	// ========================================
-	// DEFAULT PAGINATION -> validasi langsung dari query URL
-	// ========================================
-
-	if query.Page < 1 {
-		query.Page = 1
-	}
-
-	if query.Limit < 1 {
-		query.Limit = 10
-	}
+	// pagination with helper
+	helper.NormalizePagination(&query.Page, &query.Limit)
 
 	salesResponseDTO, total, err := h.service.GetAllSales(c.Request.Context(), query)
 	if err != nil {
@@ -71,4 +62,17 @@ func (h *SaleHandler) GetAllSales(c *gin.Context) {
 
 	// jika sukses
 	helper.SuccessGetAllSalesPerTenant(c, salesResponseDTO, int(total), query.Page, query.Limit)
+}
+
+func (h *SaleHandler) GetSaleByID(c *gin.Context) {
+	// ambil param id
+	id := c.Param("id")
+
+	saleDTO, err := h.service.GetSaleByID(c.Request.Context(), id)
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorGetData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessGetData, saleDTO)
 }

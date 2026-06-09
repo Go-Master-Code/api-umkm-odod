@@ -47,6 +47,8 @@ func (r *saleRepository) GetAllSales(ctx context.Context, tenantID string, query
 	var sales []model.Sale
 	var total int64
 
+	// pagination sudah dilakukan di handler
+
 	offset := (query.Page - 1) * query.Limit
 
 	// base query

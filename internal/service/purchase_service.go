@@ -46,7 +46,9 @@ import (
 
 // interface
 type PurchaseService interface {
+	GetAllPurchases(ctx context.Context, query dto.GetAllPurchasesQuery) ([]dto.PurchaseResponse, int64, error)
 	CreatePurchase(ctx context.Context, req dto.CreatePurchaseRequest) (dto.PurchaseResponse, error)
+	GetPurchaseByID(ctx context.Context, id string) (dto.PurchaseResponse, error)
 }
 
 // struct implementasi
@@ -72,6 +74,20 @@ func NewPurchaseService(db *gorm.DB, purchaseRepo repository.PurchaseRepository,
 }
 
 // struct method
+func (s *purchaseService) GetAllPurchases(ctx context.Context, query dto.GetAllPurchasesQuery) ([]dto.PurchaseResponse, int64, error) {
+	// get tenantID from ctx
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+	// get data from repository
+	purchases, total, err := s.purchaseRepo.GetAllPurchases(ctx, tenantID, query)
+	if err != nil {
+		return []dto.PurchaseResponse{}, 0, err
+	}
+	// convert model to dto
+	purchasesDTO := helper.ConvertToDTOPurchasePlural(purchases)
+	// jika semua sukses
+	return purchasesDTO, total, nil
+}
+
 func (s *purchaseService) CreatePurchase(ctx context.Context, req dto.CreatePurchaseRequest) (dto.PurchaseResponse, error) {
 	// begin database transaction
 	tx := s.db.Begin()
@@ -244,6 +260,21 @@ func (s *purchaseService) CreatePurchase(ctx context.Context, req dto.CreatePurc
 
 	// Convert model to dto
 	purchaseDTO := helper.ConvertToDTOPurchaseSingle(newPurchase)
+
+	return purchaseDTO, nil
+}
+
+func (s *purchaseService) GetPurchaseByID(ctx context.Context, id string) (dto.PurchaseResponse, error) {
+	// get tenant id from context
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+	// akses repo
+	purchase, err := s.purchaseRepo.GetPurchaseByID(ctx, tenantID, id)
+	if err != nil {
+		return dto.PurchaseResponse{}, err
+	}
+
+	// convert model to dto
+	purchaseDTO := helper.ConvertToDTOPurchaseSingle(purchase)
 
 	return purchaseDTO, nil
 }

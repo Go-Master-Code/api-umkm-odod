@@ -51,6 +51,8 @@ func (r *purchaseRepository) GetAllPurchases(ctx context.Context, tenantID strin
 	var purchases []model.Purchase
 	var total int64
 
+	// pagination sudah dilakukan di handler
+
 	offset := (query.Page - 1) * query.Limit
 
 	// base query
@@ -65,7 +67,7 @@ func (r *purchaseRepository) GetAllPurchases(ctx context.Context, tenantID strin
 	if query.Search != "" {
 		search := "%" + query.Search + "%"
 		baseQuery = baseQuery.
-			Joins("LEFT JOIN suppliers on suppliers.id = puchases.supplier_id").
+			Joins("LEFT JOIN suppliers on suppliers.id = purchases.supplier_id").
 			Where("invoice_number LIKE ? OR purchase_number LIKE ? OR suppliers.name LIKE ?", search, search, search) // query untuk cari data yang invoice atau purchase number nya like ...
 	}
 
@@ -76,7 +78,7 @@ func (r *purchaseRepository) GetAllPurchases(ctx context.Context, tenantID strin
 	}
 
 	// get data
-	err = baseQuery.Preload("Tenant").Preload("Supplier").Preload("User").Preload("PurchaseItems").Preload("PurchaseItems.Tenant").Preload("PurchaseItems.ItemVariant").Order("created_at DESC").Limit(query.Limit).Offset(offset).Find(&purchases).Error
+	err = baseQuery.Preload("Tenant").Preload("Supplier").Preload("Creator").Preload("PurchaseItems").Preload("PurchaseItems.Tenant").Preload("PurchaseItems.ItemVariant").Order("created_at DESC").Limit(query.Limit).Offset(offset).Find(&purchases).Error
 	if err != nil {
 		return nil, 0, err
 	}

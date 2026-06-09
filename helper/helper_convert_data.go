@@ -325,6 +325,14 @@ func ConvertToDTOPurchaseSingle(purchase *model.Purchase) dto.PurchaseResponse {
 	return purchaseDTO
 }
 
+func ConvertToDTOPurchasePlural(purchases []model.Purchase) []dto.PurchaseResponse {
+	var purchasesDTO []dto.PurchaseResponse
+	for _, p := range purchases {
+		purchasesDTO = append(purchasesDTO, ConvertToDTOPurchaseSingle(&p))
+	}
+	return purchasesDTO
+}
+
 func ConvertToDTOCurrentStock(itemVariantID string, stock float64) dto.CurrentStockResponse {
 	currentStock := dto.CurrentStockResponse{
 		ItemVariantID: itemVariantID,

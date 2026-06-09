@@ -13,7 +13,7 @@ type AllSuccess struct {
 	Data    any    `json:"data"`
 }
 
-type GetAllSalesPerTenantSuccess struct {
+type GetAllSalesOrPurchasePerTenantSuccess struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 	Data    any    `json:"data"`
@@ -47,9 +47,20 @@ func SuccessLogin(c *gin.Context, data any, token string) {
 }
 
 func SuccessGetAllSalesPerTenant(c *gin.Context, data any, total int, page int, limit int) {
-	c.JSON(http.StatusOK, GetAllSalesPerTenantSuccess{
+	c.JSON(http.StatusOK, GetAllSalesOrPurchasePerTenantSuccess{
 		Code:    http.StatusOK,
 		Message: "success get all sales data",
+		Data:    data,
+		Total:   total,
+		Page:    page,
+		Limit:   limit,
+	})
+}
+
+func SuccessGetAllPurchasesPerTenant(c *gin.Context, data any, total int, page int, limit int) {
+	c.JSON(http.StatusOK, GetAllSalesOrPurchasePerTenantSuccess{
+		Code:    http.StatusOK,
+		Message: "success get all purchases data",
 		Data:    data,
 		Total:   total,
 		Page:    page,
