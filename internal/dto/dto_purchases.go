@@ -35,18 +35,7 @@ type CreatePurchaseRequest struct {
 	Items          []CreatePurchaseItemDetailRequest `json:"items" binding:"required,min=1,dive"` // tabel detil sales berisi item yang dijual
 }
 
-// update
-type UpdatePurchaseRequest struct {
-	// ====ATRIBUT YANG DI COMMENT DILARANG UPDATE DI TRANSAKSI POS AGAR DATA BERSIFAT IMUTABLE
-	// PurchaseNumber  *string  `json:"invoice_number" binding:"omitempty,max=100"`
-	// CreatedBy      *string  `json:"cashier_id" binding:"omitempty,uuid"`
-	// Subtotal       *float64 `json:"subtotal" binding:"omitempty"`
-	// DiscountAmount *float64 `json:"discount_amount" binding:"omitempty"`
-	// TaxAmount      *float64 `json:"tax_amount" binding:"omitempty"`
-	// GrandTotal     *float64 `json:"grand_total" binding:"omitempty"`
-	SupplierID *string `json:"supplier_id" binding:"omitempty,uuid"`
-	Notes      *string `json:"notes" binding:"omitempty,max=500"`
-}
+// update sebaiknya tidak ada karena transaksi purchase harusnya bersifat immutable, tidak bisa diedit karena akan merusak riwayat stok pula
 
 // detil sale item pada transaksi
 type CreatePurchaseItemDetailRequest struct {

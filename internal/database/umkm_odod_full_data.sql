@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
--- Host:                         localhost
--- Server version:               5.7.43-log - MySQL Community Server (GPL)
+-- Host:                         127.0.0.1
+-- Server version:               8.4.6 - MySQL Community Server - GPL
 -- Server OS:                    Win64
--- HeidiSQL Version:             12.8.0.6908
+-- HeidiSQL Version:             12.11.0.7065
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -17,15 +17,15 @@
 
 -- Dumping database structure for umkm_odod
 DROP DATABASE IF EXISTS `umkm_odod`;
-CREATE DATABASE IF NOT EXISTS `umkm_odod` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
+CREATE DATABASE IF NOT EXISTS `umkm_odod` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `umkm_odod`;
 
 -- Dumping structure for table umkm_odod.catalog_categories
 DROP TABLE IF EXISTS `catalog_categories`;
 CREATE TABLE IF NOT EXISTS `catalog_categories` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -43,11 +43,11 @@ INSERT INTO `catalog_categories` (`id`, `tenant_id`, `name`, `created_at`, `upda
 -- Dumping structure for table umkm_odod.catalog_items
 DROP TABLE IF EXISTS `catalog_items`;
 CREATE TABLE IF NOT EXISTS `catalog_items` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `category_id` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `category_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -69,9 +69,9 @@ INSERT INTO `catalog_items` (`id`, `tenant_id`, `category_id`, `name`, `descript
 -- Dumping structure for table umkm_odod.item_attributes
 DROP TABLE IF EXISTS `item_attributes`;
 CREATE TABLE IF NOT EXISTS `item_attributes` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -88,10 +88,10 @@ INSERT INTO `item_attributes` (`id`, `tenant_id`, `name`, `created_at`, `updated
 -- Dumping structure for table umkm_odod.item_attribute_values
 DROP TABLE IF EXISTS `item_attribute_values`;
 CREATE TABLE IF NOT EXISTS `item_attribute_values` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `attribute_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `value` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attribute_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -112,12 +112,12 @@ INSERT INTO `item_attribute_values` (`id`, `tenant_id`, `attribute_id`, `value`,
 -- Dumping structure for table umkm_odod.item_variants
 DROP TABLE IF EXISTS `item_variants`;
 CREATE TABLE IF NOT EXISTS `item_variants` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `sku` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `barcode` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `variant_name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sku` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `barcode` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `variant_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `minimum_stock` decimal(18,2) NOT NULL DEFAULT '0.00',
   `cost_price` decimal(18,2) NOT NULL DEFAULT '0.00',
   `selling_price` decimal(18,2) NOT NULL DEFAULT '0.00',
@@ -141,9 +141,9 @@ INSERT INTO `item_variants` (`id`, `tenant_id`, `item_id`, `sku`, `barcode`, `va
 -- Dumping structure for table umkm_odod.item_variant_attribute_values
 DROP TABLE IF EXISTS `item_variant_attribute_values`;
 CREATE TABLE IF NOT EXISTS `item_variant_attribute_values` (
-  `variant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `attribute_value_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `variant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attribute_value_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`variant_id`,`attribute_value_id`),
   KEY `fk_variant_attribute_value` (`attribute_value_id`),
   KEY `FK_item_variant_attribute_values_tenants` (`tenant_id`),
@@ -162,13 +162,13 @@ INSERT INTO `item_variant_attribute_values` (`variant_id`, `attribute_value_id`,
 -- Dumping structure for table umkm_odod.price_histories
 DROP TABLE IF EXISTS `price_histories`;
 CREATE TABLE IF NOT EXISTS `price_histories` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_variant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `price_type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_variant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` decimal(18,2) NOT NULL,
   `effective_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `created_by` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_prices_tenant` (`tenant_id`),
@@ -187,17 +187,17 @@ INSERT INTO `price_histories` (`id`, `tenant_id`, `item_variant_id`, `price_type
 -- Dumping structure for table umkm_odod.purchases
 DROP TABLE IF EXISTS `purchases`;
 CREATE TABLE IF NOT EXISTS `purchases` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `purchase_number` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `supplier_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `invoice_number` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `purchase_number` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `supplier_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `invoice_number` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `subtotal` decimal(18,2) NOT NULL DEFAULT '0.00',
   `discount_amount` decimal(18,2) NOT NULL DEFAULT '0.00',
   `tax_amount` decimal(18,2) NOT NULL DEFAULT '0.00',
   `grand_total` decimal(18,2) NOT NULL DEFAULT '0.00',
-  `notes` text COLLATE utf8mb4_unicode_ci,
-  `created_by` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `created_by` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
@@ -219,13 +219,13 @@ INSERT INTO `purchases` (`id`, `tenant_id`, `purchase_number`, `supplier_id`, `i
 -- Dumping structure for table umkm_odod.purchase_items
 DROP TABLE IF EXISTS `purchase_items`;
 CREATE TABLE IF NOT EXISTS `purchase_items` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `purchase_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_variant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_name_snapshot` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `variant_name_snapshot` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `sku_snapshot` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `purchase_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_variant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_name_snapshot` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `variant_name_snapshot` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sku_snapshot` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `qty` decimal(18,2) NOT NULL,
   `cost_price` decimal(18,2) NOT NULL,
   `discount_amount` decimal(18,2) NOT NULL DEFAULT '0.00',
@@ -240,19 +240,57 @@ CREATE TABLE IF NOT EXISTS `purchase_items` (
   CONSTRAINT `fk_purchase_item_variant` FOREIGN KEY (`item_variant_id`) REFERENCES `item_variants` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.purchase_items: ~0 rows (approximately)
+-- Dumping data for table umkm_odod.purchase_items: ~4 rows (approximately)
 INSERT INTO `purchase_items` (`id`, `tenant_id`, `purchase_id`, `item_variant_id`, `item_name_snapshot`, `variant_name_snapshot`, `sku_snapshot`, `qty`, `cost_price`, `discount_amount`, `subtotal`, `created_at`) VALUES
 	('06377b76-b7de-485d-ab3e-8e20de6cbd63', '11111111-1111-1111-1111-111111111111', 'd1b0e60f-b894-4320-b2e0-fae446d06e36', '88888888-8888-8888-8888-888888888882', 'Keripik Singkong', 'Asin Bawang 500gr', 'KS-AB-500', 5.00, 10000.00, 0.00, 50000.00, '2026-06-08 15:55:18'),
 	('802ad168-06c6-4fc8-8d95-c44aec8f1ac5', '11111111-1111-1111-1111-111111111111', '4f3f3907-2536-4587-9d32-a2ae4751a9aa', '88888888-8888-8888-8888-888888888881', 'Keripik Singkong', 'Pedas Daun Jeruk 250gr', 'KS-PDJ-250', 5.00, 10000.00, 0.00, 50000.00, '2026-06-08 16:19:49'),
 	('94624e7c-97ef-4e65-a1ed-356a6247bf01', '11111111-1111-1111-1111-111111111111', 'd1b0e60f-b894-4320-b2e0-fae446d06e36', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'Keripik Singkong', 'Pedas Balado', 'KS-PB-500', 10.00, 12000.00, 1000.00, 119000.00, '2026-06-08 15:55:18'),
 	('da05d590-c091-4e18-ad93-bed0fb341f2e', '11111111-1111-1111-1111-111111111111', '4f3f3907-2536-4587-9d32-a2ae4751a9aa', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'Keripik Singkong', 'Pedas Balado', 'KS-PB-500', 10.00, 12000.00, 1000.00, 119000.00, '2026-06-08 16:19:49');
 
+-- Dumping structure for table umkm_odod.purchase_returns
+DROP TABLE IF EXISTS `purchase_returns`;
+CREATE TABLE IF NOT EXISTS `purchase_returns` (
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `purchase_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `return_number` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  `created_by` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_purchase_returns_tenant` (`tenant_id`),
+  KEY `idx_purchase_returns_purchase` (`purchase_id`),
+  CONSTRAINT `fk_purchase_returns_purchase` FOREIGN KEY (`purchase_id`) REFERENCES `purchases` (`id`),
+  CONSTRAINT `fk_purchase_returns_tenant` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table umkm_odod.purchase_returns: ~0 rows (approximately)
+
+-- Dumping structure for table umkm_odod.purchase_return_items
+DROP TABLE IF EXISTS `purchase_return_items`;
+CREATE TABLE IF NOT EXISTS `purchase_return_items` (
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `purchase_return_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_variant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `qty` decimal(18,2) NOT NULL,
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_purchase_return_items_tenant` (`tenant_id`),
+  KEY `fk_purchase_return_items_return` (`purchase_return_id`),
+  CONSTRAINT `fk_purchase_return_items_return` FOREIGN KEY (`purchase_return_id`) REFERENCES `purchase_returns` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table umkm_odod.purchase_return_items: ~0 rows (approximately)
+
 -- Dumping structure for table umkm_odod.roles
 DROP TABLE IF EXISTS `roles`;
 CREATE TABLE IF NOT EXISTS `roles` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -272,18 +310,18 @@ INSERT INTO `roles` (`id`, `tenant_id`, `name`, `created_at`, `updated_at`, `del
 -- Dumping structure for table umkm_odod.sales
 DROP TABLE IF EXISTS `sales`;
 CREATE TABLE IF NOT EXISTS `sales` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `invoice_number` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `customer_name` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cashier_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `invoice_number` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `customer_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `cashier_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `subtotal` decimal(18,2) NOT NULL DEFAULT '0.00',
   `discount_amount` decimal(18,2) NOT NULL DEFAULT '0.00',
   `tax_amount` decimal(18,2) NOT NULL DEFAULT '0.00',
   `grand_total` decimal(18,2) NOT NULL DEFAULT '0.00',
-  `payment_method` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payment_status` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `notes` text COLLATE utf8mb4_unicode_ci,
+  `payment_method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payment_status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -302,13 +340,13 @@ INSERT INTO `sales` (`id`, `tenant_id`, `invoice_number`, `customer_name`, `cash
 -- Dumping structure for table umkm_odod.sale_items
 DROP TABLE IF EXISTS `sale_items`;
 CREATE TABLE IF NOT EXISTS `sale_items` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `sale_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_variant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_name_snapshot` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `variant_name_snapshot` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `sku_snapshot` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sale_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_variant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_name_snapshot` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `variant_name_snapshot` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sku_snapshot` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `qty` decimal(18,2) NOT NULL,
   `unit_price` decimal(18,2) NOT NULL,
   `discount_amount` decimal(18,2) NOT NULL DEFAULT '0.00',
@@ -335,15 +373,15 @@ INSERT INTO `sale_items` (`id`, `tenant_id`, `sale_id`, `item_variant_id`, `item
 -- Dumping structure for table umkm_odod.stock_movements
 DROP TABLE IF EXISTS `stock_movements`;
 CREATE TABLE IF NOT EXISTS `stock_movements` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_variant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `movement_type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_variant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `movement_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `qty` decimal(18,2) NOT NULL,
-  `reference_type` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `reference_id` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `notes` text COLLATE utf8mb4_unicode_ci,
-  `created_by` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reference_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reference_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `created_by` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_stock_tenant` (`tenant_id`),
@@ -354,7 +392,7 @@ CREATE TABLE IF NOT EXISTS `stock_movements` (
   CONSTRAINT `fk_stock_variant` FOREIGN KEY (`item_variant_id`) REFERENCES `item_variants` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.stock_movements: ~53 rows (approximately)
+-- Dumping data for table umkm_odod.stock_movements: ~0 rows (approximately)
 INSERT INTO `stock_movements` (`id`, `tenant_id`, `item_variant_id`, `movement_type`, `qty`, `reference_type`, `reference_id`, `notes`, `created_by`, `created_at`) VALUES
 	('1012475d-2a7f-4fd5-88dc-8e399e3ee3c6', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -10.00, '', '', 'Bapak Udin', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-21 09:23:40'),
 	('119de780-c9bb-48fc-bbad-3fd8ab8b2118', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -7.00, 'SALE', 'ecf9ac1a-6c21-4881-80d5-b741e62ad205', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-28 06:12:22'),
@@ -418,11 +456,11 @@ INSERT INTO `stock_movements` (`id`, `tenant_id`, `item_variant_id`, `movement_t
 -- Dumping structure for table umkm_odod.suppliers
 DROP TABLE IF EXISTS `suppliers`;
 CREATE TABLE IF NOT EXISTS `suppliers` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `address` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -435,7 +473,7 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
   CONSTRAINT `fk_suppliers_tenant` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.suppliers: ~3 rows (approximately)
+-- Dumping data for table umkm_odod.suppliers: ~0 rows (approximately)
 INSERT INTO `suppliers` (`id`, `tenant_id`, `name`, `phone`, `address`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	('4e0c76e8-e258-440d-9ed3-a8831f3c3296', '11111111-1111-1111-1111-111111111111', 'Lusi Oktaviani', '089981451237', 'Jl. Kalidam No. 45', 1, '2026-06-02 08:32:51', '2026-06-02 08:32:51', NULL),
 	('4efba307-0fbd-4501-bb8d-3f9212c14fb9', '11111111-1111-1111-1111-111111111111', 'Keripik Ma Icih', '081248150369', 'Jl. Pasirkaliki No. 33', 1, '2026-06-02 10:04:20', '2026-06-02 10:04:20', NULL),
@@ -444,17 +482,17 @@ INSERT INTO `suppliers` (`id`, `tenant_id`, `name`, `phone`, `address`, `is_acti
 -- Dumping structure for table umkm_odod.tenants
 DROP TABLE IF EXISTS `tenants`;
 CREATE TABLE IF NOT EXISTS `tenants` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `address` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.tenants: ~4 rows (approximately)
+-- Dumping data for table umkm_odod.tenants: ~0 rows (approximately)
 INSERT INTO `tenants` (`id`, `name`, `phone`, `address`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	('11111111-1111-1111-1111-111111111111', 'Keripik Mang Odod', '081234567890', 'Jalan Kademangan No. 25, Pojok, Kelurahan Setiamanah, Kota Cimahi', '2026-05-18 09:20:02', '2026-05-18 09:28:00', NULL),
 	('11111111-1111-1111-1111-111111111112', 'Bakso Petruk', '082233445566', 'Jl. Sudirman No. 12, Bandung', '2026-05-18 09:57:40', '2026-05-18 14:51:21', NULL),
@@ -464,13 +502,13 @@ INSERT INTO `tenants` (`id`, `name`, `phone`, `address`, `created_at`, `updated_
 -- Dumping structure for table umkm_odod.users
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tenant_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `role_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `full_name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `username` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` char(60) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  `phone` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tenant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `full_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `username` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` char(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `phone` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `last_login_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
