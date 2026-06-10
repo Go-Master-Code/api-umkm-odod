@@ -31,8 +31,15 @@ func (r *purchaseReturnRepository) CreatePurchaseReturn(ctx context.Context, tx 
 func (r *purchaseReturnRepository) GetPurchaseReturnByID(ctx context.Context, tenantID string, id string) (*model.PurchaseReturn, error) {
 	var purchaseReturn model.PurchaseReturn
 	// preload Tenant, Purchase, User
-	err := r.db.WithContext(ctx).Preload("Tenant").Preload("Purchase").Preload("User").
-		Where("purchase_returns.tenant_id = ? AND id = ?", tenantID, id).
+	err := r.db.WithContext(ctx).
+		Preload("Tenant").
+		Preload("Purchase").
+		Preload("User").
+		Preload("PurchaseReturnItems").
+		Preload("PurchaseReturnItems.Tenant").         // preload nested relation dari purchase return item
+		Preload("PurchaseReturnItems.PurchaseReturn"). // preload nested relation dari purchase return item
+		Preload("PurchaseReturnItems.ItemVariant").    // preload nested relation dari purchase return item
+		Where("purchase_returns.tenant_id = ? AND purchase_returns.id = ?", tenantID, id).
 		First(&purchaseReturn).Error
 
 	if err != nil {

@@ -5,6 +5,7 @@ import "time"
 type PurchaseReturnItem struct {
 	ID               string         `json:"id" gorm:"type:char(36);primaryKey"`
 	TenantID         string         `json:"tenant_id" gorm:"type:char(36);not null;index"`
+	Tenant           Tenant         `json:"-" gorm:"foreignKey:TenantID"`
 	PurchaseReturnID string         `json:"purchase_return_id" gorm:"type:char(36);not null"`
 	PurchaseReturn   PurchaseReturn `json:"-" gorm:"foreignKey:PurchaseReturnID"` // reverse relation ke model PurchaseReturn
 	ItemVariantID    string         `json:"item_variant_id" gorm:"type:char(36);not null"`

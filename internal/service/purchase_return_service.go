@@ -22,18 +22,20 @@ type PurchaseReturnService interface {
 // struct implementasi
 type purchaseReturnService struct {
 	db                     *gorm.DB
-	repoPurchaseReturn     repository.PurchaseReturnRepository
-	repoPurchaseReturnItem repository.PurchaseReturnItemRepository
-	repoStockMovement      repository.StockMovementRepository
+	purchaseReturnRepo     repository.PurchaseReturnRepository
+	purchaseReturnItemRepo repository.PurchaseReturnItemRepository
+	itemVariantRepo        repository.ItemVariantRepository
+	stockMovementRepo      repository.StockMovementRepository
 }
 
 // constructor
-func NewPurchaseReturnService(db *gorm.DB, repoPurchaseReturn repository.PurchaseReturnRepository, repoPurchaseReturnItem repository.PurchaseReturnItemRepository, repoStockMovement repository.StockMovementRepository) PurchaseReturnService {
+func NewPurchaseReturnService(db *gorm.DB, purchaseReturnRepo repository.PurchaseReturnRepository, purchaseReturnItemRepo repository.PurchaseReturnItemRepository, itemVariantRepo repository.ItemVariantRepository, stockMovementRepo repository.StockMovementRepository) PurchaseReturnService {
 	return &purchaseReturnService{
 		db:                     db,
-		repoPurchaseReturn:     repoPurchaseReturn,
-		repoPurchaseReturnItem: repoPurchaseReturnItem,
-		repoStockMovement:      repoStockMovement,
+		purchaseReturnRepo:     purchaseReturnRepo,
+		purchaseReturnItemRepo: purchaseReturnItemRepo,
+		itemVariantRepo:        itemVariantRepo,
+		stockMovementRepo:      stockMovementRepo,
 	}
 }
 
@@ -78,14 +80,73 @@ func (s *purchaseReturnService) CreatePurchaseReturn(ctx context.Context, req dt
 		CreatedBy:    userID,
 	}
 
-	err := s.repoPurchaseReturn.CreatePurchaseReturn(ctx, tx, &purchaseReturn)
+	// create header / master purchase return
+	err := s.purchaseReturnRepo.CreatePurchaseReturn(ctx, tx, &purchaseReturn)
 	if err != nil {
 		tx.Rollback() // rollback jika operasi
 		return dto.PurchaseReturnResponse{}, err
 	}
 
+	// loop purchase return items
+	for _, item := range req.Items { // loop ke struct req.Items yang bersifat plural
+		// ambil item variant dari db, harus trusted, jangan percaya input dari frontend
+		itemVariant, err := s.itemVariantRepo.GetItemVariantByID(ctx, tenantID, item.ItemVariantID)
+		if err != nil {
+			return dto.PurchaseReturnResponse{}, err
+		}
+
+		purchaseReturnItems := model.PurchaseReturnItem{
+			ID:               uuid.NewString(),
+			TenantID:         tenantID,
+			PurchaseReturnID: purchaseReturn.ID,
+			ItemVariantID:    itemVariant.ID,
+			Qty:              item.Qty,
+			Notes:            item.Notes,
+		}
+
+		// simpan purchase return items ke db
+		err = s.purchaseReturnItemRepo.CreatePurchaseReturnItem(ctx, tx, &purchaseReturnItems)
+
+		if err != nil {
+			tx.Rollback()
+			return dto.PurchaseReturnResponse{}, err
+		}
+
+		// ========================================
+		// CREATE STOCK MOVEMENT
+		// stok keluar (retur), qty selalu negatif
+		// ========================================
+
+		movement := model.StockMovement{
+			ID:            uuid.NewString(),
+			TenantID:      tenantID,
+			ItemVariantID: itemVariant.ID,
+			MovementType:  constants.MovementPurchaseReturn,
+			Qty:           -item.Qty, // selalu negatif karena retur mengurangi stok yang ada
+			ReferenceType: "PURCHASE RETURN",
+			ReferenceID:   purchaseReturn.ID,
+			Notes:         "purchase return transaction",
+			CreatedBy:     userID,
+		}
+
+		// simpan data ke tabel movement
+		err = s.stockMovementRepo.CreateMovement(ctx, tx, &movement)
+		if err != nil {
+			tx.Rollback()
+			return dto.PurchaseReturnResponse{}, err
+		}
+	}
+
+	// commit transaction -> WAJIB
+	err = tx.Commit().Error
+
+	// di blok ini tidak perlu di rollback lagi, tx sudah di commit
+	if err != nil {
+		return dto.PurchaseReturnResponse{}, err
+	}
+
 	// get data by ID + preload relasi
-	newPurchaseReturn, err := s.repoPurchaseReturn.GetPurchaseReturnByID(ctx, tenantID, purchaseReturn.ID)
+	newPurchaseReturn, err := s.purchaseReturnRepo.GetPurchaseReturnByID(ctx, tenantID, purchaseReturn.ID)
 
 	if err != nil {
 		return dto.PurchaseReturnResponse{}, err
@@ -93,5 +154,6 @@ func (s *purchaseReturnService) CreatePurchaseReturn(ctx context.Context, req dt
 
 	// convert model to dto
 	purchaseReturnDTO := helper.ConvertToDTOPurchaseReturnSingle(newPurchaseReturn)
+
 	return purchaseReturnDTO, nil
 }

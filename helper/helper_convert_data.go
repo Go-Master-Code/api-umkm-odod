@@ -337,7 +337,7 @@ func ConvertToDTOPurchaseReturnSingle(purchaseReturn *model.PurchaseReturn) dto.
 	// add detil purchase return items dulu untuk disisipkan pada master purchase return
 	var returnItemsDTO []dto.PurchaseReturnItemResponse
 
-	for _, item := range purchaseReturn.Items {
+	for _, item := range purchaseReturn.PurchaseReturnItems {
 		returnItemsDTO = append(returnItemsDTO, dto.PurchaseReturnItemResponse{
 			ID:               item.ID,
 			TenantID:         item.TenantID,
