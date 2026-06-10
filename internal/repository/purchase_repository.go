@@ -56,7 +56,7 @@ func (r *purchaseRepository) GetAllPurchases(ctx context.Context, tenantID strin
 	offset := (query.Page - 1) * query.Limit
 
 	// base query
-	baseQuery := r.db.WithContext(ctx).Model(&model.Purchase{}).Where("tenant_id = ?", tenantID)
+	baseQuery := r.db.WithContext(ctx).Model(&model.Purchase{}).Where("purchases.tenant_id = ?", tenantID)
 
 	// // filter payment status
 	// if query.PaymentStatus != "" {

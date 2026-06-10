@@ -333,6 +333,47 @@ func ConvertToDTOPurchasePlural(purchases []model.Purchase) []dto.PurchaseRespon
 	return purchasesDTO
 }
 
+func ConvertToDTOPurchaseReturnSingle(purchaseReturn *model.PurchaseReturn) dto.PurchaseReturnResponse {
+	// add detil purchase return items dulu untuk disisipkan pada master purchase return
+	var returnItemsDTO []dto.PurchaseReturnItemResponse
+
+	for _, item := range purchaseReturn.Items {
+		returnItemsDTO = append(returnItemsDTO, dto.PurchaseReturnItemResponse{
+			ID:               item.ID,
+			TenantID:         item.TenantID,
+			PurchaseReturnID: item.PurchaseReturnID,
+			ItemVariantID:    item.ItemVariantID,
+			ItemVariantName:  item.ItemVariant.VariantName,
+			Qty:              item.Qty,
+			Notes:            item.Notes,
+			CreatedAt:        item.CreatedAt,
+		})
+	}
+
+	purchaseReturnDTO := dto.PurchaseReturnResponse{
+		ID:            purchaseReturn.PurchaseID,
+		TenantID:      purchaseReturn.ID,
+		TenantName:    purchaseReturn.Tenant.Name,
+		PurchaseID:    purchaseReturn.PurchaseID,
+		ReturnNumber:  purchaseReturn.ReturnNumber,
+		Reason:        purchaseReturn.Reason,
+		Notes:         purchaseReturn.Notes,
+		CreatedBy:     purchaseReturn.CreatedBy,
+		CreatedByName: purchaseReturn.User.FullName,
+		CreatedAt:     purchaseReturn.CreatedAt,
+		Items:         returnItemsDTO,
+	}
+	return purchaseReturnDTO
+}
+
+func ConvertToDTOPurchaseReturnPlural(purchaseReturns []model.PurchaseReturn) []dto.PurchaseReturnResponse {
+	var purchaseReturnsDTO []dto.PurchaseReturnResponse
+	for _, pr := range purchaseReturns {
+		purchaseReturnsDTO = append(purchaseReturnsDTO, ConvertToDTOPurchaseReturnSingle(&pr))
+	}
+	return purchaseReturnsDTO
+}
+
 func ConvertToDTOCurrentStock(itemVariantID string, stock float64) dto.CurrentStockResponse {
 	currentStock := dto.CurrentStockResponse{
 		ItemVariantID: itemVariantID,
