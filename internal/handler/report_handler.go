@@ -40,3 +40,22 @@ func (h *ReportHandler) GetSalesReport(c *gin.Context) {
 
 	helper.SuccessResponse(c, constants.SuccessGetData, salesReport)
 }
+
+func (h *ReportHandler) GetPurchaseReport(c *gin.Context) {
+	var query dto.PurchaseReportQuery
+
+	// bind query from URL
+	err := c.ShouldBindQuery(&query)
+	if err != nil {
+		helper.ErrorParsingRequestBody(c, err)
+		return
+	}
+
+	purchaseReport, err := h.service.GetPurchaseReport(c.Request.Context(), query)
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorGetData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessGetData, purchaseReport)
+}

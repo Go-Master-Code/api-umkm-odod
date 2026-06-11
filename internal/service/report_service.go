@@ -11,6 +11,7 @@ import (
 // interface
 type ReportService interface {
 	GetSalesReport(ctx context.Context, query dto.SaleReportQuery) (dto.SalesReportResponse, error)
+	GetPurchaseReport(ctx context.Context, query dto.PurchaseReportQuery) (dto.PurchaseReportResponse, error)
 }
 
 // struct implementasi
@@ -48,4 +49,31 @@ func (s *reportService) GetSalesReport(ctx context.Context, query dto.SaleReport
 	}
 
 	return salesReportFull, nil
+}
+
+func (s *reportService) GetPurchaseReport(ctx context.Context, query dto.PurchaseReportQuery) (dto.PurchaseReportResponse, error) {
+	// get tenantID by context
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	reportSummary, err := s.repo.GetPurchaseReportSummary(ctx, tenantID, query.StartDate, query.EndDate)
+	if err != nil {
+		return dto.PurchaseReportResponse{}, err
+	}
+
+	// get data penjualan
+	purchaseReport, err := s.repo.GetPurchaseReport(ctx, tenantID, query.StartDate, query.EndDate)
+	if err != nil {
+		return dto.PurchaseReportResponse{}, err
+	}
+
+	// convert purchase report to dto
+	purchaseReportDTO := helper.ConvertToDTOPurchasePlural(purchaseReport)
+
+	// masukkan data summary dan master-detil purchase ke dtoPurchaseReportResponse
+	purchaseReportFull := dto.PurchaseReportResponse{
+		Summary:      *reportSummary,
+		Transactions: purchaseReportDTO,
+	}
+
+	return purchaseReportFull, nil
 }
