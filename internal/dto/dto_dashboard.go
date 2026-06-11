@@ -22,3 +22,11 @@ type DailyPurchaseChartResponse struct {
 	Date          string  `json:"date"`
 	TotalPurchase float64 `json:"total_purchase"`
 }
+
+// top 5 produk terlaris
+type TopSellingProductsResponse struct {
+	ItemVariantID string `json:"item_variant_id"`
+	ItemName      string `json:"item_name"`    // nama item nya
+	VariantName   string `json:"variant_name"` // nama variannya
+	QtySold       string `json:"qty_sold"`
+}

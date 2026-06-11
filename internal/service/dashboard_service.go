@@ -12,6 +12,7 @@ type DashboardService interface {
 	GetSummary(ctx context.Context) (dto.DashBoardSummaryResponse, error)
 	GetDailySalesChart(ctx context.Context) ([]dto.DailySalesChartResponse, error)
 	GetDailyPurchaseChart(ctx context.Context) ([]dto.DailyPurchaseChartResponse, error)
+	GetTopSellingProducts(ctx context.Context) ([]dto.TopSellingProductsResponse, error)
 }
 
 // struct implementasi
@@ -151,4 +152,16 @@ func (s *dashboardService) GetDailyPurchaseChart(ctx context.Context) ([]dto.Dai
 	}
 
 	return dailyPurchaseChart, nil
+}
+
+func (s *dashboardService) GetTopSellingProducts(ctx context.Context) ([]dto.TopSellingProductsResponse, error) {
+	// get tenantID from ctx
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	topSellingProducts, err := s.dashboardRepo.GetTopSellingProducts(ctx, tenantID)
+	if err != nil {
+		return nil, err
+	}
+
+	return topSellingProducts, nil
 }

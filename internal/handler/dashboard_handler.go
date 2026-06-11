@@ -50,3 +50,13 @@ func (h *DashboardHandler) GetDailyPurchaseChart(c *gin.Context) {
 
 	helper.SuccessResponse(c, constants.SuccessGetData, dailyPurchaseChart)
 }
+
+func (h *DashboardHandler) GetTopSellingProducts(c *gin.Context) {
+	topSellingProducts, err := h.service.GetTopSellingProducts(c.Request.Context())
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorGetData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessGetData, topSellingProducts)
+}

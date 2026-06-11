@@ -15,6 +15,7 @@ type DashboardRepository interface {
 	GetTodayPurchases(ctx context.Context, tenantID string) (float64, int64, error)
 	GetDailySalesChart(ctx context.Context, tenantID string) ([]dto.DailySalesChartResponse, error)
 	GetDailyPurchaseChart(ctx context.Context, tenantID string) ([]dto.DailyPurchaseChartResponse, error)
+	GetTopSellingProducts(ctx context.Context, tenantID string) ([]dto.TopSellingProductsResponse, error)
 }
 
 // struct implementasi
@@ -122,4 +123,24 @@ func (r *dashboardRepository) GetDailyPurchaseChart(ctx context.Context, tenantI
 	}
 
 	return purchase, nil
+}
+
+func (r *dashboardRepository) GetTopSellingProducts(ctx context.Context, tenantID string) ([]dto.TopSellingProductsResponse, error) {
+	var topSellingProducts []dto.TopSellingProductsResponse
+
+	// nama field di query sql pakai AS agar sesuai dengan nama field json pada topSellingProducts
+	err := r.db.WithContext(ctx).
+		Model(model.SaleItem{}).
+		Where("tenant_id = ?", tenantID).
+		Select(`item_variant_id, item_name_snapshot AS item_name, variant_name_snapshot AS variant_name, SUM(qty) AS qty_sold`).
+		Group(`item_variant_id, item_name_snapshot, variant_name_snapshot`).
+		Order("qty_sold desc"). // urutkan dari yang terjual terbanyak
+		Limit(5).               // batasi hanya 5 produk
+		Scan(&topSellingProducts).Error
+
+	if err != nil {
+		return []dto.TopSellingProductsResponse{}, err
+	}
+
+	return topSellingProducts, nil
 }

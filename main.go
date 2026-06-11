@@ -128,6 +128,11 @@ func main() {
 	dashboardService := service.NewDashboardService(dashboardRepo, stockMovementRepo, itemVariantRepo, catalogItemRepo, supplierRepo)
 	dashboardHandler := handler.NewDashboardHandler(dashboardService)
 
+	// dependency injection report
+	reportRepo := repository.NewReportRepository(database.DB)
+	reportService := service.NewReportService(reportRepo)
+	reportHandler := handler.NewReportHandler(reportService)
+
 	// router group public tidak perlu pakai middleware AuthRequired
 	public := r.Group("/api")
 	// endpoint login
@@ -162,6 +167,8 @@ func main() {
 		routes.RegisterPurchaseReturnRoutes(authorized, purchaseReturnHandler)
 		// list handler dashboard
 		routes.RegisterDashboardRoutes(authorized, dashboardHandler)
+		// list handler report
+		routes.RegisterReportRoutes(authorized, reportHandler)
 	}
 
 	// run server
