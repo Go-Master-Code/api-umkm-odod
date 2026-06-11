@@ -10,6 +10,8 @@ import (
 // interface
 type DashboardService interface {
 	GetSummary(ctx context.Context) (dto.DashBoardSummaryResponse, error)
+	GetDailySalesChart(ctx context.Context) ([]dto.DailySalesChartResponse, error)
+	GetDailyPurchaseChart(ctx context.Context) ([]dto.DailyPurchaseChartResponse, error)
 }
 
 // struct implementasi
@@ -124,4 +126,29 @@ func (s *dashboardService) GetSummary(ctx context.Context) (dto.DashBoardSummary
 	}
 
 	return dashboardSummary, nil
+}
+
+func (s *dashboardService) GetDailySalesChart(ctx context.Context) ([]dto.DailySalesChartResponse, error) {
+	// get tenantID from ctx
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	dailySalesChart, err := s.dashboardRepo.GetDailySalesChart(ctx, tenantID)
+	if err != nil {
+		return nil, err
+	}
+
+	return dailySalesChart, nil
+}
+
+func (s *dashboardService) GetDailyPurchaseChart(ctx context.Context) ([]dto.DailyPurchaseChartResponse, error) {
+	// get tenantID from ctx
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	dailyPurchaseChart, err := s.dashboardRepo.GetDailyPurchaseChart(ctx, tenantID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return dailyPurchaseChart, nil
 }

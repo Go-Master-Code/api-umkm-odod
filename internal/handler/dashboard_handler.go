@@ -30,3 +30,23 @@ func (h *DashboardHandler) GetSummary(c *gin.Context) {
 
 	helper.SuccessResponse(c, constants.SuccessGetData, dashboardSummaryDTO)
 }
+
+func (h *DashboardHandler) GetDailySalesChart(c *gin.Context) {
+	dailySalesChart, err := h.service.GetDailySalesChart(c.Request.Context())
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorGetData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessGetData, dailySalesChart)
+}
+
+func (h *DashboardHandler) GetDailyPurchaseChart(c *gin.Context) {
+	dailyPurchaseChart, err := h.service.GetDailyPurchaseChart(c.Request.Context())
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorGetData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessGetData, dailyPurchaseChart)
+}

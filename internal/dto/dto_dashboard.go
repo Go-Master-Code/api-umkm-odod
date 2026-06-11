@@ -10,3 +10,15 @@ type DashBoardSummaryResponse struct {
 	TotalVariants            int64   `json:"total_variants"`
 	TotalSuppliers           int64   `json:"total_suppliers"`
 }
+
+// untuk chart total sales
+type DailySalesChartResponse struct {
+	Date       string  `json:"date"`
+	TotalSales float64 `json:"total_sales"`
+}
+
+// untuk chart total purchase
+type DailyPurchaseChartResponse struct {
+	Date          string  `json:"date"`
+	TotalPurchase float64 `json:"total_purchase"`
+}

@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"time"
+	"umkm-odod/internal/dto"
 	"umkm-odod/internal/model"
 
 	"gorm.io/gorm"
@@ -12,9 +13,8 @@ import (
 type DashboardRepository interface {
 	GetTodaySales(ctx context.Context, tenantID string) (float64, int64, error)
 	GetTodayPurchases(ctx context.Context, tenantID string) (float64, int64, error)
-	// GetLowStockCount(ctx context.Context, tenantID string) (int64, error)
-	// GetTotalItems(ctx context.Context, tenantID string) (int64, error)
-	// GetTotalVariants(ctx context.Context, tenantID string) (int64, error)
+	GetDailySalesChart(ctx context.Context, tenantID string) ([]dto.DailySalesChartResponse, error)
+	GetDailyPurchaseChart(ctx context.Context, tenantID string) ([]dto.DailyPurchaseChartResponse, error)
 }
 
 // struct implementasi
@@ -84,4 +84,42 @@ func (r *dashboardRepository) GetTodayPurchases(ctx context.Context, tenantID st
 	}
 
 	return totalPurchases, totalPurchaseTransactions, nil
+}
+
+func (r *dashboardRepository) GetDailySalesChart(ctx context.Context, tenantID string) ([]dto.DailySalesChartResponse, error) {
+	var sales []dto.DailySalesChartResponse
+
+	err := r.db.WithContext(ctx).Model(&model.Sale{}).
+		Where("tenant_id = ? AND created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)", tenantID).
+		Select("DATE(created_at) AS date, SUM(grand_total) AS total_sales").
+		Group("DATE(created_at)").
+		Order("DATE(created_at)").
+		Scan(&sales).Error // pakai scan jangan find, karena di query ini pakai model &Model.Sale{} Karena Anda tidak sedang mengambil entity Sale, melainkan hasil agregasi custom.
+
+	// field di group dan order harus sesuai dengan select, tidak boleh created_at saja
+
+	if err != nil {
+		return nil, err
+	}
+
+	return sales, nil
+}
+
+func (r *dashboardRepository) GetDailyPurchaseChart(ctx context.Context, tenantID string) ([]dto.DailyPurchaseChartResponse, error) {
+	var purchase []dto.DailyPurchaseChartResponse
+
+	err := r.db.WithContext(ctx).Model(&model.Purchase{}).
+		Where("tenant_id = ? AND created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)", tenantID).
+		Select("DATE(created_at) AS date, SUM(grand_total) AS total_purchase").
+		Group("DATE(created_at)").
+		Order("DATE(created_at)").
+		Scan(&purchase).Error // pakai scan jangan find, karena di query ini pakai model &Model.Purchase{} Karena Anda tidak sedang mengambil entity Purchase, melainkan hasil agregasi custom.
+
+	// field di group dan order harus sesuai dengan select, tidak boleh created_at saja
+
+	if err != nil {
+		return nil, err
+	}
+
+	return purchase, nil
 }
