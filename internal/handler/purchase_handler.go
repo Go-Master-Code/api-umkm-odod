@@ -45,6 +45,7 @@ func (h *PurchaseHandler) CreatePurchase(c *gin.Context) {
 func (h *PurchaseHandler) GetAllPurchases(c *gin.Context) {
 	var query dto.GetAllPurchasesQuery
 	err := c.ShouldBindQuery(&query) // bind semua query dari URL
+
 	if err != nil {
 		helper.ErrorParsingRequestBody(c, err)
 		return

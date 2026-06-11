@@ -351,8 +351,8 @@ func ConvertToDTOPurchaseReturnSingle(purchaseReturn *model.PurchaseReturn) dto.
 	}
 
 	purchaseReturnDTO := dto.PurchaseReturnResponse{
-		ID:            purchaseReturn.PurchaseID,
-		TenantID:      purchaseReturn.ID,
+		ID:            purchaseReturn.ID,
+		TenantID:      purchaseReturn.TenantID,
 		TenantName:    purchaseReturn.Tenant.Name,
 		PurchaseID:    purchaseReturn.PurchaseID,
 		ReturnNumber:  purchaseReturn.ReturnNumber,

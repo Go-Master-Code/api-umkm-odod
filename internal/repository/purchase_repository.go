@@ -52,7 +52,6 @@ func (r *purchaseRepository) GetAllPurchases(ctx context.Context, tenantID strin
 	var total int64
 
 	// pagination sudah dilakukan di handler
-
 	offset := (query.Page - 1) * query.Limit
 
 	// base query

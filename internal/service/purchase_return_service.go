@@ -16,7 +16,9 @@ import (
 
 // interface
 type PurchaseReturnService interface {
+	GetAllPurchaseReturns(ctx context.Context, query dto.GetAllPurchaseReturnsQuery) ([]dto.PurchaseReturnResponse, int64, error)
 	CreatePurchaseReturn(ctx context.Context, req dto.CreatePurchaseReturnRequest) (dto.PurchaseReturnResponse, error)
+	GetPurchaseReturnByID(ctx context.Context, id string) (dto.PurchaseReturnResponse, error)
 }
 
 // struct implementasi
@@ -40,6 +42,23 @@ func NewPurchaseReturnService(db *gorm.DB, purchaseReturnRepo repository.Purchas
 }
 
 // struct method
+func (s *purchaseReturnService) GetAllPurchaseReturns(ctx context.Context, query dto.GetAllPurchaseReturnsQuery) ([]dto.PurchaseReturnResponse, int64, error) {
+	// get tenantID from context
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	purchaseReturn, total, err := s.purchaseReturnRepo.GetAllPurchaseReturns(ctx, tenantID, query)
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// convert model to dto
+	purchaseReturnDTO := helper.ConvertToDTOPurchaseReturnPlural(purchaseReturn)
+
+	// jika semua sukses
+	return purchaseReturnDTO, total, nil
+}
+
 func (s *purchaseReturnService) CreatePurchaseReturn(ctx context.Context, req dto.CreatePurchaseReturnRequest) (dto.PurchaseReturnResponse, error) {
 	// begin transaction
 	tx := s.db.Begin()
@@ -154,6 +173,21 @@ func (s *purchaseReturnService) CreatePurchaseReturn(ctx context.Context, req dt
 
 	// convert model to dto
 	purchaseReturnDTO := helper.ConvertToDTOPurchaseReturnSingle(newPurchaseReturn)
+
+	return purchaseReturnDTO, nil
+}
+
+func (s *purchaseReturnService) GetPurchaseReturnByID(ctx context.Context, id string) (dto.PurchaseReturnResponse, error) {
+	// get tenantID from ctx
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	purchaseReturn, err := s.purchaseReturnRepo.GetPurchaseReturnByID(ctx, tenantID, id)
+	if err != nil {
+		return dto.PurchaseReturnResponse{}, err
+	}
+
+	// convert model to dto
+	purchaseReturnDTO := helper.ConvertToDTOPurchaseReturnSingle(purchaseReturn)
 
 	return purchaseReturnDTO, nil
 }

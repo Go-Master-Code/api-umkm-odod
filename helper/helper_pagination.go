@@ -6,6 +6,6 @@ func NormalizePagination(page *int, limit *int) {
 	}
 
 	if *limit < 1 {
-		*limit = 1
+		*limit = 10
 	}
 }

@@ -80,7 +80,7 @@ func (s *purchaseService) GetAllPurchases(ctx context.Context, query dto.GetAllP
 	// get data from repository
 	purchases, total, err := s.purchaseRepo.GetAllPurchases(ctx, tenantID, query)
 	if err != nil {
-		return []dto.PurchaseResponse{}, 0, err
+		return nil, 0, err
 	}
 	// convert model to dto
 	purchasesDTO := helper.ConvertToDTOPurchasePlural(purchases)
