@@ -123,6 +123,11 @@ func main() {
 	purchaseReturnService := service.NewPurchaseReturnService(database.DB, purchaseReturnRepo, purchaseReturnItemRepo, itemVariantRepo, stockMovementRepo)
 	purchaseReturnHandler := handler.NewPurchaseReturnHandler(purchaseReturnService)
 
+	// dependency injection dashboard
+	dashboardRepo := repository.NewDashboardRepository(database.DB)
+	dashboardService := service.NewDashboardService(dashboardRepo, stockMovementRepo, itemVariantRepo, catalogItemRepo, supplierRepo)
+	dashboardHandler := handler.NewDashboardHandler(dashboardService)
+
 	// router group public tidak perlu pakai middleware AuthRequired
 	public := r.Group("/api")
 	// endpoint login
@@ -152,9 +157,11 @@ func main() {
 		// list handler supplier
 		routes.RegisterSupplierRoutes(authorized, supplierHandler)
 		// list handler purchase
-		routes.RegisterPurchaseRoutes(authorized, *purchaseHandler)
+		routes.RegisterPurchaseRoutes(authorized, purchaseHandler)
 		// list handler purchase return
-		routes.RegisterPurchaseReturnRoutes(authorized, *purchaseReturnHandler)
+		routes.RegisterPurchaseReturnRoutes(authorized, purchaseReturnHandler)
+		// list handler dashboard
+		routes.RegisterDashboardRoutes(authorized, dashboardHandler)
 	}
 
 	// run server
