@@ -78,3 +78,14 @@ func SuccessGetAllPurchaseReturnPerTenant(c *gin.Context, data any, total int, p
 		Limit:   limit,
 	})
 }
+
+func SuccessGenerateStockReport(c *gin.Context, data any, total int, page int, limit int) {
+	c.JSON(http.StatusOK, GetAllSalesOrPurchasePerTenantSuccess{
+		Code:    http.StatusOK,
+		Message: "success generate stock report",
+		Data:    data,
+		Total:   total,
+		Page:    page,
+		Limit:   limit,
+	})
+}

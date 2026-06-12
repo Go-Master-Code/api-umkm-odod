@@ -43,3 +43,28 @@ type PurchaseReportResponse struct {
 	Summary      PurchaseReportSummary `json:"summary"`
 	Transactions []PurchaseResponse    `json:"transactions"` // master sales berikut detail (field Items di dto PurchaseResponse)
 }
+
+// ==================================
+// ===========STOCK REPORT===========
+// ==================================
+type StockReportQuery struct {
+	Page   int    `form:"page"`
+	Limit  int    `form:"limit"`
+	Search string `form:"search"`
+}
+
+type StockReportResponse struct {
+	ItemVariantID string  `json:"item_variant_id"`
+	ItemName      string  `json:"item_name"`
+	VariantName   string  `json:"variant_name"`
+	SKU           string  `json:"sku"`
+	CurrentStock  float64 `json:"current_stock"`
+	MinimumStock  float64 `json:"minimum_stock"`
+	Status        string  `json:"status"`
+}
+
+// summary
+type StockReportSummary struct {
+	TotalVariants int64 `json:"total_variants"`
+	LowStockItems int64 `json:"low_stock_items"`
+}
