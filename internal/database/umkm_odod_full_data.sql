@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS `item_variants` (
 INSERT INTO `item_variants` (`id`, `tenant_id`, `item_id`, `sku`, `barcode`, `variant_name`, `minimum_stock`, `cost_price`, `selling_price`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	('76a3c5f8-4340-42a4-8aa0-db591a791c58', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-PB-500', '899100000003', 'Pedas Balado', 5.00, 13000.00, 15000.00, 1, '2026-05-20 10:45:44', '2026-06-02 08:23:37', NULL),
 	('88888888-8888-8888-8888-888888888881', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-PDJ-250', '899100000001', 'Pedas Daun Jeruk 250gr', 5.00, 13000.00, 15000.00, 1, '2026-05-18 09:22:19', '2026-06-02 08:23:38', NULL),
-	('88888888-8888-8888-8888-888888888882', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-AB-500', '899100000002', 'Asin Bawang 500gr', 5.00, 12000.00, 14000.00, 1, '2026-05-18 09:22:19', '2026-06-02 08:23:39', NULL);
+	('88888888-8888-8888-8888-888888888882', '11111111-1111-1111-1111-111111111111', '55555555-5555-5555-5555-555555555551', 'KS-AB-500', '899100000002', 'Asin Bawang 500gr', 490.00, 12000.00, 14000.00, 1, '2026-05-18 09:22:19', '2026-06-12 01:11:25', NULL);
 
 -- Dumping structure for table umkm_odod.item_variant_attribute_values
 DROP TABLE IF EXISTS `item_variant_attribute_values`;
@@ -213,8 +213,8 @@ CREATE TABLE IF NOT EXISTS `purchases` (
 
 -- Dumping data for table umkm_odod.purchases: ~2 rows (approximately)
 INSERT INTO `purchases` (`id`, `tenant_id`, `purchase_number`, `supplier_id`, `invoice_number`, `subtotal`, `discount_amount`, `tax_amount`, `grand_total`, `notes`, `created_by`, `created_at`, `updated_at`) VALUES
-	('4f3f3907-2536-4587-9d32-a2ae4751a9aa', '11111111-1111-1111-1111-111111111111', 'PO-1780935589', '4efba307-0fbd-4501-bb8d-3f9212c14fb9', 'SUP-INV-001', 169000.00, 5000.00, 16900.00, 180900.00, 'Pembelian stok mingguan', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-08 16:19:49', '2026-06-08 16:19:49'),
-	('d1b0e60f-b894-4320-b2e0-fae446d06e36', '11111111-1111-1111-1111-111111111111', 'PO-1780934118', '4efba307-0fbd-4501-bb8d-3f9212c14fb9', 'SUP-INV-001', 169000.00, 0.00, 0.00, 169000.00, 'Pembelian stok mingguan', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-08 15:55:18', '2026-06-08 15:55:19');
+	('4f3f3907-2536-4587-9d32-a2ae4751a9aa', '11111111-1111-1111-1111-111111111111', 'PO-1780935589', '4efba307-0fbd-4501-bb8d-3f9212c14fb9', 'SUP-INV-001', 169000.00, 5000.00, 16900.00, 180900.00, 'Pembelian stok mingguan', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-10 16:19:49', '2026-06-11 07:49:10'),
+	('d1b0e60f-b894-4320-b2e0-fae446d06e36', '11111111-1111-1111-1111-111111111111', 'PO-1780934118', '4efba307-0fbd-4501-bb8d-3f9212c14fb9', 'SUP-INV-002', 169000.00, 0.00, 0.00, 169000.00, 'Pembelian stok mingguan', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-11 15:55:18', '2026-06-11 07:49:14');
 
 -- Dumping structure for table umkm_odod.purchase_items
 DROP TABLE IF EXISTS `purchase_items`;
@@ -265,7 +265,10 @@ CREATE TABLE IF NOT EXISTS `purchase_returns` (
   CONSTRAINT `fk_purchase_returns_tenant` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.purchase_returns: ~0 rows (approximately)
+-- Dumping data for table umkm_odod.purchase_returns: ~1 rows (approximately)
+INSERT INTO `purchase_returns` (`id`, `tenant_id`, `purchase_id`, `return_number`, `reason`, `notes`, `created_by`, `created_at`) VALUES
+	('49d03c48-8d30-4610-b8bd-d3fb4a082cc8', '11111111-1111-1111-1111-111111111111', 'd1b0e60f-b894-4320-b2e0-fae446d06e36', 'P-RETUR-1781140525', 'plastik sobek', 'bahan terlalu tipis', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-11 01:15:26'),
+	('9fd956eb-0f22-46a9-890a-e4dffc07136e', '11111111-1111-1111-1111-111111111111', '4f3f3907-2536-4587-9d32-a2ae4751a9aa', 'P-RETUR-1781065285', 'melempem', 'seal tidak rapat', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-10 04:21:26');
 
 -- Dumping structure for table umkm_odod.purchase_return_items
 DROP TABLE IF EXISTS `purchase_return_items`;
@@ -283,7 +286,11 @@ CREATE TABLE IF NOT EXISTS `purchase_return_items` (
   CONSTRAINT `fk_purchase_return_items_return` FOREIGN KEY (`purchase_return_id`) REFERENCES `purchase_returns` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.purchase_return_items: ~0 rows (approximately)
+-- Dumping data for table umkm_odod.purchase_return_items: ~2 rows (approximately)
+INSERT INTO `purchase_return_items` (`id`, `tenant_id`, `purchase_return_id`, `item_variant_id`, `qty`, `notes`, `created_at`) VALUES
+	('4a802abc-7b9d-466e-8739-88eb94a8c10f', '11111111-1111-1111-1111-111111111111', '9fd956eb-0f22-46a9-890a-e4dffc07136e', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 3.00, '', '2026-06-10 04:21:26'),
+	('8d5aaab3-d168-4d45-8fd0-592d84088f63', '11111111-1111-1111-1111-111111111111', '9fd956eb-0f22-46a9-890a-e4dffc07136e', '88888888-8888-8888-8888-888888888881', 2.00, '', '2026-06-10 04:21:26'),
+	('d947faac-4420-44c5-b19b-4116bcd469d5', '11111111-1111-1111-1111-111111111111', '49d03c48-8d30-4610-b8bd-d3fb4a082cc8', '88888888-8888-8888-8888-888888888882', 5.00, '', '2026-06-11 01:15:26');
 
 -- Dumping structure for table umkm_odod.roles
 DROP TABLE IF EXISTS `roles`;
@@ -333,9 +340,9 @@ CREATE TABLE IF NOT EXISTS `sales` (
 
 -- Dumping data for table umkm_odod.sales: ~3 rows (approximately)
 INSERT INTO `sales` (`id`, `tenant_id`, `invoice_number`, `customer_name`, `cashier_id`, `subtotal`, `discount_amount`, `tax_amount`, `grand_total`, `payment_method`, `payment_status`, `notes`, `created_at`, `updated_at`) VALUES
-	('4cf1c87a-0014-47e6-9b46-d3f4ec980377', '11111111-1111-1111-1111-111111111111', 'INV-1779948538', 'Budi', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', 27000.00, 500.00, 2700.00, 29200.00, 'CASH', 'PAID', 'Pembelian 1 item', '2026-05-28 06:08:58', '2026-05-28 06:08:58'),
-	('bcec37b4-a8bb-44a2-a039-cbe8cb06a530', '11111111-1111-1111-1111-111111111111', 'INV-1779941000', 'Budi Santoso', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', 104000.00, 5000.00, 10400.00, 109400.00, 'QRIS', 'PAID', 'Pembelian sore hari', '2026-05-28 04:03:21', '2026-05-28 04:03:21'),
-	('ecf9ac1a-6c21-4881-80d5-b741e62ad205', '11111111-1111-1111-1111-111111111111', 'INV-1779948742', 'Andi', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', 437000.00, 10000.00, 43700.00, 470700.00, 'TRANSFER', 'UNPAID', 'Pembelian grosir', '2026-05-28 06:12:22', '2026-05-28 06:51:41');
+	('4cf1c87a-0014-47e6-9b46-d3f4ec980377', '11111111-1111-1111-1111-111111111111', 'INV-1779948538', 'Budi', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', 27000.00, 500.00, 2700.00, 29200.00, 'CASH', 'PAID', 'Pembelian 1 item', '2026-06-09 06:08:58', '2026-06-11 05:08:20'),
+	('bcec37b4-a8bb-44a2-a039-cbe8cb06a530', '11111111-1111-1111-1111-111111111111', 'INV-1779941000', 'Budi Santoso', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', 104000.00, 5000.00, 10400.00, 109400.00, 'QRIS', 'PAID', 'Pembelian sore hari', '2026-06-10 04:03:21', '2026-06-11 05:08:25'),
+	('ecf9ac1a-6c21-4881-80d5-b741e62ad205', '11111111-1111-1111-1111-111111111111', 'INV-1779948742', 'Andi', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', 437000.00, 10000.00, 43700.00, 470700.00, 'TRANSFER', 'UNPAID', 'Pembelian grosir', '2026-06-11 06:12:22', '2026-06-11 03:48:15');
 
 -- Dumping structure for table umkm_odod.sale_items
 DROP TABLE IF EXISTS `sale_items`;
@@ -392,7 +399,7 @@ CREATE TABLE IF NOT EXISTS `stock_movements` (
   CONSTRAINT `fk_stock_variant` FOREIGN KEY (`item_variant_id`) REFERENCES `item_variants` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.stock_movements: ~0 rows (approximately)
+-- Dumping data for table umkm_odod.stock_movements: ~61 rows (approximately)
 INSERT INTO `stock_movements` (`id`, `tenant_id`, `item_variant_id`, `movement_type`, `qty`, `reference_type`, `reference_id`, `notes`, `created_by`, `created_at`) VALUES
 	('1012475d-2a7f-4fd5-88dc-8e399e3ee3c6', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -10.00, '', '', 'Bapak Udin', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-21 09:23:40'),
 	('119de780-c9bb-48fc-bbad-3fd8ab8b2118', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -7.00, 'SALE', 'ecf9ac1a-6c21-4881-80d5-b741e62ad205', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-28 06:12:22'),
@@ -402,6 +409,7 @@ INSERT INTO `stock_movements` (`id`, `tenant_id`, `item_variant_id`, `movement_t
 	('1f880299-0e64-4c4b-a3e8-15be0ab2052a', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'REDUCE', -3.00, 'ADJUSTMENT', '', 'Reason: kencing tikus | Notes: plastik berbau', '64ee38a5-23c6-4a82-b1ad-d488ccc0d8e6', '2026-05-29 02:06:48'),
 	('204020ba-96b8-4394-8033-26d0cd6cd286', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -2.00, 'SALE', '2d61cc53-394b-4ab8-9354-dbd8f7212150', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:23:39'),
 	('219bc491-cc1e-4dcd-be2b-f57016e12bb5', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -1.00, 'SALE', '9b34dc3c-db00-400b-a09a-d0eb9ef21d52', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:06:49'),
+	('22aba178-5162-4b55-ba65-67d69d388184', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888882', 'PURCHASE RETURN', -5.00, 'PURCHASE RETURN', '49d03c48-8d30-4610-b8bd-d3fb4a082cc8', 'purchase return transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-11 01:15:26'),
 	('251daba8-f80e-4f18-8bfc-1fca2da08c50', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -2.00, 'SALE', '0565b794-0d7f-4ce4-92d6-13aa5cd6007f', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:19:06'),
 	('26ffdab0-e6b7-4103-8110-48e44b38eebe', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -3.00, 'SALE', '609c139e-4a73-4453-8462-c6e3d39150ba', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 12:35:57'),
 	('27514e4a-a357-45ba-adc3-9275289b22e8', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -2.00, 'SALE', 'b5c9ed63-63f0-46c1-95e3-c77fb096049d', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:26:25'),
@@ -411,6 +419,7 @@ INSERT INTO `stock_movements` (`id`, `tenant_id`, `item_variant_id`, `movement_t
 	('2d6f8aac-8b17-4368-b744-a1b14b917823', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -5.00, 'SALE', '1500c864-83a8-49e0-a704-f962ee94fe57', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:25:09'),
 	('33c0109a-37fc-4b85-a02c-501e193c5e35', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -10.00, 'SALE', '55f23f83-a2d0-45a2-a913-078c617d04c8', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 12:32:07'),
 	('3d73a734-e367-4b76-a120-499f73fb1b4e', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -5.00, 'SALE', '974dd35c-53fe-4a40-ae94-2f8ca4229c48', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:21:27'),
+	('43a03cb8-4bad-41f4-b695-122626e9d0cf', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'PURCHASE RETURN', -2.00, 'PURCHASE RETURN', '9fd956eb-0f22-46a9-890a-e4dffc07136e', 'purchase return transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-10 04:21:26'),
 	('4de4596b-b553-43ee-9414-af7f78a1625c', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -1.00, 'SALE', 'db3c1825-a8b3-449a-a999-f7e5dc8c1e6e', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:05:13'),
 	('54e130e8-f38a-4612-86d5-c4a1df869fbe', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'PURCHASE', 15.00, '', '', 'Repack kedua', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-21 09:15:48'),
 	('58481476-b28d-469b-88bb-88328d67568e', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -2.00, 'SALE', 'c4585fcf-5364-479d-b6dd-5ab2d414fd10', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:12:06'),
@@ -445,6 +454,7 @@ INSERT INTO `stock_movements` (`id`, `tenant_id`, `item_variant_id`, `movement_t
 	('da10c4ec-dd3b-44c9-88e7-85eeaa343dc1', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'PURCHASE', 10.00, 'PURCHASE', '4f3f3907-2536-4587-9d32-a2ae4751a9aa', 'purchase transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-08 16:19:49'),
 	('e0b28d2a-51f7-4d05-a243-11cea30dd8c2', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'PURCHASE', 99.00, '', '', 'Stock awal', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-21 09:02:13'),
 	('e331dfb6-6a53-4eea-8869-3447d116b043', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'ADD', 10.00, 'ADJUSTMENT', '', 'barang masuk angin', '64ee38a5-23c6-4a82-b1ad-d488ccc0d8e6', '2026-05-28 16:23:07'),
+	('e75b7c0b-bd22-4226-b609-be571e53aac1', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'PURCHASE RETURN', -3.00, 'PURCHASE RETURN', '9fd956eb-0f22-46a9-890a-e4dffc07136e', 'purchase return transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-06-10 04:21:26'),
 	('e7bc843e-7178-4148-8ea0-417db75819f2', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'REDUCE', -1.00, 'ADJUSTMENT', '', 'plastik terbuka', '64ee38a5-23c6-4a82-b1ad-d488ccc0d8e6', '2026-05-29 01:56:02'),
 	('eae61992-c31c-4b65-99f4-fbe568378f1f', '11111111-1111-1111-1111-111111111111', '76a3c5f8-4340-42a4-8aa0-db591a791c58', 'SALE', -2.00, 'SALE', 'b4a64b8a-c2ac-4c57-8a67-14e65058a7e4', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:08:45'),
 	('f3c363d4-0425-44a0-a1ea-80475000f3b2', '11111111-1111-1111-1111-111111111111', '88888888-8888-8888-8888-888888888881', 'SALE', -1.00, 'SALE', 'b4a64b8a-c2ac-4c57-8a67-14e65058a7e4', 'sale transaction', '9dc150d4-ce87-4e5f-91c1-d0b5b7330ba7', '2026-05-26 13:08:45'),
@@ -473,11 +483,11 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
   CONSTRAINT `fk_suppliers_tenant` FOREIGN KEY (`tenant_id`) REFERENCES `tenants` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.suppliers: ~0 rows (approximately)
+-- Dumping data for table umkm_odod.suppliers: ~3 rows (approximately)
 INSERT INTO `suppliers` (`id`, `tenant_id`, `name`, `phone`, `address`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	('4e0c76e8-e258-440d-9ed3-a8831f3c3296', '11111111-1111-1111-1111-111111111111', 'Lusi Oktaviani', '089981451237', 'Jl. Kalidam No. 45', 1, '2026-06-02 08:32:51', '2026-06-02 08:32:51', NULL),
 	('4efba307-0fbd-4501-bb8d-3f9212c14fb9', '11111111-1111-1111-1111-111111111111', 'Keripik Ma Icih', '081248150369', 'Jl. Pasirkaliki No. 33', 1, '2026-06-02 10:04:20', '2026-06-02 10:04:20', NULL),
-	('98f6686a-48b9-478e-b709-e8177a483bb8', '11111111-1111-1111-1111-111111111111', 'Amir Machmud', '081547841302', 'Jl. Cibaduyut No. 121', 1, '2026-06-02 11:10:00', '2026-06-02 11:25:59', '2026-06-02 11:25:59');
+	('98f6686a-48b9-478e-b709-e8177a483bb8', '11111111-1111-1111-1111-111111111111', 'Amir Machmud', '081547841302', 'Jl. Cibaduyut No. 121', 1, '2026-06-02 11:10:00', '2026-06-11 03:49:18', NULL);
 
 -- Dumping structure for table umkm_odod.tenants
 DROP TABLE IF EXISTS `tenants`;
@@ -492,7 +502,7 @@ CREATE TABLE IF NOT EXISTS `tenants` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table umkm_odod.tenants: ~0 rows (approximately)
+-- Dumping data for table umkm_odod.tenants: ~4 rows (approximately)
 INSERT INTO `tenants` (`id`, `name`, `phone`, `address`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	('11111111-1111-1111-1111-111111111111', 'Keripik Mang Odod', '081234567890', 'Jalan Kademangan No. 25, Pojok, Kelurahan Setiamanah, Kota Cimahi', '2026-05-18 09:20:02', '2026-05-18 09:28:00', NULL),
 	('11111111-1111-1111-1111-111111111112', 'Bakso Petruk', '082233445566', 'Jl. Sudirman No. 12, Bandung', '2026-05-18 09:57:40', '2026-05-18 14:51:21', NULL),
