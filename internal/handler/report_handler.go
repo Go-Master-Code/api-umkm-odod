@@ -167,3 +167,33 @@ func (h *ReportHandler) ExportPurchaseReport(c *gin.Context) {
 		return
 	}
 }
+
+func (h *ReportHandler) ExportStockHandler(c *gin.Context) {
+	// ga perlu ambil query, query sudah diinisiasi di service
+	file, err := h.service.ExportStockReport(c.Request.Context())
+	if err != nil {
+		helper.ErrorGenerateReport(c, err)
+		return
+	}
+
+	// generate file name
+	fileName := fmt.Sprintf(
+		"stock-report-%s.xlsx",
+		time.Now().Format("20060102150405"), //yyyymmddhhmmss
+	)
+
+	c.Header(
+		"Content-Disposition",
+		fmt.Sprintf("attachment; filename=%s", fileName),
+	)
+
+	c.Header(
+		"Content-Type",
+		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+	)
+
+	if err := file.Write(c.Writer); err != nil {
+		helper.ErrorGenerateReport(c, err)
+		return
+	}
+}

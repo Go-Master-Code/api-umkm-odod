@@ -15,5 +15,5 @@ func RegisterReportRoutes(rg *gin.RouterGroup, h *handler.ReportHandler) {
 	// export report
 	rg.GET("reports/sales/export", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.ExportSalesReport)
 	rg.GET("reports/purchase/export", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.ExportPurchaseReport)
-	rg.GET("reports/stock/export", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.GetStockReport)
+	rg.GET("reports/stock/export", middleware.AuthRole(constants.RoleOwner, constants.RoleAdmin), h.ExportStockHandler)
 }

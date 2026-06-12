@@ -20,7 +20,7 @@ type ReportService interface {
 	// export report to xlsx
 	ExportSalesReport(ctx context.Context, query dto.SaleReportQuery) (*excelize.File, error)
 	ExportPurchaseReport(ctx context.Context, query dto.PurchaseReportQuery) (*excelize.File, error)
-	ExportStockReport(ctx context.Context, query dto.StockReportQuery) (*excelize.File, error)
+	ExportStockReport(ctx context.Context) (*excelize.File, error)
 }
 
 // struct implementasi
@@ -372,9 +372,15 @@ func (s *reportService) ExportPurchaseReport(ctx context.Context, query dto.Purc
 	return f, nil
 }
 
-func (s *reportService) ExportStockReport(ctx context.Context, query dto.StockReportQuery) (*excelize.File, error) {
+func (s *reportService) ExportStockReport(ctx context.Context) (*excelize.File, error) {
 	// tenantID dari jwt
 	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	// ambil semua stok
+	query := dto.StockReportQuery{
+		Page:  1,
+		Limit: 100000,
+	}
 
 	// ambil data stock per barang
 	stock, _, err := s.repo.GetStockReport(ctx, tenantID, query)
@@ -432,12 +438,11 @@ func (s *reportService) ExportStockReport(ctx context.Context, query dto.StockRe
 	f.SetCellStyle(sheetName, "A7", "J7", helper.HeaderStyle(f))
 
 	// atur width tiap kolom: parameter:sheetname,startingColumn,endColumn,width
-	f.SetColWidth(sheetName, "A", "A", 30)
+	f.SetColWidth(sheetName, "A", "A", 25)
 	f.SetColWidth(sheetName, "B", "B", 25)
-	f.SetColWidth(sheetName, "C", "E", 15)
-	f.SetColWidth(sheetName, "F", "F", 10)
+	f.SetColWidth(sheetName, "C", "F", 15)
 
-	row := 7 // dimulai dari row 7 karena di atasnya ada header + summary
+	row := 8 // dimulai dari row 8 karena di atasnya ada header + summary
 
 	// default status
 	status := "NORMAL"
@@ -460,6 +465,9 @@ func (s *reportService) ExportStockReport(ctx context.Context, query dto.StockRe
 		f.SetCellValue(sheetName, fmt.Sprintf("F%d", row), s.Status)
 		row++ // increment to the next row
 	}
+
+	// styling center untuk status
+	f.SetCellStyle(sheetName, "F8", fmt.Sprintf("F%d", row), helper.CenterAlign(f))
 
 	return f, nil
 }

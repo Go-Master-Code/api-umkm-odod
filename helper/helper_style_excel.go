@@ -15,7 +15,22 @@ func BoldStyle(f *excelize.File) int {
 	}
 
 	return boldStyle
+}
 
+func CenterAlign(f *excelize.File) int {
+	// align = center
+	centerAlign, err := f.NewStyle(&excelize.Style{
+		Alignment: &excelize.Alignment{
+			Horizontal: "center",
+			Vertical:   "center",
+		},
+	})
+
+	if err != nil {
+		return 0
+	}
+
+	return centerAlign
 }
 
 func HeaderStyle(f *excelize.File) int {

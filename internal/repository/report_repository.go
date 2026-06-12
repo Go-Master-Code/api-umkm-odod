@@ -157,6 +157,13 @@ func (r *reportRepository) GetStockReport(ctx context.Context, tenantID string, 
 func (r *reportRepository) GetStockReportSummary(ctx context.Context, tenantID string) (*dto.StockReportSummary, error) {
 	var summary dto.StockReportSummary
 
+	// buat struct untuk menampung ID string
+	type TempRows struct {
+		ID string
+	}
+
+	var rows []TempRows // data plural
+
 	// cari total variant
 	err := r.db.WithContext(ctx).Model(&model.ItemVariant{}).Where("tenant_id = ?", tenantID).Count(&summary.TotalVariants).Error
 	if err != nil {
@@ -164,16 +171,20 @@ func (r *reportRepository) GetStockReportSummary(ctx context.Context, tenantID s
 	}
 
 	// low stock items
-	err = r.db.WithContext(ctx).Model(&model.ItemVariant{}).
-		Joins("LEFT JOIN stock_movements on stock_movements.item_variant_id = item_variants.id").
+	err = r.db.WithContext(ctx).
+		Model(&model.ItemVariant{}).
+		Select("item_variants.id").
+		Joins("LEFT JOIN stock_movements ON stock_movements.item_variant_id = item_variants.id").
 		Where("item_variants.tenant_id = ?", tenantID).
-		Group("item_variants.id").
-		Having("COALESCE(sum(stock_movements.qty),0) <= item_variants.minimum_stock").
-		Count(&summary.LowStockItems).Error
+		Group("item_variants.id, item_variants.minimum_stock").
+		Having("COALESCE(SUM(stock_movements.qty),0) <= item_variants.minimum_stock").
+		Scan(&rows).Error
 
 	if err != nil {
 		return nil, err
 	}
+
+	summary.LowStockItems = int64(len(rows))
 
 	return &summary, nil
 }
