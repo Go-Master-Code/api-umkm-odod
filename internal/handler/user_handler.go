@@ -148,6 +148,57 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
+	// setelah token dibuat, update last login
+	err = h.service.UpdateLastLoginAt(c.Request.Context(), user.ID)
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorUpdateData, err)
+		return
+	}
+
 	// login berhasil => kirim data user sekaligus token
 	helper.SuccessLogin(c, user, token)
+}
+
+func (h *UserHandler) GetProfile(c *gin.Context) {
+	profile, err := h.service.GetProfile(c.Request.Context())
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorGetData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessGetData, profile)
+}
+
+func (h *UserHandler) UpdateProfile(c *gin.Context) {
+	var req dto.UpdateProfileRequest
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		helper.ErrorParsingRequestBody(c, err)
+		return
+	}
+
+	profileDTO, err := h.service.UpdateProfile(c.Request.Context(), req)
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorUpdateData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessUpdateData, profileDTO)
+}
+
+func (h *UserHandler) ChangePassword(c *gin.Context) {
+	var req dto.ChangePasswordRequest
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		helper.ErrorParsingRequestBody(c, err)
+		return
+	}
+
+	profileDTO, err := h.service.ChangePassword(c.Request.Context(), req)
+	if err != nil {
+		helper.ErrorResponse(c, constants.ErrorUpdateData, err)
+		return
+	}
+
+	helper.SuccessResponse(c, constants.SuccessUpdateData, profileDTO)
 }

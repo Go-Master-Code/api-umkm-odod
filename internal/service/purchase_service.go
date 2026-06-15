@@ -59,17 +59,21 @@ type purchaseService struct {
 	itemVariantRepo   repository.ItemVariantRepository
 	stockMovementRepo repository.StockMovementRepository
 	supplierRepo      repository.SupplierRepository
+
+	// log
+	activityLogService ActivityLogService // jangan pakai package service, karena kedua file ini ada di dalam package yang sama (service)
 }
 
 // constructor
-func NewPurchaseService(db *gorm.DB, purchaseRepo repository.PurchaseRepository, purchaseItemRepo repository.PurchaseItemRepository, itemVariantRepo repository.ItemVariantRepository, stockMovementRepo repository.StockMovementRepository, supplierRepo repository.SupplierRepository) PurchaseService {
+func NewPurchaseService(db *gorm.DB, purchaseRepo repository.PurchaseRepository, purchaseItemRepo repository.PurchaseItemRepository, itemVariantRepo repository.ItemVariantRepository, stockMovementRepo repository.StockMovementRepository, supplierRepo repository.SupplierRepository, activityLogService ActivityLogService) PurchaseService {
 	return &purchaseService{
-		db:                db,
-		purchaseRepo:      purchaseRepo,
-		purchaseItemRepo:  purchaseItemRepo,
-		itemVariantRepo:   itemVariantRepo,
-		stockMovementRepo: stockMovementRepo,
-		supplierRepo:      supplierRepo,
+		db:                 db,
+		purchaseRepo:       purchaseRepo,
+		purchaseItemRepo:   purchaseItemRepo,
+		itemVariantRepo:    itemVariantRepo,
+		stockMovementRepo:  stockMovementRepo,
+		supplierRepo:       supplierRepo,
+		activityLogService: activityLogService,
 	}
 }
 
@@ -247,6 +251,21 @@ func (s *purchaseService) CreatePurchase(ctx context.Context, req dto.CreatePurc
 	// commit transaction
 	err = tx.Commit().Error
 
+	if err != nil {
+		return dto.PurchaseResponse{}, err
+	}
+
+	// setelah selesai commit transaction, eksekusi service CreateActivityLog()
+	err = s.activityLogService.CreateActivityLog( // ignore error
+		ctx,
+		"PURCHASE",
+		"CREATE",
+		fmt.Sprintf("Create Purchase %s", purchase.PurchaseNumber),
+		purchase.ID,    // id uuid
+		purchaseNumber, // yang mudah dipahami manusia misalnya PO-182337
+	)
+
+	// error log activity
 	if err != nil {
 		return dto.PurchaseResponse{}, err
 	}

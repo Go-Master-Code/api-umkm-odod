@@ -56,7 +56,12 @@ func main() {
 	}))
 	// go get github.com/gin-contrib/cors
 
-	// dependency injection
+	// dependency injection activity log
+	activityLogRepo := repository.NewActivityLogRepository(database.DB)
+	activityLogService := service.NewActivityLogService(activityLogRepo)
+	activityLogHandler := handler.NewActivityLogHandler(activityLogService)
+
+	// dependency injection tenant
 	tenantRepo := repository.NewTenantRepository(database.DB)
 	tenantService := service.NewTenantService(tenantRepo)
 	tenantHandler := handler.NewTenantHandler(tenantService)
@@ -68,7 +73,7 @@ func main() {
 
 	// dependency injection user
 	userRepo := repository.NewUserRepository(database.DB)
-	userService := service.NewUserService(userRepo)
+	userService := service.NewUserService(userRepo, activityLogService)
 	userHandler := handler.NewUserHandler(userService)
 
 	// dependency injection catalog category
@@ -99,7 +104,7 @@ func main() {
 
 	// dependency injection sale
 	saleRepo := repository.NewSaleRepository(database.DB)
-	saleService := service.NewSaleService(database.DB, saleRepo, saleItemRepo, itemVariantRepo, stockMovementRepo)
+	saleService := service.NewSaleService(database.DB, saleRepo, saleItemRepo, itemVariantRepo, stockMovementRepo, activityLogService)
 	saleHandler := handler.NewSaleHandler(saleService)
 
 	// dependency injection supplier
@@ -112,7 +117,7 @@ func main() {
 
 	// dependency injection purchase
 	purchaseRepo := repository.NewPurchaseRepository(database.DB)
-	purchaseService := service.NewPurchaseService(database.DB, purchaseRepo, purchaseItemRepo, itemVariantRepo, stockMovementRepo, supplierRepo)
+	purchaseService := service.NewPurchaseService(database.DB, purchaseRepo, purchaseItemRepo, itemVariantRepo, stockMovementRepo, supplierRepo, activityLogService)
 	purchaseHandler := handler.NewPurchaseHandler(purchaseService)
 
 	// dependency injection purchase return item
@@ -120,7 +125,7 @@ func main() {
 
 	// dependency injection purchase return
 	purchaseReturnRepo := repository.NewPurchaseReturnRepository(database.DB)
-	purchaseReturnService := service.NewPurchaseReturnService(database.DB, purchaseReturnRepo, purchaseReturnItemRepo, itemVariantRepo, stockMovementRepo)
+	purchaseReturnService := service.NewPurchaseReturnService(database.DB, purchaseReturnRepo, purchaseReturnItemRepo, itemVariantRepo, stockMovementRepo, activityLogService)
 	purchaseReturnHandler := handler.NewPurchaseReturnHandler(purchaseReturnService)
 
 	// dependency injection dashboard
@@ -169,6 +174,8 @@ func main() {
 		routes.RegisterDashboardRoutes(authorized, dashboardHandler)
 		// list handler report
 		routes.RegisterReportRoutes(authorized, reportHandler)
+		// list handler activity log
+		routes.RegisterActivityLogRoutes(authorized, activityLogHandler)
 	}
 
 	// run server

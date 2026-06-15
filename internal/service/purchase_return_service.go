@@ -28,16 +28,20 @@ type purchaseReturnService struct {
 	purchaseReturnItemRepo repository.PurchaseReturnItemRepository
 	itemVariantRepo        repository.ItemVariantRepository
 	stockMovementRepo      repository.StockMovementRepository
+
+	// log
+	activityLogService ActivityLogService // jangan pakai package service, karena kedua file ini ada di dalam package yang sama (service)
 }
 
 // constructor
-func NewPurchaseReturnService(db *gorm.DB, purchaseReturnRepo repository.PurchaseReturnRepository, purchaseReturnItemRepo repository.PurchaseReturnItemRepository, itemVariantRepo repository.ItemVariantRepository, stockMovementRepo repository.StockMovementRepository) PurchaseReturnService {
+func NewPurchaseReturnService(db *gorm.DB, purchaseReturnRepo repository.PurchaseReturnRepository, purchaseReturnItemRepo repository.PurchaseReturnItemRepository, itemVariantRepo repository.ItemVariantRepository, stockMovementRepo repository.StockMovementRepository, activityLogService ActivityLogService) PurchaseReturnService {
 	return &purchaseReturnService{
 		db:                     db,
 		purchaseReturnRepo:     purchaseReturnRepo,
 		purchaseReturnItemRepo: purchaseReturnItemRepo,
 		itemVariantRepo:        itemVariantRepo,
 		stockMovementRepo:      stockMovementRepo,
+		activityLogService:     activityLogService,
 	}
 }
 
@@ -163,6 +167,16 @@ func (s *purchaseReturnService) CreatePurchaseReturn(ctx context.Context, req dt
 	if err != nil {
 		return dto.PurchaseReturnResponse{}, err
 	}
+
+	// setelah selesai commit transaction, eksekusi service CreateActivityLog()
+	_ = s.activityLogService.CreateActivityLog( // ignore error
+		ctx,
+		"PURCHASE RETURN",
+		"CREATE",
+		fmt.Sprintf("Create Purchase Return %s", purchaseReturn.ReturnNumber),
+		purchaseReturn.ID,           // id uuid
+		purchaseReturn.ReturnNumber, // yang mudah dipahami manusia misalnya P-RETUR-1781140525
+	)
 
 	// get data by ID + preload relasi
 	newPurchaseReturn, err := s.purchaseReturnRepo.GetPurchaseReturnByID(ctx, tenantID, purchaseReturn.ID)

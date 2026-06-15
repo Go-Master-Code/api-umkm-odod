@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"time"
 	"umkm-odod/internal/model"
 
 	"gorm.io/gorm"
@@ -16,6 +17,12 @@ type UserRepository interface {
 	CreateUser(ctx context.Context, user *model.User) error
 	UpdateUser(ctx context.Context, tenantID string, id string, updateMap map[string]any) error
 	DeleteUser(ctx context.Context, tenantID string, id string) error
+	// untuk endpoint me
+	GetProfile(ctx context.Context, userID string) (*model.User, error)
+	UpdateProfile(ctx context.Context, user *model.User) error
+	ChangePassword(ctx context.Context, user *model.User) error
+	// update last login at
+	UpdateLastLoginAt(ctx context.Context, userID string) error
 }
 
 // struct implementasi
@@ -89,4 +96,29 @@ func (r *userRepository) UpdateUser(ctx context.Context, tenantID string, id str
 
 func (r *userRepository) DeleteUser(ctx context.Context, tenantID string, id string) error {
 	return r.db.WithContext(ctx).Where("id = ?", id).Delete(&model.User{}).Error
+}
+
+func (r *userRepository) GetProfile(ctx context.Context, userID string) (*model.User, error) {
+	var user model.User
+	err := r.db.WithContext(ctx).Preload("Role").Preload("Tenant").First(&user, "id = ?", userID).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *userRepository) UpdateProfile(ctx context.Context, user *model.User) error {
+	return r.db.WithContext(ctx).Save(user).Error
+}
+
+func (r *userRepository) ChangePassword(ctx context.Context, user *model.User) error {
+	return r.db.WithContext(ctx).Save(user).Error
+}
+
+func (r *userRepository) UpdateLastLoginAt(ctx context.Context, userID string) error {
+	// var now untuk update last login at
+	now := time.Now()
+
+	return r.db.WithContext(ctx).Model(&model.User{}).
+		Where("id = ?", userID).Update("last_login_at", now).Error
 }

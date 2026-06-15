@@ -50,6 +50,9 @@ type saleService struct {
 	saleItemRepo      repository.SaleItemRepository
 	itemVariantRepo   repository.ItemVariantRepository
 	stockMovementRepo repository.StockMovementRepository
+
+	// log
+	activityLogService ActivityLogService // jangan pakai package service, karena kedua file ini ada di dalam package yang sama (service)
 }
 
 // constructor -> ada db karena untuk transaction
@@ -59,13 +62,15 @@ func NewSaleService(
 	saleItemRepo repository.SaleItemRepository,
 	itemVariantRepo repository.ItemVariantRepository,
 	stockMovementRepo repository.StockMovementRepository,
+	activityLogService ActivityLogService,
 ) SaleService {
 	return &saleService{
-		db:                db,
-		saleRepo:          saleRepo,
-		saleItemRepo:      saleItemRepo,
-		itemVariantRepo:   itemVariantRepo,
-		stockMovementRepo: stockMovementRepo,
+		db:                 db,
+		saleRepo:           saleRepo,
+		saleItemRepo:       saleItemRepo,
+		itemVariantRepo:    itemVariantRepo,
+		stockMovementRepo:  stockMovementRepo,
+		activityLogService: activityLogService,
 	}
 }
 
@@ -284,6 +289,21 @@ func (s *saleService) CreateSale(ctx context.Context, req dto.CreateSaleRequest)
 
 	err = tx.Commit().Error
 
+	if err != nil {
+		return dto.SaleResponse{}, err
+	}
+
+	// setelah selesai commit transaction, eksekusi service CreateActivityLog()
+	err = s.activityLogService.CreateActivityLog( // ignore error
+		ctx,
+		"SALES",
+		"CREATE",
+		fmt.Sprintf("Create Sales %s", sale.InvoiceNumber),
+		sale.ID,            // id uuid
+		sale.InvoiceNumber, // yang mudah dipahami manusia misalnya P-RETUR-1781140525
+	)
+
+	// error log activity
 	if err != nil {
 		return dto.SaleResponse{}, err
 	}

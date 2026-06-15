@@ -11,6 +11,7 @@ import (
 	"umkm-odod/internal/utils/crypto"
 
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // interface
@@ -22,17 +23,26 @@ type UserService interface {
 	UpdateUser(ctx context.Context, id string, req dto.UpdateUserRequest) (dto.UserResponse, error)
 	DeleteUser(ctx context.Context, id string) (dto.UserResponse, error)
 	Login(ctx context.Context, username, password string) (dto.UserResponse, error)
+	// service endpoint me
+	GetProfile(ctx context.Context) (dto.ProfileResponse, error)
+	UpdateProfile(ctx context.Context, req dto.UpdateProfileRequest) (dto.ProfileResponse, error)
+	ChangePassword(ctx context.Context, req dto.ChangePasswordRequest) (dto.ProfileResponse, error)
+	// update last login at
+	UpdateLastLoginAt(ctx context.Context, userID string) error
 }
 
 // struct implementasi
 type userService struct {
 	repo repository.UserRepository
+	// log
+	activityLogService ActivityLogService // jangan pakai package service, karena kedua file ini ada di dalam package yang sama (service)
 }
 
 // constructor
-func NewUserService(repo repository.UserRepository) UserService {
+func NewUserService(repo repository.UserRepository, activityLogService ActivityLogService) UserService {
 	return &userService{
-		repo: repo,
+		repo:               repo,
+		activityLogService: activityLogService,
 	}
 }
 
@@ -183,5 +193,108 @@ func (s *userService) Login(ctx context.Context, username, password string) (dto
 	// jika password valid, return data
 	userDTO := helper.ConvertToDTOUserSingle(user)
 	return userDTO, nil
+}
 
+func (s *userService) GetProfile(ctx context.Context) (dto.ProfileResponse, error) {
+	// user ID ambil dari jwt
+	userID := ctx.Value(constants.ContextUserID).(string)
+
+	user, err := s.repo.GetProfile(ctx, userID)
+	if err != nil {
+		return dto.ProfileResponse{}, err
+	}
+
+	// convert model to dto
+	userDTO := helper.ConvertToDTOProfileUser(user)
+	return userDTO, nil
+}
+
+func (s *userService) UpdateProfile(ctx context.Context, req dto.UpdateProfileRequest) (dto.ProfileResponse, error) {
+	// get userID from jwt
+	userID := ctx.Value(constants.ContextUserID).(string)
+
+	// get data model user
+	user, err := s.repo.GetProfile(ctx, userID)
+	if err != nil {
+		return dto.ProfileResponse{}, err
+	}
+
+	// isi field fullname dan phone dengan input request
+	user.FullName = req.FullName
+	user.Phone = req.Phone
+
+	err = s.repo.UpdateProfile(ctx, user)
+	if err != nil {
+		return dto.ProfileResponse{}, err
+	}
+
+	// tambahkan activity log
+	err = s.activityLogService.CreateActivityLog(ctx, "USER", "UPDATE", "Update Own Profile", userID, user.Username)
+	if err != nil {
+		return dto.ProfileResponse{}, err
+	}
+
+	// get data lagi agar terupdate
+	profile, err := s.repo.GetProfile(ctx, userID)
+	if err != nil {
+		return dto.ProfileResponse{}, err
+	}
+
+	// convert model to dto
+	profileDTO := helper.ConvertToDTOProfileUser(profile)
+
+	return profileDTO, nil
+}
+
+func (s *userService) ChangePassword(ctx context.Context, req dto.ChangePasswordRequest) (dto.ProfileResponse, error) {
+	// get userID from jwt
+	userID := ctx.Value(constants.ContextUserID).(string)
+	user, err := s.repo.GetProfile(ctx, userID)
+	if err != nil {
+		return dto.ProfileResponse{}, err
+	}
+
+	// cek password lama
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.OldPassword))
+	if err != nil {
+		return dto.ProfileResponse{}, errors.New("old password is incorrect")
+	}
+
+	// bandingkan newPassword dengan confirmPassword (harus sama)
+	if req.NewPassword != req.ConfirmPassword {
+		return dto.ProfileResponse{}, errors.New("confirm password doesn't match")
+	}
+
+	// hash password baru setelah newPassword = confirmPassword
+	newPassword, err := crypto.HashPassword(req.NewPassword)
+	if err != nil {
+		return dto.ProfileResponse{}, errors.New("failed to hash new password")
+	}
+
+	// jika newPassword dan confirmPassword sudah sama, ubah password (hasil hash) ke DB untuk user tersebut
+	user.Password = newPassword
+
+	err = s.repo.ChangePassword(ctx, user)
+	if err != nil {
+		return dto.ProfileResponse{}, errors.New("failed to update password")
+	}
+
+	// setelah berhasil change password, buat log nya
+	err = s.activityLogService.CreateActivityLog(ctx, "USER", "CHANGE PASSWORD", "Change own password", user.ID, user.Username)
+	if err != nil {
+		return dto.ProfileResponse{}, err
+	}
+
+	// convert model to dto untuk ditampilkan
+	userDTO := helper.ConvertToDTOProfileUser(user)
+	return userDTO, nil
+}
+
+func (s *userService) UpdateLastLoginAt(ctx context.Context, userID string) error {
+	err := s.repo.UpdateLastLoginAt(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

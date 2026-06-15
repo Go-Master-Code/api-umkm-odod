@@ -426,3 +426,34 @@ func ConvertToDTOSupplierSingle(supplier *model.Supplier) dto.SupplierResponse {
 	}
 	return supplierDTO
 }
+
+func ConvertToDTOActivityLogPlural(logs []model.ActivityLog) []dto.ActivityLogResponse {
+	var activityLogs []dto.ActivityLogResponse
+	for _, log := range logs {
+		activityLogs = append(activityLogs, dto.ActivityLogResponse{
+			ID:              log.ID,
+			UserID:          log.UserID,
+			UserName:        log.User.FullName,
+			Module:          log.Module,
+			Action:          log.Action,
+			Description:     log.Description,
+			ReferenceID:     log.ReferenceID,
+			ReferenceNumber: log.ReferenceNumber,
+			CreatedAt:       log.CreatedAt,
+		})
+	}
+	return activityLogs
+}
+
+func ConvertToDTOProfileUser(user *model.User) dto.ProfileResponse {
+	profile := dto.ProfileResponse{
+		ID:         user.ID,
+		FullName:   user.FullName,
+		Username:   user.Username,
+		Role:       user.Role.Name,
+		TenantID:   user.TenantID,
+		TenantName: user.Tenant.Name,
+		Phone:      user.Phone,
+	}
+	return profile
+}
