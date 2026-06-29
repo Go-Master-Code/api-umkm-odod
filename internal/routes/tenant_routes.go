@@ -14,6 +14,6 @@ func RegisterTenantRoutes(rg *gin.RouterGroup, h *handler.TenantHandler) {
 	rg.GET("/tenants/:id", middleware.AuthRole(constants.RoleSuperAdmin), h.GetTenantByID)
 	rg.GET("/my-tenant", middleware.AuthRole(constants.RoleSuperAdmin, constants.RoleAdmin, constants.RoleOwner), h.GetMyTenant) // untuk akses data tenant sendiri berdasarkan tenantID yang dibawa jwt setelah user berhasil login
 	rg.POST("/tenants", middleware.AuthRole(constants.RoleSuperAdmin), h.CreateTenant)
-	rg.PUT("/tenants/:id", middleware.AuthRole(constants.RoleSuperAdmin), h.UpdateTenant)
+	rg.PUT("/tenants/:id", middleware.AuthRole(constants.RoleSuperAdmin, constants.RoleOwner), h.UpdateTenant)
 	rg.DELETE("/tenants/:id", middleware.AuthRole(constants.RoleSuperAdmin), h.DeleteTenant)
 }

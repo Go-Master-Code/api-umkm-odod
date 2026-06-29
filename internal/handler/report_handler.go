@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 	"umkm-odod/helper"
 	"umkm-odod/internal/constants"
@@ -196,4 +197,73 @@ func (h *ReportHandler) ExportStockHandler(c *gin.Context) {
 		helper.ErrorGenerateReport(c, err)
 		return
 	}
+}
+
+// cetak sale invoice
+func (h *ReportHandler) ExportSalesInvoicePDF(c *gin.Context) {
+	// ambil saleID dari param
+	saleID := c.Param("id")
+	file, err := h.service.ExportSalesInvoicePDF(c.Request.Context(), saleID)
+	if err != nil {
+		helper.ErrorGenerateReport(c, err)
+		return
+	}
+
+	// filename otomatis
+	filename := fmt.Sprintf("invoice-%s.pdf", saleID)
+
+	c.Header(
+		"Content-Disposition",
+		fmt.Sprintf(
+			"attachment; filename=%s",
+			filename,
+		),
+	)
+
+	c.Data(
+		http.StatusOK,
+		"application/pdf",
+		file.Bytes(),
+	)
+}
+
+// cetak sales report pdf
+func (h *ReportHandler) ExportSalesReportPDF(c *gin.Context) {
+	// ambil dulu query URL
+	var query dto.SaleReportQuery
+	err := c.ShouldBindQuery(&query)
+	if err != nil {
+		helper.ErrorParsingRequestBody(c, err)
+		return
+	}
+
+	file, err := h.service.ExportSalesReportPDF(
+		c.Request.Context(),
+		query,
+	)
+
+	if err != nil {
+		helper.ErrorGenerateReport(c, err)
+		return
+	}
+
+	// generate file name
+	fileName := fmt.Sprintf(
+		"sales-report-%s.pdf",
+		time.Now().Format("20060102150405"), //yyyymmddhhmmss
+	)
+
+	c.Header(
+		"Content-Disposition",
+		fmt.Sprintf(
+			"attachment; filename=%s",
+			fileName,
+		),
+	)
+
+	c.Data(
+		http.StatusOK,
+		"application/pdf",
+		file.Bytes(),
+	)
 }

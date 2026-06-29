@@ -104,6 +104,15 @@ func (s *tenantService) UpdateTenant(ctx context.Context, id string, req dto.Upd
 	if req.Address != nil {
 		updateMap["address"] = *req.Address
 	}
+	if req.Email != nil {
+		updateMap["email"] = *req.Email
+	}
+	if req.TaxPercentage != nil {
+		updateMap["tax_percentage"] = *req.TaxPercentage
+	}
+	if req.ReceiptFooter != nil {
+		updateMap["receipt_footer"] = *req.ReceiptFooter
+	}
 
 	err := s.repo.UpdateTenant(ctx, id, updateMap)
 	if err != nil {

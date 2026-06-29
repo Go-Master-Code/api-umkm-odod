@@ -7,23 +7,22 @@ import (
 
 // tenants
 func ConvertToDTOTenantSingle(tenant *model.Tenant) dto.TenantResponse {
-	var tenantDTO dto.TenantResponse
-	tenantDTO.ID = tenant.ID
-	tenantDTO.Name = tenant.Name
-	tenantDTO.Address = tenant.Address
-	tenantDTO.Phone = tenant.Phone
+	tenantDTO := dto.TenantResponse{
+		ID:            tenant.ID,
+		Name:          tenant.Name,
+		Address:       tenant.Address,
+		Phone:         tenant.Phone,
+		Email:         tenant.Email,
+		TaxPercentage: tenant.TaxPercentage,
+		ReceiptFooter: tenant.ReceiptFooter,
+	}
 	return tenantDTO
 }
 
 func ConvertToDTOTenantPlural(tenant []model.Tenant) []dto.TenantResponse {
 	var tenantsDTO []dto.TenantResponse
 	for _, t := range tenant {
-		tenantsDTO = append(tenantsDTO, dto.TenantResponse{
-			ID:      t.ID,
-			Name:    t.Name,
-			Address: t.Address,
-			Phone:   t.Phone,
-		})
+		tenantsDTO = append(tenantsDTO, ConvertToDTOTenantSingle(&t))
 	}
 	return tenantsDTO
 }

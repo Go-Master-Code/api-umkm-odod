@@ -1,12 +1,14 @@
 package service
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"time"
 	"umkm-odod/helper"
 	"umkm-odod/internal/constants"
 	"umkm-odod/internal/dto"
+	"umkm-odod/internal/pdf"
 	"umkm-odod/internal/repository"
 
 	"github.com/xuri/excelize/v2"
@@ -21,17 +23,23 @@ type ReportService interface {
 	ExportSalesReport(ctx context.Context, query dto.SaleReportQuery) (*excelize.File, error)
 	ExportPurchaseReport(ctx context.Context, query dto.PurchaseReportQuery) (*excelize.File, error)
 	ExportStockReport(ctx context.Context) (*excelize.File, error)
+	// invoice -> 80 mm
+	ExportSalesInvoicePDF(ctx context.Context, saleID string) (*bytes.Buffer, error) // butuh data dari sales repo
+	// sales report pdf
+	ExportSalesReportPDF(ctx context.Context, query dto.SaleReportQuery) (*bytes.Buffer, error)
 }
 
 // struct implementasi
 type reportService struct {
-	repo repository.ReportRepository
+	repo      repository.ReportRepository
+	repoSales repository.SaleRepository // data akan diambil dari sales repo
 }
 
 // constructor
-func NewReportService(repo repository.ReportRepository) ReportService {
+func NewReportService(repo repository.ReportRepository, repoSales repository.SaleRepository) ReportService {
 	return &reportService{
-		repo: repo,
+		repo:      repo,
+		repoSales: repoSales,
 	}
 }
 
@@ -470,4 +478,47 @@ func (s *reportService) ExportStockReport(ctx context.Context) (*excelize.File, 
 	f.SetCellStyle(sheetName, "F8", fmt.Sprintf("F%d", row), helper.CenterAlign(f))
 
 	return f, nil
+}
+
+func (s *reportService) ExportSalesInvoicePDF(ctx context.Context, saleID string) (*bytes.Buffer, error) {
+	// ambil tenant ID dari jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	sale, err := s.repoSales.GetSaleByID(ctx, tenantID, saleID)
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := pdf.GenerateSalesInvoice(*sale)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (s *reportService) ExportSalesReportPDF(ctx context.Context, query dto.SaleReportQuery) (*bytes.Buffer, error) {
+	// tenantID from jwt
+	tenantID := ctx.Value(constants.ContextTenantID).(string)
+
+	// get data sales dulu, []model.Sale
+	sales, err := s.repo.GetSalesReport(ctx, tenantID, query.StartDate, query.EndDate)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// ambil data summary dari sales repo
+	summary, err := s.repo.GetSalesReportSummary(ctx, tenantID, query.StartDate, query.EndDate)
+	if err != nil {
+		return nil, err
+	}
+
+	// kirim data sales sebagai datasource pdf
+	result, err := pdf.GenerateSalesReport(sales, query, summary)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
